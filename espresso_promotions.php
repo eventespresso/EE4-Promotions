@@ -38,7 +38,7 @@
  */
 function load_espresso_promotions() {
 	// promotions version
-	define( 'EE_Promotions_VERSION', '0.0.1.dev.001' );
+	define( 'EE_PROMOTIONS_VERSION', '0.0.1.dev.001' );
 	require_once ( plugin_dir_path( __FILE__ ) . 'EE_Promotions.class.php' );
 	EE_Promotions::register_addon();
 }
