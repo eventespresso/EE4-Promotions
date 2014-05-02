@@ -26,7 +26,9 @@
  */
 class espresso_events_Promotions_Hooks extends EE_Admin_Hooks {
 
-	protected function _set_hooks_properties() { }
+	protected function _set_hooks_properties() {
+        $this->_name = 'promotions';
+    }
 
 	public function _redirect_action_early_update_category( $redirection_query_args ) { }
 
