@@ -46,6 +46,7 @@ Class  EE_Promotions extends EE_Addon {
 					'EE_Promotions_Config' 			=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
 					'Promotions_Admin_Page' 		=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
 					'Promotions_Admin_Page_Init' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
+					'Promotions_Admin_List_Table' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
 				),
 				'dms_paths' 			=> array( EE_PROMOTIONS_PATH . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
