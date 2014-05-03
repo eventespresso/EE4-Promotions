@@ -47,6 +47,5 @@ dependencies:
 test:
   override:
     - cd $plugin_tests_dir; phpunit
-    - cd $event_espresso_core_dir; git checkout master; cd $plugin_tests_dir; phpunit
     - cd $event_espresso_core_dir; git checkout alpha; cd $plugin_tests_dir; phpunit
     - cd $event_espresso-core_dir; git checkout beta; cd $plugin_tests_dir; phpunit
