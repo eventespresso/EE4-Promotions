@@ -1,26 +1,24 @@
-<?php if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
+<?php
 /**
- * Event Espresso
+ * This file contains the Promotions_Admin_Page_Init class
  *
- * Event Registration and Management Plugin for WordPress
- *
- * @package		Event Espresso
- * @author			Event Espresso
- * @copyright 	(c) 2009-2014 Event Espresso All Rights Reserved.
- * @license			http://eventespresso.com/support/terms-conditions/  ** see Plugin Licensing **
- * @link				http://www.eventespresso.com
- * @version			EE4
- *
- * ------------------------------------------------------------------------
- *
+ * @since 1.0.0
+ * @package EE Promotions
+ * @subpackage admin
+ */
+if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
+
+ /**
  * Promotions_Admin_Page
  *
- * This contains the logic for setting up the Promotions Addon Admin related pages.  Any methods without PHP doc comments have inline docs with parent class.
+ * This contains the logic for setting up the Promotions Addon Admin related pages.  Any
+ * methods without PHP doc comments have inline docs with parent class.
  *
+ * @since 1.0.0
  *
- * @package			Promotions_Admin_Page (promotions addon)
- * @subpackage 	admin/Promotions_Admin_Page.core.php
- * @author				Darren Ethier, Brent Christensen
+ * @package		EE Promotions
+ * @subpackage 	admin
+ * @author		Darren Ethier, Brent Christensen
  *
  * ------------------------------------------------------------------------
  */
@@ -46,7 +44,13 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _define_page_props() {
 		$this->_admin_page_title = PROMOTIONS_LABEL;
 		$this->_labels = array(
-			'publishbox' => __('Update Settings', 'event_espresso')
+			'buttons' => array(
+				'add' => __('Add New Promotion', 'event_espresso'),
+				'edit' => __('Edit Promotion', 'event_espresso')
+				),
+			'publishbox' => array(
+				'basic_settings' => __('Update Settings', 'event_espresso')
+				)
 		);
 	}
 
@@ -55,7 +59,36 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 	protected function _set_page_routes() {
 		$this->_page_routes = array(
-			'default' => '_basic_settings',
+			'default' => '_list_table',
+			'trash_promotion' => array(
+				'func' => '_trash_or_restore_promotion',
+				'args' => array( 'promotion_status' => 'trash' ),
+				'noheader' => TRUE
+				),
+			'trash_promotions' => array(
+				'func' => '_trash_or_restore_promotions',
+				'args' => array( 'promotion_status' => 'trash' ),
+				'noheader' => TRUE
+				),
+			'restore_promotion' => array(
+				'func' => '_trash_or_restore_promotion',
+				'args' => array( 'promotion_status' => 'draft' ),
+				'noheader' => TRUE
+				),
+			'restore_promotions' => array(
+				'func' => '_trash_or_restore_promotions',
+				'args' => array( 'promotion_status' => 'draft' ),
+				'noheader' => TRUE
+				),
+			'delete_promotions' => array(
+				'func' => '_delete_promotions',
+				'noheader' => TRUE
+				),
+			'delete_promotion' => array(
+				'func' => '_delete_promotion',
+				'noheader' => TRUE
+				),
+			'basic_settings' => '_basic_settings',
 			'update_settings' => array(
 				'func' => '_update_settings',
 				'noheader' => TRUE
@@ -73,8 +106,16 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$this->_page_config = array(
 			'default' => array(
 				'nav' => array(
-					'label' => __('Settings', 'event_espresso'),
+					'label' => __('Promotions Overview', 'event_espresso'),
 					'order' => 10
+					),
+				'list_table' => 'Promotions_Admin_List_Table',
+				'require_nonce' => FALSE
+			),
+			'basic_settings' => array(
+				'nav' => array(
+					'label' => __('Settings', 'event_espresso'),
+					'order' => 20
 					),
 				'metaboxes' => array_merge( $this->_default_espresso_metaboxes, array( '_publish_post_box') ),
 				'require_nonce' => FALSE
@@ -91,7 +132,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _add_screen_options() {}
-	protected function _add_screen_options_default() {}
+	protected function _add_screen_options_default() {
+		$this->_per_page_screen_option();
+	}
+
 	protected function _add_feature_pointers() {}
 	public function load_scripts_styles() {
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core' ), EE_PROMOTIONS_VERSION, TRUE );
@@ -106,6 +150,39 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	public function admin_footer_scripts() {}
 
 
+
+	protected function _set_list_table_views_default() {
+		$this->_views = array(
+			'all' => array(
+				'slug' => 'all',
+				'label' => __('View All Promotions', 'event_espresso'),
+				'count' => 0,
+				'bulk_action' => array(
+					//'restore_venues' => __('Restore_from Trash', 'event_espresso'),
+					'trash_promotions' => __('Move to Trash', 'event_espresso')
+					//'delete_venues' => __('Delete', 'event_espresso')
+					)
+				),
+			'trash' => array(
+				'slug' => 'trash',
+				'label' => __('View Trashed Promotions', 'event_espresso'),
+				'count' => 0,
+				'bulk_action' => array(
+					'restore_promotions' => __('Restore_from Trash', 'event_espresso'),
+					//'trash_venues' => __('Move to Trash', 'event_espresso'),
+					'delete_promotions' => __('Delete', 'event_espresso')
+					)
+				)
+		);
+	}
+
+
+
+
+	protected function _list_table() {
+		$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+		$this->display_admin_list_table_page_with_no_sidebar();
+	}
 
 
 
