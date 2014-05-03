@@ -157,7 +157,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$this->_views = array(
 			'all' => array(
 				'slug' => 'all',
-				'label' => __('View All Promotions', 'event_espresso'),
+				'label' => __('All', 'event_espresso'),
 				'count' => 0,
 				'bulk_action' => array(
 					//'restore_venues' => __('Restore_from Trash', 'event_espresso'),
@@ -167,7 +167,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				),
 			'trash' => array(
 				'slug' => 'trash',
-				'label' => __('View Trashed Promotions', 'event_espresso'),
+				'label' => __('Trashed', 'event_espresso'),
 				'count' => 0,
 				'bulk_action' => array(
 					'restore_promotions' => __('Restore_from Trash', 'event_espresso'),
