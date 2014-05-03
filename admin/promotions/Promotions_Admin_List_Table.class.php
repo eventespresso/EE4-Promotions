@@ -51,11 +51,11 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 		$this->_sortable_columns = array(
 			'id' => array( 'id' => TRUE ),
-			'name' => array( 'name', false ),
-			'code' => array( 'code', false ),
-			'valid_from' => array( 'code', false ),
-			'valid_until' => array( 'valid_until', false ),
-			'redeemed' => array( 'redeemed', false )
+			'name' => array( 'name' => false ),
+			'code' => array( 'code' => false ),
+			'valid_from' => array( 'code' => false ),
+			'valid_until' => array( 'valid_until' => false ),
+			'redeemed' => array( 'redeemed' => false )
 			);
 
 		$this->_hidden_columns = array();
