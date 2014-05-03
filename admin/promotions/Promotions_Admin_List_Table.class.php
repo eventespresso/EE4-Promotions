@@ -71,7 +71,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	protected function _add_view_counts() {
 		$this->_views['all']['count'] = $this->_all_data_count;
-		$this->_views['trash']['count'] = $this->_trashed_count();
+		//$this->_views['trash']['count'] = $this->_trashed_count();
 	}
 
 

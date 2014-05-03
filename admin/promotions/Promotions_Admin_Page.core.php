@@ -165,7 +165,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					//'delete_venues' => __('Delete', 'event_espresso')
 					)
 				),
-			'trash' => array(
+			/*'trash' => array(
 				'slug' => 'trash',
 				'label' => __('Trashed', 'event_espresso'),
 				'count' => 0,
@@ -174,7 +174,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					//'trash_venues' => __('Move to Trash', 'event_espresso'),
 					'delete_promotions' => __('Delete', 'event_espresso')
 					)
-				)
+				)/**/
 		);
 	}
 
