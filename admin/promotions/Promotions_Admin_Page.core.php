@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the Promotions_Admin_Page_Init class
+ * This file contains the Promotions_Admin_Page class
  *
  * @since 1.0.0
  * @package EE Promotions
