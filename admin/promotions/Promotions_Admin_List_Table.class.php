@@ -92,12 +92,46 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	//todo
 	protected function _get_promotions( $per_page = 10, $count = FALSE ) {
-		return $count ? 0 : array();
+		$_orderby = !empt( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
+		switch( $_orderby ) {
+			case 'name' :
+				$orderby = 'Price.PRC_name';
+				break;
+
+			case 'code' :
+				$orderby = 'PRO_code';
+				break;
+
+			case 'valid_from' :
+				$orderby = 'PRO_start';
+				break;
+
+			case 'valid_until' :
+				$orderby = 'PRO_end';
+				break;
+
+			case 'redeemed' :
+				$orderby = 'Promotion_Object.POB_used';
+				break;
+			default :
+				$orderby = 'PRO_ID';
+				break;
+		}
+
+		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'ASC';
+		$current_page = ! empty( $this->_req_data['paged'] ) ? $this->_req_data['paged'] : 1;
+		$per_page = ! empty( $per_page ) ? $per_page : 10;
+		$per_page =  ! empty( $this->_req_data['perpage'] ) ? $this->_req_data['perpage'] : $per_page;
+
+		$offset = ( $current_page - 1 ) * $per_page;
+		$limit = array( $offset, $per_page );
+
+		$promotions = $count ? EEM_Promotion::instance()->count() : EEM_Promotion::instance()->get_all( array( 'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
 	}
 
 
 
-	//todo
+	//not in use because promotions isn't a soft delete model currently.
 	protected function _trashed_count() {
 		return 0;
 	}
