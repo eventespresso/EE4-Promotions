@@ -161,7 +161,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'count' => 0,
 				'bulk_action' => array(
 					//'restore_venues' => __('Restore_from Trash', 'event_espresso'),
-					'trash_promotions' => __('Move to Trash', 'event_espresso')
+					//'trash_promotions' => __('Move to Trash', 'event_espresso')
 					//'delete_venues' => __('Delete', 'event_espresso')
 					)
 				),
