@@ -1,25 +1,24 @@
-<?php if ( ! defined('EVENT_ESPRESSO_VERSION')) exit('No direct script access allowed');
+<?php
 /**
-* Event Espresso
-*
-* Event Registration and Management Plugin for WordPress
-*
-* @ package 		Event Espresso
-* @ author			Seth Shoultes
-* @ copyright 	(c) 2008-2011 Event Espresso  All Rights Reserved.
-* @ license 		{@link http://eventespresso.com/support/terms-conditions/}   * see Plugin Licensing *
-* @ link 				{@link http://www.eventespresso.com}
-* @ since		 	$VID:$
-*
-* ------------------------------------------------------------------------
-*
+ * This file contains the Promotions_Admin_Page_Init class
+ *
+ * @since 1.0.0
+ * @package EE Promotions
+ * @subpackage admin
+ */
+ if ( ! defined('EVENT_ESPRESSO_VERSION')) exit('No direct script access allowed');
+
+/**
 * Promotions_Admin_Page_Init class
 *
-* This is the init for the Promotions Addon Admin Pages.  See EE_Admin_Page_Init for method inline docs.
+* This is the init for the Promotions Addon Admin Pages.  See EE_Admin_Page_Init for method
+* inline docs.
 *
-* @package			Event Espresso (promotions addon)
-* @subpackage		admin/Promotions_Admin_Page_Init.core.php
-* @author				Darren Ethier
+* @since 1.0.0
+*
+* @package		EE Promotions
+* @subpackage		admin
+* @author		Darren Ethier
 *
 * ------------------------------------------------------------------------
 */
@@ -28,8 +27,6 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 	/**
 	 * 	constructor
 	 *
-	 * @access public
-	 * @return \Promotions_Admin_Page_Init
 	 */
 	public function __construct() {
 
@@ -44,8 +41,6 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 		define( 'EE_PROMOTIONS_ADMIN_TEMPLATE_URL', EE_PROMOTIONS_URL . 'templates' . DS );
 
 		parent::__construct();
-		$this->_folder_path = EE_PROMOTIONS_ADMIN;
-
 	}
 
 
@@ -54,29 +49,21 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 
 	protected function _set_init_properties() {
 		$this->label = PROMOTIONS_LABEL;
-		$this->menu_label = PROMOTIONS_LABEL;
-		$this->menu_slug = PROMOTIONS_PG_SLUG;
-		$this->capability = 'administrator';
 	}
 
 
-
-	/**
-	*		sets vars in parent for creating admin menu entry
-	*
-	*		@access 		public
-	*		@return 		void
-	*/
-	public function get_menu_map() {
-		$map = array(
-			'group' => 'settings',
+	protected function _set_menu_map() {
+		$this->_menu_map = new EE_Admin_Page_Sub_Menu( array(
+			'menu_group' => 'management',
 			'menu_order' => 25,
 			'show_on_menu' => TRUE,
-			'parent_slug' => 'events'
-			);
-		return $map;
+			'parent_slug' => 'espresso_events',
+			'menu_slug' => PROMOTIONS_PG_SLUG,
+			'menu_label' => PROMOTIONS_LABEL,
+			'capability' => 'administrator',
+			'admin_init_page' => $this
+			));
 	}
-
 
 }
 // End of file Promotions_Admin_Page_Init.core.php
