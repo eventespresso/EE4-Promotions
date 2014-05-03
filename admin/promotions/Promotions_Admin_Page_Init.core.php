@@ -41,6 +41,7 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 		define( 'EE_PROMOTIONS_ADMIN_TEMPLATE_URL', EE_PROMOTIONS_URL . 'templates' . DS );
 
 		parent::__construct();
+		$this->_folder_path = EE_PROMOTIONS_ADMIN;
 	}
 
 

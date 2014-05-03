@@ -60,6 +60,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _set_page_routes() {
 		$this->_page_routes = array(
 			'default' => '_list_table',
+			'create_new' => '_add_promotion',
+			'edit' => '_edit_promotion',
 			'trash_promotion' => array(
 				'func' => '_trash_or_restore_promotion',
 				'args' => array( 'promotion_status' => 'trash' ),
