@@ -92,7 +92,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	//todo
 	protected function _get_promotions( $per_page = 10, $count = FALSE ) {
-		$_orderby = !empt( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
+		$_orderby = ! empty( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
 		switch( $_orderby ) {
 			case 'name' :
 				$orderby = 'Price.PRC_name';
