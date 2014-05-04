@@ -21,11 +21,11 @@ abstract class EE_Promotion_Scope {
 
 	/**
 	 * Localized Labels for this scope.
-	 * stdObject that has a singular and plural property.  Set via the _set_main_properties()
+	 * stdClass that has a singular and plural property.  Set via the _set_main_properties()
 	 * method.
 	 *
 	 * @since 1.0.0
-	 * @var stdObj
+	 * @var stdClass
 	 */
 	public $label;
 
