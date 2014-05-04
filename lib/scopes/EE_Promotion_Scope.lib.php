@@ -64,6 +64,7 @@ abstract class EE_Promotion_Scope {
 	 * @return void
 	 */
 	public function __construct() {
+		$this->label = new stdClass();
 		$this->_set_main_properties();
 		$this->_verify_properties_set();
 
