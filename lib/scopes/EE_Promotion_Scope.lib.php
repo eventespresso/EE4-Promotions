@@ -4,7 +4,7 @@
  *
  * @since 1.0.0
  * @package EE Promotions
- * @subpackage admin
+ * @subpackage models
  */
 if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
 
@@ -14,7 +14,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  * @since 1.0.0
  *
  * @package EE4 Promotions
- * @subpackage admin
+ * @subpackage models
  * @author Darren Ethier
  */
 abstract class EE_Promotion_Scope {
