@@ -62,6 +62,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'default' => '_list_table',
 			'create_new' => '_add_promotion',
 			'edit' => '_edit_promotion',
+			'duplicate' => array(
+				'func' => '_duplicate_promotion',
+				'noheader' => TRUE
+				),
 			'trash_promotion' => array(
 				'func' => '_trash_or_restore_promotion',
 				'args' => array( 'promotion_status' => 'trash' ),

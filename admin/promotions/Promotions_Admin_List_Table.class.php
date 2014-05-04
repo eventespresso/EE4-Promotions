@@ -20,18 +20,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  */
 class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
-	/**
-	 * EE Price object related to the promotion in the row
-	 * @var EE_Price
-	 */
-	protected $_price;
 
-
-	/**
-	 * EE Promotion objects related to the promotion in the row
-	 * @var EE_Promotion_Object[]
-	 */
-	protected $_promo_obj;
 
 	protected function _setup_data() {
 		$this->_data = $this->_get_promotions( $this->_per_page );
@@ -89,9 +78,6 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_cb( EE_Promotion $item ) {
-		$this->_price = $item->get_first_related('Price');
-		$this->_promo_obj = $item->get_many_related('Promotion_Object');
-
 		printf( '<input type="checkbox" name="PRO_ID[]" value="%s" />', $item->ID() );
 	}
 
@@ -117,11 +103,65 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		//@todo once EE_Promotion implements the $scope property then it will use this method.
 		//echo $item->applied_name();
 	}
-	public function column_valid_from( EE_Promotion $item ) {}
-	public function column_valid_until( EE_Promotion $item ) {}
-	public function column_amount( EE_Promotion $item ) {}
-	public function column_redeemed( EE_Promotion $item ) {}
-	public function column_actions( EE_Promotion $item ) {}
+
+
+
+	public function column_valid_from( EE_Promotion $item ) {
+		echo $item->start();
+	}
+
+
+
+
+	public function column_valid_until( EE_Promotion $item ) {
+		echo $item->end();
+	}
+
+
+
+
+
+	public function column_amount( EE_Promotion $item ) {
+		//@todo once EE_Promotion is transferred to the promotion addon, add a helper method for outputting the promo amount (which is retrieved from the related price object)
+		//echo $item->amount();
+	}
+
+
+
+
+
+	public function column_redeemed( EE_Promotion $item ) {
+		//@todo once EE_Promotion is transferred to the promotion addon, add a helper method for outputting the promo uses.  Note it will have to use the related Promo_Object(s) to get the total count of redeemed uses (especially when the scope is multiple events).
+		//echo $item->redeemed();
+	}
+
+
+
+
+	public function column_actions( EE_Promotion $item ) {
+		$actionlinks = array();
+		EE_Registry::instance()->load_helper('URL');
+
+		$edit_query_args = array(
+			'action' => 'edit',
+			'PRO_ID' => $item->ID()
+			);
+
+		$dupe_query_args = array(
+			'action' => 'duplicate',
+			'PRO_ID' => $item->ID()
+			);
+
+		$edit_link = EEH_URL::add_query_args_and_nonce( $edit_query_args, EE_PROMOTIONS_ADMIN_URL );
+		$dupe_link = EEH_URL::add_query_args_and_nonce( $dupe_query_args, EE_PROMOTIONS_ADMIN_URL );
+
+		$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable"></div></a>';
+		$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable"></div></a>';
+		$content = '<div style="width:100%;">' . "\n\t";
+		$content .= impode( "\n\t", $actionlinks );
+		$content .= "\n" . '</div>' . "\n";
+		echo $content;
+	}
 
 
 
