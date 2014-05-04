@@ -17,7 +17,6 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  * @subpackage admin
  * @author Darren Ethier
  */
-
 abstract class EE_Promotion_Scope {
 
 	/**
