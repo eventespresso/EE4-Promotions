@@ -32,24 +32,16 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * Slug used to identify the scope in the system.  The Promotion db will use this slug to
-	 * reference the scope in the db and to know which scope object to instantiate.
+	 * Slug used to identify the scope in the system.
+	 * The Promotion db will use this slug to reference the scope in the db and to know
+	 * which scope object to instantiate.  This should correspond to the model name for
+	 * the related model.
 	 *
 	 * @since 1.0.0
 	 * @var string
 	 */
 	public $slug;
 
-
-
-
-	/**
-	 * The name for the model related to this scope.
-	 *
-	 * @since 1.0.0
-	 * @var string
-	 */
-	protected $_model_name;
 
 
 
@@ -149,14 +141,14 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * This just returns the related model instance as set via the $_model_name property.
+	 * This just returns the related model instance as set via the $_slug property.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return  EEM_Base
 	 */
 	protected function _model() {
-		return EE_Registry::instance()->load_model( $this->_model_name );
+		return EE_Registry::instance()->load_model( $this->slug );
 	}
 
 
@@ -178,7 +170,7 @@ abstract class EE_Promotion_Scope {
 
 	/**
 	 * Gets the model object for the given ID for the scope.
-	 * If it isn't cached in $_model_objects then will use the set $_model to retrieve the
+	 * If it isn't cached in $_model_objects then will use the model() method to retrieve the
 	 * model object for the given id and then cache it to the $_model_objects property.
 	 *
 	 * @since 1.0.0
@@ -224,9 +216,6 @@ abstract class EE_Promotion_Scope {
 
 		if ( empty( $this->slug ) )
 			throw new EE_Error( sprintf( __( 'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.', 'event_espresso'), $classname ) );
-
-		if( empty( $this->_model_name ) )
-			throw new EE_Error( sprintf( __( 'The %s class has not set the $_model_name property.  This allows the scope to know which model it is related to.', 'event_espresso'), $classname ) );
 	}
 
 }
