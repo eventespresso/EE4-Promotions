@@ -1,34 +1,57 @@
-<?php if ( ! defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowed'); }
+<?php
 /**
- * Event Espresso
+ * This file contains the definition of the Promotions Config
  *
- * Event Registration and Ticketing Management Plugin for WordPress
- *
- * @ package			Event Espresso
- * @ author			    Event Espresso
- * @ copyright		(c) 2008-2014 Event Espresso  All Rights Reserved.
- * @ license			http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
- * @ link					http://www.eventespresso.com
- * @ version		 	$VID:$
- *
- * ------------------------------------------------------------------------
+ * @since 1.0.0
+ * @package EE Promotions
+ * @subpackage config
  */
- /**
- *
- * Class EE_Promotions_Config
- *
- * Description
- *
- * @package         Event Espresso
- * @subpackage    core
- * @author				Brent Christensen
- * @since		 	   $VID:$
- *
- */
+if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
 
+/**
+ * Class defining the Promotions Config object stored on EE_Registry::instance->CFG
+ *
+ * @since 1.0.0
+ *
+ * @package EE4 Promotions
+ * @subpackage config
+ * @author Darren Ethier
+ */
 class EE_Promotions_Config extends EE_Config_Base {
 
+	/**
+	 * Holds all the EE_Promotion_Scope objects that are registered for promotions.
+	 *
+	 * @since 1.0.0
+	 * @var EE_Promotion_Scope[]
+	 */
+	public $scopes;
 
+
+
+	public function __construct() {
+		$this->scopes = $this->_get_scopes();
+	}
+
+
+
+
+	private function _get_scopes() {
+		$scopes = array();
+		$scopes_to_register = apply_filters( 'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register', glob( EE_PROMOTIONS_PATH.'lib/scopes/*.lib.php' ) );
+		foreach ( $scopes_to_register as $scope ) {
+			require_once $scope;
+			$class_name = EEH_File::get_classname_from_filepath_with_standard_filename( $scope );
+			//if parent let's skip (but we still required it for the extension)
+			if ( $class_name == 'EE_Promotion_Scope' )
+				continue;
+			if ( class_exists( $class_name ) )
+				$reflector = new ReflectionClass( $class_name );
+				$sp = $reflector->newInstance();
+				$scopes[ $sp->slug ] = $sp;
+		}
+		return $scopes;
+	}
 
 }
 
