@@ -20,6 +20,18 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  */
 class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
+	/**
+	 * EE Price object related to the promotion in the row
+	 * @var EE_Price
+	 */
+	protected $_price;
+
+
+	/**
+	 * EE Promotion objects related to the promotion in the row
+	 * @var EE_Promotion_Object[]
+	 */
+	protected $_promo_obj;
 
 	protected function _setup_data() {
 		$this->_data = $this->_get_promotions( $this->_per_page );
@@ -76,16 +88,40 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 
-	public function column_cb() {}
-	public function column_id() {}
-	public function column_name() {}
-	public function column_code() {}
-	public function column_applies_to() {}
-	public function column_valid_from() {}
-	public function column_valid_until() {}
-	public function column_amount() {}
-	public function column_redeemed() {}
-	public function column_actions() {}
+	public function column_cb( EE_Promotion $item ) {
+		$this->_price = $item->get_first_related('Price');
+		$this->_promo_obj = $item->get_many_related('Promotion_Object');
+
+		printf( '<input type="checkbox" name="PRO_ID[]" value="%s" />', $item->ID() );
+	}
+
+
+
+	public function column_id( EE_Promotion $item ) {
+		echo $item->ID();
+	}
+
+
+	public function column_name( EE_Promotion $item ) {
+		echo $this->_price instanceof EE_Price ? $this->_price->name() : '';
+	}
+
+
+	public function column_code( EE_Promotion $item ) {
+		echo $item->code();
+	}
+
+
+
+	public function column_applies_to( EE_Promotion $item ) {
+		//@todo once EE_Promotion implements the $scope property then it will use this method.
+		//echo $item->applied_name();
+	}
+	public function column_valid_from( EE_Promotion $item ) {}
+	public function column_valid_until( EE_Promotion $item ) {}
+	public function column_amount( EE_Promotion $item ) {}
+	public function column_redeemed( EE_Promotion $item ) {}
+	public function column_actions( EE_Promotion $item ) {}
 
 
 
