@@ -1,0 +1,25 @@
+#promotion-details-form table {
+	width: 100%;
+}
+
+#promotion-details-form tr td {
+	vertical-align: top;
+}
+
+#promotion-details-form tr td:first-child {
+	width: 18%;
+	min-width: 125px;
+}
+
+#promotion-details-form tr td:last-child {
+	widht: 88%;
+}
+
+#promotion-details-form .ee-numeric {
+	width: 100px;
+}
+
+#promotion-details-form .regular-text {
+	margin-right: 15px;
+}
+

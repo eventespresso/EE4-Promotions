@@ -15,7 +15,7 @@
  * @type string 	$scope_selector	generated selector for the available scopes.
  */
 ?>
-<table class="form-table">
+<table class="form-table" id="promotion-details-form">
 	<tr>
 		<td class="label-column">
 			<label for="PRC_name"><?php _e('Name', 'event_espresso'); ?></label>
@@ -46,7 +46,7 @@
 			<label for="PRC_Amount"><?php _e('Amount', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<input class="regular-text" id="PRC_amount" name="PRC_amount" value="<?php //echo $promotion->price()->amount(); ?>">
+			<input class="regular-text ee-numeric" id="PRC_amount" name="PRC_amount" value="<?php //echo $promotion->price()->amount(); ?>">
 		</td>
 	</tr>
 	<tr>
@@ -78,7 +78,7 @@
 			<label for="PRO_uses"><?php _e('Number of Uses', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<input class="regular-text" id="PRO_uses" name="PRO_uses" value="<?php echo $promotion->uses(); ?>"><span class="description"><?php _e('per scope', 'event_espresso'); ?></span>
+			<input class="regular-text ee-numeric" id="PRO_uses" name="PRO_uses" value="<?php echo $promotion->uses(); ?>"><span class="description"><?php _e('per scope', 'event_espresso'); ?></span>
 		</td>
 	</tr>
 	<tr>
@@ -86,7 +86,7 @@
 			<label for="PRC_desc"><?php _e('Description', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<textarea id="PRC_desc" name="PRC_desc"><?php //echo $promotion->price()->description(); ?></textarea>
+			<textarea class="ee-full-textarea-inp" id="PRC_desc" name="PRC_desc"><?php //echo $promotion->price()->description(); ?></textarea>
 		</td>
 	</tr>
 	<tr>
@@ -94,7 +94,7 @@
 			<label for="PRO_accept_msg"><?php _e('Accepted Message', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<textarea id="PRO_accept_msg" name="PRO_accept_msg"><?php echo $promotion->accept_message(); ?></textarea>
+			<textarea class="ee-full-textarea-inp" id="PRO_accept_msg" name="PRO_accept_msg"><?php echo $promotion->accept_message(); ?></textarea>
 		</td>
 	</tr>
 	<tr>
@@ -102,7 +102,7 @@
 			<label for="PRO_decline_msg"><?php _e('Declined Message', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<textarea id="PRO_decline_msg" name="PRO_decline_msg"><?php echo $promotion->decline_message(); ?></textarea>
+			<textarea class="ee-full-textarea-inp" id="PRO_decline_msg" name="PRO_decline_msg"><?php echo $promotion->decline_message(); ?></textarea>
 		</td>
 	</tr>
 </table>

@@ -174,6 +174,28 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 	protected function _add_feature_pointers() {}
+	public function load_scripts_styles() {}
+
+
+
+
+
+	public function load_scripts_styles_create_new() {
+		$this->load_scripts_styles_edit();
+	}
+
+
+
+
+	public function load_scripts_styles_edit() {
+		wp_register_style( 'promotions-details-css', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'promotions-details.css', array('ee-admin-css'), EE_PROMOTIONS_VERSION );
+		wp_enqueue_style( 'promotions-details-css' );
+	}
+
+
+
+
+
 	public function load_scripts_styles_basic_settings() {
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
@@ -259,7 +281,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$this->_set_promotion_object();
 		$id = $new ? '' : $this->_promotion->ID();
 		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
-		$this->_set_add_edit_form_tags('insert_promotion');
+		$view = $new ? 'insert_promotion_form' : 'update_promotion_form';
+		$this->_set_add_edit_form_tags($view);
 		$this->_set_publish_post_box_vars( 'PRO_ID', $id, FALSE, $redirect);
 		$this->display_admin_page_with_sidebar();
 	}
