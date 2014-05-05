@@ -34,11 +34,11 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 
 		define( 'PROMOTIONS_PG_SLUG', 'espresso_promotions' );
 		define( 'PROMOTIONS_LABEL', __( 'Promotions', 'event_espresso' ));
-		define( 'EE_PROMOTIONS_ADMIN_URL', admin_url( 'admin.php?page=' . PROMOTIONS_PG_SLUG ));
+		define( 'EE_PROMOTIONS_ADMIN_URL', admin_url( 'admin.php?page=' . PROMOTIONS_PG_SLUG ) );
 		define( 'EE_PROMOTIONS_ADMIN_ASSETS_PATH', EE_PROMOTIONS_ADMIN . 'assets' . DS );
-		define( 'EE_PROMOTIONS_ADMIN_ASSETS_URL', EE_PROMOTIONS_URL . 'assets' . DS );
+		define( 'EE_PROMOTIONS_ADMIN_ASSETS_URL', EE_PROMOTIONS_URL . 'admin/promotions/assets/' );
 		define( 'EE_PROMOTIONS_ADMIN_TEMPLATE_PATH', EE_PROMOTIONS_ADMIN . 'templates' . DS );
-		define( 'EE_PROMOTIONS_ADMIN_TEMPLATE_URL', EE_PROMOTIONS_URL . 'templates' . DS );
+		define( 'EE_PROMOTIONS_ADMIN_TEMPLATE_URL', EE_PROMOTIONS_ADMIN_URL . 'templates' . DS );
 
 		parent::__construct();
 		$this->_folder_path = EE_PROMOTIONS_ADMIN;
