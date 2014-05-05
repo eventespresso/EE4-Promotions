@@ -304,7 +304,18 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _get_price_type_selector() {
-		return '';
+		//get Price Types for discount base price.
+		$price_types = EEM_Price_Type::instance()->get_all(  array( array( 'PBT_ID' => EEM_Price_Type::base_type_discount ) ) );
+		$values = array();
+		foreach ( $price_types as $ID => $pt ) {
+			$values[] = array(
+				'text' => $pt->name(),
+				'id' => $ID
+				);
+		}
+		//@todo once promotions models are moved into Promotions addon.
+		$default = 0; //$this->_promotion->price()->type()
+		return EEH_Form_Fields::select_input( 'PRT_name', $values, $default );
 	}
 
 
