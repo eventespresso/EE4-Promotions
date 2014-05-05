@@ -117,7 +117,7 @@ Class  EE_Promotions extends EE_Addon {
 	 */
 	public function additional_admin_hooks() {
 		// is admin and not in M-Mode ?
-		if ( is_admin() && ! EE_Maintenance_Mode::instance()->level() ) {
+		if ( is_admin() && EE_Maintenance_Mode::instance()->level() < 2 ) {
 			add_filter( 'plugin_action_links', array( $this, 'plugin_actions' ), 10, 2 );
 			add_action( 'action_hook_espresso_promotions_update_api', array( $this, 'load_pue_update' ));
 		}
@@ -145,8 +145,8 @@ Class  EE_Promotions extends EE_Addon {
 				'http://eventespresso.com',
 				// plugin slug(s)
 				array(
-					'premium' => array('reg' => 'espresso-promotions-core'),
-					'prerelease' => array('beta' => 'espresso-promotions-core-pr')
+					'premium' => array('p' => 'espresso-promotions'),
+					'prerelease' => array('beta' => 'espresso-promotions-pr')
 				),
 				// options
 				array(
