@@ -46,13 +46,20 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 
 
 
-
-
+	/**
+	 * 	_set_init_properties
+	 * @access protected
+	 */
 	protected function _set_init_properties() {
 		$this->label = PROMOTIONS_LABEL;
 	}
 
 
+
+	/**
+	 * 	_set_menu_map
+	 * @access protected
+	 */
 	protected function _set_menu_map() {
 		$this->_menu_map = new EE_Admin_Page_Sub_Menu( array(
 			'menu_group' => 'management',
