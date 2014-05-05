@@ -42,7 +42,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			return $this->label->plural;
 
 		$evt = $this->_get_model_object( $EVT_ID );
-		return $evt instanceof EE_Event ? $evt->name() : '';
+		return $evt->name();
 	}
 
 
@@ -60,7 +60,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			return __('Applied to all events.', 'event_espresso');
 
 		$evt = $this->_get_model_object( $EVT_ID );
-		return $evt instanceof EE_Event ? sprintf( __('Applied to %s', 'event_espresso'), $evt->name() ) : '';
+		return sprintf( __('Applied to %s', 'event_espresso'), $evt->name() );
 	}
 
 
