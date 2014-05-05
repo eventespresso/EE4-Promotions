@@ -38,13 +38,16 @@ class EE_Promotions_Config extends EE_Config_Base {
 
 	private function _get_scopes() {
 		$scopes = array();
+		//first we require the promotion scope parent.
+		require_once( EE_PROMOTIONS_PATH . 'lib/scopes/EE_Promotion_Scope.lib.php');
 		$scopes_to_register = apply_filters( 'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register', glob( EE_PROMOTIONS_PATH.'lib/scopes/*.lib.php' ) );
 		foreach ( $scopes_to_register as $scope ) {
-			require_once $scope;
 			$class_name = EEH_File::get_classname_from_filepath_with_standard_filename( $scope );
-			//if parent let's skip (but we still required it for the extension)
+			//if parent let's skip - it's already been required.
 			if ( $class_name == 'EE_Promotion_Scope' )
 				continue;
+			require_once $scope;
+
 			if ( class_exists( $class_name ) )
 				$reflector = new ReflectionClass( $class_name );
 				$sp = $reflector->newInstance();
