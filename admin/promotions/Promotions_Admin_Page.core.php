@@ -174,7 +174,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 	protected function _add_feature_pointers() {}
-	public function load_scripts_styles() {
+	public function load_scripts_styles_basic_settings() {
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
 
