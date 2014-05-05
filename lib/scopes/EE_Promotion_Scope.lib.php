@@ -61,7 +61,7 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return void
+	 * @return \EE_Promotion_Scope
 	 */
 	public function __construct() {
 		$this->label = new stdClass();
@@ -178,7 +178,7 @@ abstract class EE_Promotion_Scope {
 	 * @throws EE_Error If $OBJ_ID does not correspond to a valid model object.
 	 *
 	 * @param  int     $OBJ_ID ID 	for the object to be retrieved.
-	 * @param  bool  $reset_cache Optional. If client want's to reset cache then set to true.
+	 * @param  bool  $reset_cache Optional. If client wants to reset cache then set to true.
 	 *                            		Default false.
 	 * @return  EE_Base_Class
 	 */
@@ -191,7 +191,13 @@ abstract class EE_Promotion_Scope {
 		$obj = $this->_model()->get_one_by_ID( $OBJ_ID );
 
 		if ( ! $obj instanceof EE_Base_Class ) {
-			throw new EE_Error( sprintf( 'Unable to retrieve the model object related to the %s with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.', 'event_espresso' ), get_class( $this ), $OBJ_ID );
+			throw new EE_Error(
+				sprintf(
+					__( 'Unable to retrieve the model object related to the %s with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.', 'event_espresso' ),
+					get_class( $this ),
+					$OBJ_ID
+				)
+			);
 		}
 
 		//set to cache
@@ -213,7 +219,7 @@ abstract class EE_Promotion_Scope {
 		$classname = get_class( $this );
 		//verify label is set and is std_object with two properties, singular and plural.
 		if ( ! is_object( $this->label ) || ! isset( $this->label->singular ) || ! isset( $this->label->plural ) )
-			throw new EE_Error( sprintf( __('The %s class has not set the $label property correctly.', 'event_espresso'), 'event_espresso' ), $clasname );
+			throw new EE_Error( sprintf( __('The %s class has not set the $label property correctly.', 'event_espresso'), 'event_espresso' ), $classname );
 
 		if ( empty( $this->slug ) )
 			throw new EE_Error( sprintf( __( 'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.', 'event_espresso'), $classname ) );
