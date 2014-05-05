@@ -54,6 +54,8 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 		$this->label = PROMOTIONS_LABEL;
 	}
 
+	// ADDED JUST DEV DOESN'T BLOW UP - remove after new EE Menu Item classes get merged to DEV
+	function get_menu_map() {}
 
 
 	/**
