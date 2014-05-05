@@ -55,7 +55,11 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 	}
 
 	// ADDED JUST DEV DOESN'T BLOW UP - remove after new EE Menu Item classes get merged to DEV
-	function get_menu_map() {}
+	function get_menu_map() {
+		if ( !empty( $this->_menu_map ) )
+			return $this->_menu_map; //we have menu maps!
+		return array(); //still old system
+	}
 
 
 	/**
