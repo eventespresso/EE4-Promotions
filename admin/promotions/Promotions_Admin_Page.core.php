@@ -24,6 +24,12 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  */
 class Promotions_Admin_Page extends EE_Admin_Page {
 
+	/**
+	 * This will hold the promotion object on create_new and edit routes
+	 * @var EE_Promotion
+	 */
+	protected $_promotion;
+
 
 	protected function _init_page_props() {
 		$this->page_slug = PROMOTIONS_PG_SLUG;
@@ -49,6 +55,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'edit' => __('Edit Promotion', 'event_espresso')
 				),
 			'publishbox' => array(
+				'create_new' => __('Save New Promotion', 'event_espresso'),
+				'edit' => __('Update Promotion', 'event_espresso'),
 				'basic_settings' => __('Update Settings', 'event_espresso')
 				)
 		);
@@ -60,8 +68,11 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _set_page_routes() {
 		$this->_page_routes = array(
 			'default' => '_list_table',
-			'create_new' => '_add_promotion',
-			'edit' => '_edit_promotion',
+			'create_new' => array(
+				'func' => '_promotion_details',
+				'args' => array(TRUE)
+				),
+			'edit' => '_promotion_details',
 			'duplicate' => array(
 				'func' => '_duplicate_promotion',
 				'noheader' => TRUE
@@ -108,7 +119,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _set_page_config() {
-
+		EE_Registry::instance()->load_helper('URL');
 		$this->_page_config = array(
 			'default' => array(
 				'nav' => array(
@@ -118,6 +129,26 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'list_table' => 'Promotions_Admin_List_Table',
 				'require_nonce' => FALSE
 			),
+			'create_new' => array(
+				'nav' => array(
+					'label' => __('Create Promotion', 'event_espresso'),
+					'order' => 15,
+					'url' => EEH_URL::add_query_args_and_nonce(array('action' => 'create_new'), EE_PROMOTIONS_ADMIN_URL ),
+					'persistent' => FALSE
+					),
+				'metaboxes' => array( '_promotions_metaboxes', '_publish_post_box' ),
+				'require_nonce' => FALSE
+				),
+			'edit' => array(
+				'nav' => array(
+					'label' => __('Edit Promotion', 'event_espresso'),
+					'order' => 15,
+					'url' => EEH_URL::add_query_args_and_nonce(array('action' => 'edit', 'PRO_ID' => !empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0 ) , EE_PROMOTIONS_ADMIN_URL ),
+					'persistent' => FALSE
+					),
+				'metaboxes' => array( '_promotions_metaboxes', '_publish_post_box' ),
+				'require_nonce' => FALSE
+				),
 			'basic_settings' => array(
 				'nav' => array(
 					'label' => __('Settings', 'event_espresso'),
@@ -189,6 +220,78 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
 		$this->display_admin_list_table_page_with_no_sidebar();
 	}
+
+
+
+	protected function _set_promotion_object() {
+		//only set if not set already
+		if ( $this->_promotion instanceof EE_Promotion )
+			return;
+
+		$this->_promotion = !empty( $this->_req_data['PRO_ID'] ) ? EEM_Promotion::instance()->get_one_by_ID( $this->_req_data['PRO_ID'] ) : EEM_Promotion::instance()->create_default_object();
+
+		//verify we have a promotion object
+		if ( ! $this->_promotion instanceof EE_Promotion )
+			throw new EE_Error( sprintf( __('Something might be wrong with the models or the given Promotion ID in the request (%s) is not for a valid Promotion in the DB.', 'event_espresso'), $this->_req_data['PRO_ID'] ) );
+	}
+
+
+
+	/**
+	 * metaboxes callback for create_new and edit promotion routes.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	protected function _promotions_metaboxes() {
+		add_meta_box( 'promotion-details-mbox', __('Promotions', 'event-espresso'), array( $this, 'promotion_details_metabox'), $this->wp_page_slug, 'normal', 'high' );
+	}
+
+	/**
+	 * Callback for the create new promotion route.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $new Whether promotion is new or not. Default TRUE.
+	 * @return void
+	 */
+	protected function _promotion_details( $new = FALSE ) {
+		$this->_set_promotion_object();
+		$id = $new ? '' : $this->_promotion->ID();
+		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
+		$this->_set_add_edit_form_tags('insert_promotion');
+		$this->_set_publish_post_box_vars( 'PRO_ID', $id, FALSE, $redirect);
+		$this->display_admin_page_with_sidebar();
+	}
+
+
+
+
+	public function promotion_details_metabox() {
+		$form_args = array(
+			'promotion' => $this->_promotion,
+			'price_type_selector' => $this->_get_price_type_selector(),
+			'scope_selector' => $this->_get_promotion_scope_selector()
+			);
+		$form_template = EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotion_details_form.template.php';
+		EEH_Template::display_template( $form_template, $form_args );
+	}
+
+
+
+
+	protected function _get_price_type_selector() {
+		return '';
+	}
+
+
+
+
+	protected function _get_promotion_scope_selector() {
+		return'';
+	}
+
+
 
 
 
