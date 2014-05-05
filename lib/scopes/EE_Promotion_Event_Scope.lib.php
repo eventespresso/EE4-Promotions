@@ -28,35 +28,60 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	}
 
 
-	protected function name( $OBJ_ID ) {
-		if ( empty( $OBJ_ID ) )
+
+	/**
+	 * Child scope classes indicate what gets returned when a "name" is requested.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $EVT_ID ID for the EE_Event object being utilized.
+	 * @return string
+	 */
+	public function name( $EVT_ID ) {
+		if ( empty( $EVT_ID ) )
 			return $this->label->plural;
 
-		$evt = $this->_get_model_object( $OBJ_ID );
-		return $evt->name();
+		$evt = $this->_get_model_object( $EVT_ID );
+		return $evt instanceof EE_Event ? $evt->name() : '';
 	}
 
 
 
-	protected function description( $OBJ_ID ) {
-		if ( empty( $OBJ_ID ) )
+	/**
+	 * Child scope classes indicate what gets returned when a "description" is requested.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @return string
+	 */
+	public function description( $EVT_ID ) {
+		if ( empty( $EVT_ID ) )
 			return __('Applied to all events.', 'event_espresso');
 
-		$evt = $this->_get_model_object( $OBJ_ID );
-		return sprintf( __('Applied to %s', 'event_espresso'), $evt->name() );
+		$evt = $this->_get_model_object( $EVT_ID );
+		return $evt instanceof EE_Event ? sprintf( __('Applied to %s', 'event_espresso'), $evt->name() ) : '';
 	}
 
 
 
-
-	protected function get_admin_url( $OBJ_ID ) {
+	/**
+	 * Child scope classes indicate what gets returned when the admin_url is requested.
+	 * Admin url usually points to the details page for the given id.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @return string
+	 */
+	public function get_admin_url( $EVT_ID ) {
 		$base_url = admin_url('admin.php?page="espresso_events"');
-		if ( empty( $OBJ_ID ) )
+		if ( empty( $EVT_ID ) )
 			return $base_url;
 
 		$query_args = array(
 			'action' => 'edit',
-			'post' => $OBJ_ID
+			'post' => $EVT_ID
 			);
 		EE_Registry::instance()->load_helper('URL');
 		return EEH_URL::add_query_args_and_nonce( $query_args, $base_url );
@@ -64,9 +89,18 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 
 
-	protected function get_frontend_url( $OBJ_ID ) {
+	/**
+	 * Child scope classes indicate what gets returned when the frontend_url is requested.
+	 * Frontend url usually points to the single page view for the given id.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @return string
+	 */
+	public function get_frontend_url( $EVT_ID ) {
 		EE_Registry::instance()->load_helper('Event_View');
-		if ( empty( $OBJ_ID ) )
+		if ( empty( $EVT_ID ) )
 			return EEH_Event_View::event_archive_link();
 
 		return EEH_Event_View::event_link_url( $EVT_ID );
