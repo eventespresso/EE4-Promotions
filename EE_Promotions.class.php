@@ -41,6 +41,7 @@ Class  EE_Promotions extends EE_Addon {
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
 				'admin_callback'		=> 'additional_admin_hooks',
 				'config_class' 			=> 'EE_Promotions_Config',
+				'config_name'			=> 'promotions',
 				'autoloader_paths' => array(
 					'EE_Promotions' 						=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
 					'EE_Promotions_Config' 			=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
