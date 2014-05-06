@@ -34,11 +34,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int    $EVT_ID ID for the EE_Event object being utilized.
+	 * @param mixed int|array    $EVT_ID (or array of ids) for the EE_Event object being utilized.
 	 * @return string
 	 */
 	public function name( $EVT_ID ) {
-		if ( empty( $EVT_ID ) )
+		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
 			return $this->label->plural;
 
 		$evt = $this->_get_model_object( $EVT_ID );
@@ -52,11 +52,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @param  mixed int|array   $EVT_ID   (or array of IDS) for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function description( $EVT_ID ) {
-		if ( empty( $EVT_ID ) )
+		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
 			return __('Applied to all events.', 'event_espresso');
 
 		$evt = $this->_get_model_object( $EVT_ID );
@@ -71,12 +71,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @param  mixed int|array   $EVT_ID   ID or array of ids for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function get_admin_url( $EVT_ID ) {
 		$base_url = admin_url('admin.php?page="espresso_events"');
-		if ( empty( $EVT_ID ) )
+		if ( empty( $EVT_ID ) || is_array( $EVT_ID) )
 			return $base_url;
 
 		$query_args = array(
@@ -95,12 +95,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  int   $EVT_ID   ID for the EE_Event object being utilized
+	 * @param  mixed int|array   $EVT_ID   ID or array of ids for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function get_frontend_url( $EVT_ID ) {
 		EE_Registry::instance()->load_helper('Event_View');
-		if ( empty( $EVT_ID ) )
+		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
 			return EEH_Event_View::event_archive_link();
 
 		return EEH_Event_View::event_link_url( $EVT_ID );
