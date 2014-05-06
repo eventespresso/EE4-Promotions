@@ -304,7 +304,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _get_price_type_selector() {
-		//get Price Types for discount base price.
+		//get Price Types for discount base price type.
 		$price_types = EEM_Price_Type::instance()->get_all(  array( array( 'PBT_ID' => EEM_Price_Type::base_type_discount ) ) );
 		$values = array();
 		foreach ( $price_types as $ID => $pt ) {
@@ -314,7 +314,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				);
 		}
 		//@todo once promotions models are moved into Promotions addon.
-		$default = 0; //$this->_promotion->price()->type()
+		$default = $this->_promotion->price_type();
 		return EEH_Form_Fields::select_input( 'PRT_name', $values, $default );
 	}
 
@@ -322,7 +322,15 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _get_promotion_scope_selector() {
-		return'';
+		$values = array();
+		foreach ( EE_Registry::instance()->CFG->promotions->scopes as $scope_name => $scope ) {
+			$values[] = array(
+				'text' => $scope->label->singular,
+				'id' => $scope_name
+				);
+		}
+		$default = $this->_promotion->scope();
+		return EEH_Form_Fields::select_input( 'PRO_scope', $values, $default );
 	}
 
 
