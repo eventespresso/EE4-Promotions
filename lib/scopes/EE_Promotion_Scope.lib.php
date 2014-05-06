@@ -149,7 +149,13 @@ abstract class EE_Promotion_Scope {
 	 * @return  EEM_Base
 	 */
 	protected function _model() {
-		return EE_Registry::instance()->load_model( $this->slug );
+		$model = EE_Registry::instance()->load_model( $this->slug );
+
+		//let's verify the model is an instance of the correct model for the slug.
+		$expected_model_class = 'EEM_' . $this->slug;
+		if ( ! $model instanceof $expected_model_class )
+			throw new EE_Error( sprintf( __( 'The loading of a corresponding model for %s failed because there is not a %s instance available.', 'event_espresso' ), get_class($this), $expected_model_class ) );
+		return $model;
 	}
 
 
@@ -190,7 +196,10 @@ abstract class EE_Promotion_Scope {
 		//attempt to retrieve model object!
 		$obj = $this->_model()->get_one_by_ID( $OBJ_ID );
 
-		if ( ! $obj instanceof EE_Base_Class ) {
+		//verification that EE_Base_Class is of the expected instance.
+		$expected_class = 'EE_' . $this->slug;
+
+		if ( ! $obj instanceof $expected_class ) {
 			throw new EE_Error(
 				sprintf(
 					__( 'Unable to retrieve the model object related to the %s with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.', 'event_espresso' ),
@@ -219,7 +228,7 @@ abstract class EE_Promotion_Scope {
 		$classname = get_class( $this );
 		//verify label is set and is std_object with two properties, singular and plural.
 		if ( ! is_object( $this->label ) || ! isset( $this->label->singular ) || ! isset( $this->label->plural ) )
-			throw new EE_Error( sprintf( __('The %s class has not set the $label property correctly.', 'event_espresso'), 'event_espresso' ), $classname );
+			throw new EE_Error( sprintf( __('The %s class has not set the $label property correctly.', 'event_espresso'), $classname ) );
 
 		if ( empty( $this->slug ) )
 			throw new EE_Error( sprintf( __( 'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.', 'event_espresso'), $classname ) );
