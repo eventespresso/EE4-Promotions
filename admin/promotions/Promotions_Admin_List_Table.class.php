@@ -89,7 +89,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_name( EE_Promotion $item ) {
-		echo $this->_price instanceof EE_Price ? $this->_price->name() : '';
+		echo $item->name();
 	}
 
 
@@ -100,8 +100,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_applies_to( EE_Promotion $item ) {
-		//@todo once EE_Promotion implements the $scope property then it will use this method.
-		//echo $item->applied_name();
+		echo $item->applied_name();
 	}
 
 
@@ -122,8 +121,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_amount( EE_Promotion $item ) {
-		//@todo once EE_Promotion is transferred to the promotion addon, add a helper method for outputting the promo amount (which is retrieved from the related price object)
-		//echo $item->amount();
+		echo $item->amount();
 	}
 
 
@@ -131,8 +129,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_redeemed( EE_Promotion $item ) {
-		//@todo once EE_Promotion is transferred to the promotion addon, add a helper method for outputting the promo uses.  Note it will have to use the related Promo_Object(s) to get the total count of redeemed uses (especially when the scope is multiple events).
-		//echo $item->redeemed();
+		echo $item->redeemed();
 	}
 
 
