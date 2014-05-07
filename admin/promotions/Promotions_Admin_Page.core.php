@@ -266,7 +266,9 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _promotions_metaboxes() {
+		$this->_set_promotion_object();
 		add_meta_box( 'promotion-details-mbox', __('Promotions', 'event-espresso'), array( $this, 'promotion_details_metabox'), $this->wp_page_slug, 'normal', 'high' );
+		add_meta_box( 'promotions-applied-to-mbox', __('Promotion applies to...', 'event_espresso'), array( $this, 'promotions_applied_to_metabox'), $this->wp_page_slug, 'side', 'high');
 	}
 
 	/**
@@ -278,7 +280,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _promotion_details( $new = FALSE ) {
-		$this->_set_promotion_object();
 		$id = $new ? '' : $this->_promotion->ID();
 		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
 		$view = $new ? 'insert_promotion_form' : 'update_promotion_form';
@@ -298,6 +299,25 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			);
 		$form_template = EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotion_details_form.template.php';
 		EEH_Template::display_template( $form_template, $form_args );
+	}
+
+
+
+
+	public function promotions_applied_to_metabox() {
+		//we use the scope to get the metabox content.
+		$scope = $this->_promotion->scope();
+
+		//if there is no scope then this is a default promotion object so the content will for promotions metabox will be generic.
+		$content =  empty( $scope ) ? __('When you select a scope for the promotion this area will have options related to the selection.', 'event_espresso') : $this->_get_promotion_scope_metabox_content();
+		echo $content;
+	}
+
+
+
+
+	protected function _get_promotion_scope_metabox_content() {
+
 	}
 
 
