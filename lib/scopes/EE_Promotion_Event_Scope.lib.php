@@ -34,14 +34,15 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed int|array    $EVT_ID (or array of ids) for the EE_Event object being utilized.
+	 * @param mixed int|array|EE_Event    $EVT_ID (or array of ids) or EE_Event object for
+	 *                                    		the EE_Event object being utilized.
 	 * @return string
 	 */
 	public function name( $EVT_ID ) {
 		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
 			return $this->label->plural;
 
-		$evt = $this->_get_model_object( $EVT_ID );
+		$evt = $EVT_ID instanceof EE_Event ? $EVT_ID : $this->_get_model_object( $EVT_ID );
 		return $evt->name();
 	}
 
@@ -52,14 +53,15 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  mixed int|array   $EVT_ID   (or array of IDS) for the EE_Event object being utilized
+	 * @param  mixed int|array|EE_Event   $EVT_ID   (or array of IDS)  or EE_Event object
+	 *                                    		for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function description( $EVT_ID ) {
 		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
 			return __('Applied to all events.', 'event_espresso');
 
-		$evt = $this->_get_model_object( $EVT_ID );
+		$evt = $EVT_ID instanceof EE_Event ? $EVT_ID : $this->_get_model_object( $EVT_ID );
 		return sprintf( __('Applied to %s', 'event_espresso'), $evt->name() );
 	}
 
@@ -104,5 +106,17 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			return EEH_Event_View::event_archive_link();
 
 		return EEH_Event_View::event_link_url( $EVT_ID );
+	}
+
+
+
+	/**
+	 * Used to return an array of EE_Event objects.
+	 * @param  array  $limit  something like: array( 1,23 ) typically used for paging offsets.
+	 * @return  EE_Event[]
+	 */
+	public function get_scope_items( $limit = array() ) {
+		$query_params = !empty( $limit ) ? array( 'limit' => $limit ) : array();
+		return $this->_model()->get_all($query_params);
 	}
 }

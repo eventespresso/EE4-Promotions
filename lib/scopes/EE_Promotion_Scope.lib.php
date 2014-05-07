@@ -92,7 +92,8 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int    $OBJ_ID ID for the EE_Base_Class object being utilized.
+	 * @param int|EE_Base_Class    $OBJ_ID ID or model object for the EE_Base_Class object being
+	 *                                     		  utilized.
 	 * @return string
 	 */
 	abstract public function name( $OBJ_ID );
@@ -105,7 +106,8 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  int   $OBJ_ID   ID for the EE_Base_Class object being utilized
+	 * @param  int|EE_Base_Class   $OBJ_ID   ID or model object for the EE_Base_Class object being
+	 *                                       		    utilized
 	 * @return string
 	 */
 	abstract public function description( $OBJ_ID );
@@ -137,6 +139,23 @@ abstract class EE_Promotion_Scope {
 	 * @return string
 	 */
 	abstract public function get_frontend_url( $OBJ_ID );
+
+
+
+
+
+	/**
+	 * Child scope classes use this to return an array of EE_Base_Class objects related to the scope
+	 * Note that this is a convenience method when the promotion needs an array of objects
+	 * related to the scope without knowing what those objects are.  A use case example is
+	 * generating a list of checkboxes for assigning specific items to the applied scope.
+	 *
+	 * @param  array $limit   this is so that paging can be provided.  Expected value should be an
+	 *                       	    array like array( 1,23 ).
+	 * @return EE_Base_Class[]
+	 */
+	abstract public function get_scope_items( $limit = array() );
+
 
 
 
