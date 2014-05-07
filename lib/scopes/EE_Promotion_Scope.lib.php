@@ -150,6 +150,8 @@ abstract class EE_Promotion_Scope {
 	 * related to the scope without knowing what those objects are.  A use case example is
 	 * generating a list of checkboxes for assigning specific items to the applied scope.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param  array $limit   this is so that paging can be provided.  Expected value should be an
 	 *                       	    array like array( 1,23 ).
 	 * @return EE_Base_Class[]
@@ -161,6 +163,9 @@ abstract class EE_Promotion_Scope {
 
 	/**
 	 * This returns the selector for this scope that is used in the promotions details page.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return string html content.
 	 */
 	abstract public function get_admin_applies_to_selector();
