@@ -112,11 +112,28 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 	/**
 	 * Used to return an array of EE_Event objects.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param  array  $limit  something like: array( 1,23 ) typically used for paging offsets.
 	 * @return  EE_Event[]
 	 */
 	public function get_scope_items( $limit = array() ) {
 		$query_params = !empty( $limit ) ? array( 'limit' => $limit ) : array();
 		return $this->_model()->get_all($query_params);
+	}
+
+
+
+
+	/**
+	 * Generate the html for selecting events that a promotion applies to.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string html
+	 */
+	public function get_admin_applies_to_selector() {
+
 	}
 }

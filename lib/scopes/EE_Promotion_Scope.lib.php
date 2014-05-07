@@ -159,6 +159,15 @@ abstract class EE_Promotion_Scope {
 
 
 
+	/**
+	 * This returns the selector for this scope that is used in the promotions details page.
+	 * @return string html content.
+	 */
+	abstract public function get_admin_applies_to_selector();
+
+
+
+
 
 	/**
 	 * This just returns the related model instance as set via the $_slug property.
