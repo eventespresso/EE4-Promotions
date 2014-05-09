@@ -110,20 +110,6 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 
 
-	/**
-	 * Used to return an array of EE_Event objects.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $limit  something like: array( 1,23 ) typically used for paging offsets.
-	 * @return  EE_Event[]
-	 */
-	public function get_scope_items( $limit = array() ) {
-		$query_params = !empty( $limit ) ? array( 'limit' => $limit ) : array();
-		return $this->_model()->get_all($query_params);
-	}
-
-
 
 
 	/**
@@ -131,9 +117,96 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param integer $PRO_ID The promotion ID for the applies to selector we are
+	 *                        	        retreiving.
 	 * @return string html
 	 */
-	public function get_admin_applies_to_selector() {
+	public function get_admin_applies_to_selector( $PRO_ID ) {
+		$template = EE_PROMOTIONS_PATH . '/lib/scopes/templates/promotion_applies_to_wrapper.template.php';
+		$total_items = $this->_get_total_items();
+		$items_to_select = $this->get_scope_items();
+		$selected_items = $this->_get_applied_to_items( $PRO_ID );
+		$template_args = array(
+			'scope_slug' => $this->name,
+			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
+			'filters' => $this->_get_applies_to_filters(),
+			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items ),
+			'items_paging' => $this->_get_applies_to_items_paging( $total_items ),
+			'selected_items' => $selected_items,
+			'display_selected_label' => __('Display only selected Events', 'event_espresso' )
+			);
+		$content = EEH_Template::display_template( $template, $template_args, TRUE );
+	}
 
+
+
+	/**
+	 * Returns query args for use in model queries on the
+	 * EEM model related to scope.  Note this also should
+	 * consider any filters present
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array
+	 */
+	public function get_query_args() {
+		//todo have to check for any filtered queries here.
+		$_where = array(
+			'status' => 'publish',
+			'Datetime.DTT_EVT_end' => array( '<', date('Y-m-d g:i:s', time() ) )
+			);
+		return array( '0' => $_where );
+	}
+
+
+
+	/**
+	 * sets up the filters for the promotions scope selector
+	 *
+	 * @since 1.0.0
+	 * @return string
+	 */
+	protected function _get_applies_to_filters() {
+		EE_Registry::instance()->load_helper('Form_Fields');
+		//categories
+		$categories = get_terms( 'espresso_event_categories', array( 'hide_empty' => FALSE, 'fields' => 'id=>name' ) );
+		$cat_values = array( 'text' => __('Include all', 'event_espresso'), 'id' => 0 );
+		$default = ! empty( $_REQUEST['EVT_CAT_ID'] ) ? $_REQUEST['EVT_CAT_ID'] : '';
+		foreach( $categories as $id => $name ) {
+			$cat_values[] = array(
+				'text' => $name,
+				'id' => $id
+				);
+		}
+		$cat_filter = EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values);
+
+		//start date
+		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : '';
+		$start_date_filter = '<input type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_sdate . '">';
+
+		//end date
+		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : '';
+		$end_date_filter = '<input type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '">';
+
+		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter;
+	}
+
+
+
+
+	/**
+	 * Get paging for the selector
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int     $total_items count of total items retrieved in the query.
+	 * @return string Paging html
+	 */
+	protected function _get_applies_to_items_paging( $total_items ) {
+		EE_Registry::instance()->load_helper('Template');
+		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
+		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 1;
+		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
+		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}
 }
