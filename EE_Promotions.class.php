@@ -62,7 +62,9 @@ Class  EE_Promotions extends EE_Addon {
 		);
 		EE_Register_Model::register('Promotions', array(
 			'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
-			'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes')
+			'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes'),
+			'model_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_model_extensions'),
+			'class_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_class_extensions'),
 		));
 	}
 
