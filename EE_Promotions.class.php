@@ -28,6 +28,7 @@ Class  EE_Promotions extends EE_Addon {
 		define( 'EE_PROMOTIONS_URL', plugin_dir_url( __FILE__ ));
 		define( 'EE_PROMOTIONS_PLUGIN_FILE', plugin_basename( __FILE__ ));
 		define( 'EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS );
+		define( 'EE_PROMOTIONS_CORE',EE_PROMOTIONS_PATH . DS . 'core' . DS);
 		// register addon via Plugin API
 		EE_Register_Addon::register(
 			array(
@@ -59,6 +60,10 @@ Class  EE_Promotions extends EE_Addon {
 				)
 			)
 		);
+		EE_Register_Model::register('Promotions', array(
+			'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
+			'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes')
+		));
 	}
 
 
