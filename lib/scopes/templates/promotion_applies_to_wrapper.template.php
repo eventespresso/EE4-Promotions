@@ -13,7 +13,7 @@
  * @type string $filters 		Any filters this selector might use
  * @type string $items_to_select	All the selectable items for this page view.
  * @type string $items_paging		This  will be the html string for the paging of items.
- * @type string $selected_items 	This is a comma delimited string of IDs for the selected items
+ * @type array $selected_items 	Array of IDs for the selected items
  *       					that this promotion applies to.
  * @type string $display_selected_label The test for the display selected label trigger/toggle.
  */
@@ -34,7 +34,7 @@
 		<div class="ee-promotions-applies-to-paging">
 			<?php echo $items_paging; ?>
 		</div>
-		<input type="hidden" id="ee-selected-items-<?php echo $scope_slug; ?>" name="ee_promotions_applied_selected_items_<?php echo $scope_slug; ?>" value="<?php echo $selected_items; ?>">
+		<input type="hidden" id="ee-selected-items-<?php echo $scope_slug; ?>" name="ee_promotions_applied_selected_items_<?php echo $scope_slug; ?>" value="<?php echo implode(',',$selected_items); ?>">
 		<input type="checkbox" id="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><label class="ee-display-selected-trigger-label" for="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><?php echo $display_selected_label; ?></label>
 	</div>
 	<?php echo $footer_content; ?>
