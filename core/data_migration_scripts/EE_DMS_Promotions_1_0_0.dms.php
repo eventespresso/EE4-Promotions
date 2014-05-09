@@ -12,14 +12,14 @@ if (!defined('EVENT_ESPRESSO_VERSION'))
  * @author				Mike Nelson
  *
  */
-class EE_DMS_Promotion_1_0_0 extends EE_Data_Migration_Script_Base{
+class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	public function __construct() {
 		$this->_migration_stages = array();
 		parent::__construct();
 	}
 
 	public function can_migrate_from_version($versions) {
-		if(isset($versions['Promotion']) && version_compare('1.0.0',$versions['Promotion'])){
+		if(isset($versions['Promotions']) && version_compare('1.0.0',$versions['Promotions'])){
 			return false;
 		}else{
 			global $wpdb;
