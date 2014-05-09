@@ -306,18 +306,11 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 	public function promotions_applied_to_metabox() {
 		//we use the scope to get the metabox content.
-		$scope = $this->_promotion->scope();
+		$scope = $this->_promotion->scope_obj();
 
 		//if there is no scope then this is a default promotion object so the content will for promotions metabox will be generic.
-		$content =  empty( $scope ) ? __('When you select a scope for the promotion this area will have options related to the selection.', 'event_espresso') : $this->_get_promotion_scope_metabox_content();
+		$content =  empty( $scope ) ? __('When you select a scope for the promotion this area will have options related to the selection.', 'event_espresso') : $scope_obj->get_admin_applies_to_selector( $this->_promotion->ID() );
 		echo $content;
-	}
-
-
-
-
-	protected function _get_promotion_scope_metabox_content() {
-
 	}
 
 
