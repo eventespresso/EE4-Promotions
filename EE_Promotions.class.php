@@ -28,6 +28,7 @@ Class  EE_Promotions extends EE_Addon {
 		define( 'EE_PROMOTIONS_URL', plugin_dir_url( __FILE__ ));
 		define( 'EE_PROMOTIONS_PLUGIN_FILE', plugin_basename( __FILE__ ));
 		define( 'EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS );
+		define( 'EE_PROMOTIONS_CORE',EE_PROMOTIONS_PATH . DS . 'core' . DS);
 		// register addon via Plugin API
 		EE_Register_Addon::register(
 			array(
@@ -40,7 +41,7 @@ Class  EE_Promotions extends EE_Addon {
 				'admin_callback'		=> 'additional_admin_hooks',
 				'config_class' 			=> 'EE_Promotions_Config',
 				'config_name'			=> 'promotions',
-				'dms_paths' 			=> array( EE_PROMOTIONS_PATH . 'data_migration_scripts' . DS ),
+				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
 				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Promotions.shortcode.php' ),
 				'widget_paths' 		=> array( EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php' ),
@@ -59,6 +60,12 @@ Class  EE_Promotions extends EE_Addon {
 				)
 			)
 		);
+		EE_Register_Model::register('Promotions', array(
+			'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
+			'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes'),
+			'model_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_model_extensions'),
+			'class_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_class_extensions'),
+		));
 	}
 
 
