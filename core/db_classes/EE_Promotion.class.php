@@ -21,7 +21,7 @@
  *
  * ------------------------------------------------------------------------
  */
-class EE_Promotion extends EE_Base_Class{
+class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	
 	
 	/** ID", "event_espresso @var PRO_ID*/ 

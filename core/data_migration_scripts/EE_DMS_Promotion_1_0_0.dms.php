@@ -55,6 +55,7 @@ class EE_DMS_Promotion_1_0_0 extends EE_Data_Migration_Script_Base{
 					PRO_decline_msg TINYTEXT NULL DEFAULT NULL ,
 					PRO_default TINYINT(1) NOT NULL DEFAULT 0 ,
 					PRO_order TINYINT UNSIGNED NOT NULL DEFAULT 40 ,
+					PRO_deleted TINYINT(1) NOT NULL DEFAULT 0,
 					PRIMARY KEY  (PRO_ID) ,
 					KEY PRC_ID (PRC_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');

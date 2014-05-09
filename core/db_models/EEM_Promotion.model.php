@@ -23,7 +23,7 @@
  */
 require_once ( EE_MODELS . 'EEM_Base.model.php' );
 
-class EEM_Promotion extends EEM_Base {
+class EEM_Promotion extends EEM_Soft_Delete_Base {
 
   	// private instance of the Attendee object
 	private static $_instance = NULL;
@@ -67,6 +67,7 @@ class EEM_Promotion extends EEM_Base {
 				'PRO_decline_msg'=>new EE_Simple_HTML_Field('PRO_decline_msg', __("Declined Message", "event_espresso"), false,  __("Declined", "event_espresso")),
 				'PRO_default'=>new EE_Boolean_Field('PRO_default', __("Usable by default on all new items within promotion's scope", "event_espresso"), false, false),
 				'PRO_order'=>new EE_Integer_Field('PRO_order', __("Order", "event_espresso"), false,0),
+				'PRO_deleted'=>new EE_Trashed_Flag_Field('PRO_deleted', __("Deleted", 'event_espresso'), false, false),
 			));
 		$this->_model_relations = array(
 			'Price'=>new EE_Belongs_To_Relation(),
