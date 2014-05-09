@@ -164,9 +164,10 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param integer $PRO_ID The promotion ID for the applies to selector we are retreiving.
 	 * @return string html content.
 	 */
-	abstract public function get_admin_applies_to_selector();
+	abstract public function get_admin_applies_to_selector( $PRO_ID );
 
 
 
