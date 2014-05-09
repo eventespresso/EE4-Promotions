@@ -251,6 +251,124 @@ abstract class EE_Promotion_Scope {
 
 
 
+
+	/**
+	 * Returns a total count of items matching the
+	 * query_args.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array     $query_args array of query args to
+	 *                               		   filter the count by.
+	 * @return int                 	   count of items.
+	 */
+	protected function _get_total_items() {
+		$query_args = $this->get_query_args();
+		return $this->_model()->count( $query_args );
+	}
+
+
+
+
+
+	/**
+	 * This returns an array of EE_Base_Class items for the
+	 * scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  boolean   $paging     whether to include any paging paramaters that might be in the _REQUEST or not.
+	 * @return  EE_Base_Class[]
+	 * @access protected
+	 */
+	public function get_scope_items( $paging = TRUE ) {
+		$query_args = $this->get_query_args();
+		if ( $paging ) {
+			$current_page = !empty( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
+			$per_page = !empty( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 20;
+			$offset = ( $current_page -1 ) * $per_page;
+			$query_args['limit'] = array( $offset, $per_page );
+		}
+		$this->_model()->get_all( $query_args );
+	}
+
+
+
+
+
+	/**
+	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  int    $PRO_ID Promotion that is applied.
+	 * @return  array               array of ids matching the items related to the scope.
+	 */
+	protected function _get_applied_to_items( $PRO_ID ) {
+		$selected = array();
+		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
+		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->name ) ) );
+		foreach( $PRO_OBJs as $PRO_OBJ ) {
+			$selected[] = $PRO_OBJ->obj_id();
+		}
+		return $selected;
+	}
+
+
+
+
+
+	/**
+	 * By default promotion scopes can use this method to return a list of checkboxes for
+	 * selecting what scope items are applied to the promotion.  Scopes can override this
+	 * however they want tho.
+	 *
+	 * @since 1.0.0
+	 * @throws EE_Error
+	 *
+	 * @param  EE_Base_Class[]    		$items_to_select
+	 * @param  array    $selected_items  	Should be an array of existing applied to items IDs (
+	 *                                    		EE_Base_Class ids)
+	 * @return string                     		unordered list of checkboxes.
+	 */
+	protected function _get_applies_to_items_to_select( $items_to_select, $selected_items ) {
+		$selected_items = (array) $selected_items;
+		//verification
+		if ( empty( $items_to_select ) || ! is_array( $items_to_select) || ! $items_to_select[key($items_to_select)] instanceof EE_Base_Class )
+			throw new EE_Error( sprintf__('Unable to generate the %s for selection because the incoming $items_to_select value is not in the expected format.  Currently it has this value %s', 'event_espresso'), $this->label->plural, print_r( $items_to_select, TRUE ) );
+		$checkboxes = '<ul class="promotion-applies-to-items-ul">';
+		foreach( $items_to_select as $id => $obj ) {
+			$checked = in_array($id, $selected_items) ? ' checked=checked' : '';
+			$checkboxes .= '<li><input type="checkbox" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . '>';
+			$checkboxes .= '<label for="PRO_applied_to_selected['.$id.']">' . $this->name($obj) . '</label>';
+		}
+		$checkboxes .= '</ul>';
+		return $checkboxes;
+	}
+
+
+
+
+	/**
+	 * Get paging for the selector
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int     $total_items count of total items retrieved in the query.
+	 * @return string Paging html
+	 */
+	protected function _get_applies_to_items_paging( $total_items ) {
+		EE_Registry::instance()->load_helper('Template');
+		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
+		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 1;
+		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
+		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
+	}
+
+
+
+
+
 	/**
 	 * This verifies that the necessary properties for this class have been set.
 	 *
