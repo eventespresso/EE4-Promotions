@@ -143,20 +143,18 @@ abstract class EE_Promotion_Scope {
 
 
 
-
 	/**
-	 * Child scope classes use this to return an array of EE_Base_Class objects related to the scope
-	 * Note that this is a convenience method when the promotion needs an array of objects
-	 * related to the scope without knowing what those objects are.  A use case example is
-	 * generating a list of checkboxes for assigning specific items to the applied scope.
+	 * Returns query args for use in model queries on the
+	 * EEM model related to scope.  Note this also should
+	 * consider any filters present.
 	 *
 	 * @since 1.0.0
+	 * @see EEM_Base::get_all() for documentation related to
+	 *      	 what $query_args can be used.
 	 *
-	 * @param  array $limit   this is so that paging can be provided.  Expected value should be an
-	 *                       	    array like array( 1,23 ).
-	 * @return EE_Base_Class[]
+	 * @return array of query args
 	 */
-	abstract public function get_scope_items( $limit = array() );
+	abstract public function get_query_args();
 
 
 
