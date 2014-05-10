@@ -191,22 +191,4 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter;
 	}
 
-
-
-
-	/**
-	 * Get paging for the selector
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int     $total_items count of total items retrieved in the query.
-	 * @return string Paging html
-	 */
-	protected function _get_applies_to_items_paging( $total_items ) {
-		EE_Registry::instance()->load_helper('Template');
-		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
-		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 1;
-		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
-	}
 }
