@@ -306,7 +306,7 @@ abstract class EE_Promotion_Scope {
 	protected function _get_applied_to_items( $PRO_ID ) {
 		$selected = array();
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
-		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->name ) ) );
+		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
 		foreach( $PRO_OBJs as $PRO_OBJ ) {
 			$selected[] = $PRO_OBJ->obj_id();
 		}
@@ -334,7 +334,7 @@ abstract class EE_Promotion_Scope {
 		$selected_items = (array) $selected_items;
 		//verification
 		if ( empty( $items_to_select ) || ! is_array( $items_to_select) || ! $items_to_select[key($items_to_select)] instanceof EE_Base_Class )
-			throw new EE_Error( sprintf__('Unable to generate the %s for selection because the incoming $items_to_select value is not in the expected format.  Currently it has this value %s', 'event_espresso'), $this->label->plural, print_r( $items_to_select, TRUE ) );
+			return sprintf( __('There are no active %s to assign to this scope.  You will need to create some first.', 'event_espresso'), $this->label->plural );
 		$checkboxes = '<ul class="promotion-applies-to-items-ul">';
 		foreach( $items_to_select as $id => $obj ) {
 			$checked = in_array($id, $selected_items) ? ' checked=checked' : '';

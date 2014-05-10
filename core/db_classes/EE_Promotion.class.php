@@ -22,75 +22,75 @@
  * ------------------------------------------------------------------------
  */
 class EE_Promotion extends EE_Soft_Delete_Base_Class{
-	
-	
-	/** ID", "event_espresso @var PRO_ID*/ 
+
+
+	/** ID", "event_espresso @var PRO_ID*/
 	protected $_PRO_ID = NULL;
-	
-				/** Price ID", "event_espresso @var PRC_ID*/ 
+
+				/** Price ID", "event_espresso @var PRC_ID*/
 	protected $_PRC_ID = NULL;
-				
-				/** Scope", "event_espresso @var PRO_scope*/ 
+
+				/** Scope", "event_espresso @var PRO_scope*/
 	protected $_PRO_scope = NULL;
-				
-				/** Start Date/Time", "event_espresso @var PRO_start*/ 
+
+				/** Start Date/Time", "event_espresso @var PRO_start*/
 	protected $_PRO_start = NULL;
-				
-				/** End Date/Time", "event_espresso @var PRO_end*/ 
+
+				/** End Date/Time", "event_espresso @var PRO_end*/
 	protected $_PRO_end = NULL;
-				
-				/** Code", "event_espresso @var PRO_code*/ 
+
+				/** Code", "event_espresso @var PRO_code*/
 	protected $_PRO_code = NULL;
-				
-				/** Times used within a given scope", "event_espresso @var PRO_uses*/ 
+
+				/** Times used within a given scope", "event_espresso @var PRO_uses*/
 	protected $_PRO_uses = NULL;
-				
-				/** Usable Globally?", "event_espresso @var PRO_global*/ 
+
+				/** Usable Globally?", "event_espresso @var PRO_global*/
 	protected $_PRO_global = NULL;
-				
-				/** Times used Globally", "event_espresso @var PRO_global_uses*/ 
+
+				/** Times used Globally", "event_espresso @var PRO_global_uses*/
 	protected $_PRO_global_uses = NULL;
-				
-				/** Exlusive? (ie, can't be used with other promotions)", "event_espresso @var PRO_exclusive*/ 
+
+				/** Exlusive? (ie, can't be used with other promotions)", "event_espresso @var PRO_exclusive*/
 	protected $_PRO_exclusive = NULL;
-				
-				/** Accepted", "event_espresso @var PRO_accept_msg*/ 
+
+				/** Accepted", "event_espresso @var PRO_accept_msg*/
 	protected $_PRO_accept_msg = NULL;
-				
-				/** Declined", "event_espresso @var PRO_decline_msg*/ 
+
+				/** Declined", "event_espresso @var PRO_decline_msg*/
 	protected $_PRO_decline_msg = NULL;
-				
-				/** Usable by default on all new items within promotion's scope", "event_espresso @var PRO_default*/ 
+
+				/** Usable by default on all new items within promotion's scope", "event_espresso @var PRO_default*/
 	protected $_PRO_default = NULL;
-				
-				/** Order", "event_espresso @var PRO_order*/ 
+
+				/** Order", "event_espresso @var PRO_order*/
 	protected $_PRO_order = NULL;
-				
+
 	/**
 	 *
 	 * @var EE_Promotion_Rule[]
 	 */
 	protected $_Promotion_Rule = NULL;
-	
+
 	/**
 	 *
 	 * @var EE_Rule[]
 	 */
 	protected $_Rule = NULL;
-				
+
 	/**
 	 *
 	 * @var EE_Price
 	 */
 	protected $_Price = NULL;
-	
+
 	/**
-	 * 
+	 *
 	 * @var EE_Promotion_Object[] relation to join-model between promotions and whatevers
 	 */
 	protected $_Promotion_Object = NULL;
 	/**
-	 * 
+	 *
 	 * @param type $props_n_values
 	 * @return self
 	 */
@@ -101,36 +101,46 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type $props_n_values
 	 * @return self
 	 */
 	public static function new_instance_from_db ( $props_n_values = array() ) {
 		return new self( $props_n_values, TRUE );
 	}
-/**
- * 
- * @return int
- */
+	/**
+	 *
+	 * @return int
+	 */
 	public function price_ID(){
 		return $this->get('PRC_ID');
 	}
+
+
+
+	public function price_type_id() {
+		$price = EEM_Price::instance()->get_one_by_ID( $this->price_ID() );
+		return $price instanceof EE_Price ? $price->type() : 0;
+	}
+
+
+
 	/**
-	 * 
+	 *
 	 * @return string
 	 */
 	public function accept_message(){
 		return $this->get('PRO_accept_msg');
 	}
 	/**
-	 * 
+	 *
 	 * @return string
 	 */
 	public function code(){
 		return $this->get('PRO_code');
 	}
 	/**
-	 * 
+	 *
 	 * @return string
 	 */
 	public function decline_message(){
@@ -179,6 +189,10 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function order(){
 		return $this->get('PRO_order');
 	}
+
+
+
+
 	/**
 	 * The model this promotion should be applied to. Eg, Registration, Transaction, etc.
 	 * @return string
@@ -186,6 +200,24 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function scope(){
 		return $this->get('PRO_scope');
 	}
+
+
+
+	/**
+	 * Get the scope object for the scope on this promotion.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return EE_Promotion_Scope
+	 */
+	public function scope_obj() {
+		$scope = $this->scope();
+		$scope = empty( $scope ) ? 'Event' : $scope;
+		return EE_Registry::instance()->CFG->addons->promotions->scopes[$scope];
+	}
+
+
+
 	/**
 	 * Returns the date/time this promotion becomes available
 	 * @param type $date_format
@@ -202,16 +234,16 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function uses(){
 		return $this->get('PRO_uses');
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param type $price_id
 	 * @return boolean
 	 */
 	public function set_price_ID($price_id){
 		return $this->set('PRC_ID',$price_id);
 	}
-	
+
 	public function set_scope($scope){
 		return $this->set('PRO_scope',$scope);
 	}
@@ -303,7 +335,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function set_order($order) {
 		return $this->set('PRO_order', $order);
 	}
-	
+
 }
 
 /* End of file EE_Answer.class.php */

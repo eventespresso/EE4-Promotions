@@ -127,15 +127,16 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$items_to_select = $this->get_scope_items();
 		$selected_items = $this->_get_applied_to_items( $PRO_ID );
 		$template_args = array(
-			'scope_slug' => $this->name,
+			'scope_slug' => $this->slug,
 			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
 			'filters' => $this->_get_applies_to_filters(),
 			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items ),
 			'items_paging' => $this->_get_applies_to_items_paging( $total_items ),
 			'selected_items' => $selected_items,
-			'display_selected_label' => __('Display only selected Events', 'event_espresso' )
+			'display_selected_label' => __('Display only selected Events', 'event_espresso' ),
+			'footer_content' => ''
 			);
-		$content = EEH_Template::display_template( $template, $template_args, TRUE );
+		return EEH_Template::display_template( $template, $template_args, TRUE );
 	}
 
 
@@ -153,7 +154,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		//todo have to check for any filtered queries here.
 		$_where = array(
 			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '<', date('Y-m-d g:i:s', time() ) )
+			'Datetime.DTT_EVT_end' => array( '>', date('Y-m-d g:i:s', time() ) )
 			);
 		return array( '0' => $_where );
 	}
@@ -170,7 +171,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		EE_Registry::instance()->load_helper('Form_Fields');
 		//categories
 		$categories = get_terms( 'espresso_event_categories', array( 'hide_empty' => FALSE, 'fields' => 'id=>name' ) );
-		$cat_values = array( 'text' => __('Include all', 'event_espresso'), 'id' => 0 );
+		$cat_values[] = array( 'text' => __('Include all', 'event_espresso'), 'id' => 0 );
 		$default = ! empty( $_REQUEST['EVT_CAT_ID'] ) ? $_REQUEST['EVT_CAT_ID'] : '';
 		foreach( $categories as $id => $name ) {
 			$cat_values[] = array(
@@ -178,7 +179,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 				'id' => $id
 				);
 		}
-		$cat_filter = EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values);
+		$cat_filter = EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values, $default);
 
 		//start date
 		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : '';

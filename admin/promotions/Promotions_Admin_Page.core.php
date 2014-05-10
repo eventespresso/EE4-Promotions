@@ -309,7 +309,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$scope = $this->_promotion->scope_obj();
 
 		//if there is no scope then this is a default promotion object so the content will for promotions metabox will be generic.
-		$content =  empty( $scope ) ? __('When you select a scope for the promotion this area will have options related to the selection.', 'event_espresso') : $scope_obj->get_admin_applies_to_selector( $this->_promotion->ID() );
+		$content =  empty( $scope ) ? __('When you select a scope for the promotion this area will have options related to the selection.', 'event_espresso') : $scope->get_admin_applies_to_selector( $this->_promotion->ID() );
 		echo $content;
 	}
 
@@ -327,7 +327,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				);
 		}
 		//@todo once promotions models are moved into Promotions addon.
-		$default = $this->_promotion->price_type();
+		$default = $this->_promotion->price_type_id();
+
 		return EEH_Form_Fields::select_input( 'PRT_name', $values, $default );
 	}
 
@@ -336,7 +337,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 	protected function _get_promotion_scope_selector() {
 		$values = array();
-		foreach ( EE_Registry::instance()->CFG->promotions->scopes as $scope_name => $scope ) {
+		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope_name => $scope ) {
 			$values[] = array(
 				'text' => $scope->label->singular,
 				'id' => $scope_name
