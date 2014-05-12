@@ -358,8 +358,9 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_applies_to_items_paging( $total_items ) {
 		EE_Registry::instance()->load_helper('Template');
+		$perpage_default = apply_filters( 'FHEE__EE_Promotion_Scope___get_applies_to_items_paging__perpage_default', 10 );
 		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
-		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 10;
+		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $perpage_default;
 		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
 		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}
