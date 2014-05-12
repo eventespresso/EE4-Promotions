@@ -51,6 +51,11 @@
 	padding-right: 25px;
 }
 
+.ee-promotions-applies-to-filters .promotions-general-filter {
+	margin-top: 8px;
+	padding-top: 5px;
+}
+
 .ee-promotions-applies-to-filters .dashicons {
 	display: inline-block;
 	float: right;
@@ -81,8 +86,9 @@
 }
 
 .ee-promotions-applies-to-items-container {
-	margin-top: 15px;
+	margin-top: 5px;
 	border: 1px solid grey;
-	padding: 10px;
+	padding: 1px 10px;
 	min-height: 180px;
+	max-height: 360px;
 }
