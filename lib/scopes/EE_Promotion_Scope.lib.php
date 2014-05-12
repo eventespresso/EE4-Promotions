@@ -263,7 +263,7 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_total_items() {
 		$query_args = $this->get_query_args();
-		return $this->_model()->count( $query_args );
+		return $this->_model()->count( $query_args, NULL, TRUE );
 	}
 
 
