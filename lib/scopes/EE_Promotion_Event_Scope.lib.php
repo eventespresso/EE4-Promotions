@@ -152,10 +152,14 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return array
 	 */
 	public function get_query_args() {
+		EE_Registry::instance()->load_helper('DTT_Helper');
 		//todo have to check for any filtered queries here.
+		$DTT_EVT_start = !empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : current_time('mysql');
+		$DTT_EVT_end = !empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( get_option('date_format') . ' ' . get_option('time_format'), EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months' ) );
 		$_where = array(
 			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '>', date('Y-m-d g:i:s', time() ) )
+			'Datetime.DTT_EVT_end' => array( '<', $DTT_EVT_end ),
+			'Datetime.DTT_EVT_start' => array( '>', $DTT_EVT_start )
 			);
 		return array( '0' => $_where );
 	}
@@ -183,11 +187,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$cat_filter = EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values, $default);
 
 		//start date
-		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : '';
+		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( get_option('date_format') . ' ' . get_option('time_format'), current_time('timestamp') );
 		$start_date_filter = '<input type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_sdate . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//end date
-		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : '';
+		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( get_option('date_format') . ' ' . get_option('time_format'), EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months' ) );
 		$end_date_filter = '<input type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '"><span class="dashicons dashicons-calendar"></span>';
 
 		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<div style="clear: both"></div>';
