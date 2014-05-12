@@ -21,7 +21,7 @@
 			<label for="PRC_name"><?php _e('Name', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<input class="regular-text" id="PRC_name" name="PRC_name" value="<?php // echo $promotion->price()->name(); ?>">
+			<input class="regular-text" id="PRC_name" name="PRC_name" value="<?php echo $promotion->name(); ?>">
 		</td>
 	</tr>
 	<tr>
@@ -46,7 +46,7 @@
 			<label for="PRC_Amount"><?php _e('Amount', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<input class="regular-text ee-numeric" id="PRC_amount" name="PRC_amount" value="<?php //echo $promotion->price()->amount(); ?>">
+			<input class="regular-text ee-numeric" id="PRC_amount" name="PRC_amount" value="<?php echo $promotion->amount(); ?>">
 		</td>
 	</tr>
 	<tr>
@@ -86,7 +86,7 @@
 			<label for="PRC_desc"><?php _e('Description', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
-			<textarea class="ee-full-textarea-inp" id="PRC_desc" name="PRC_desc"><?php //echo $promotion->price()->description(); ?></textarea>
+			<textarea class="ee-full-textarea-inp" id="PRC_desc" name="PRC_desc"><?php echo $promotion->description(); ?></textarea>
 		</td>
 	</tr>
 	<tr>
