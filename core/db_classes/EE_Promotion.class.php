@@ -117,6 +117,25 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 
+	public function name() {
+		$price = $this->get_first_related('Price');
+		return $price instanceof EE_Price ? $price->name() : '';
+	}
+
+
+	public function amount() {
+		$price = $this->get_first_related('Price');
+		return $price instanceof EE_Price ? $price->amount() : 0;
+	}
+
+
+
+	public function description() {
+		$price = $this->get_first_related('Price');
+		return $price instanceof EE_Price ? $price->description() : '';
+	}
+
+
 
 	public function price_type_id() {
 		$price = EEM_Price::instance()->get_one_by_ID( $this->price_ID() );
