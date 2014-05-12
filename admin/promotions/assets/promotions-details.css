@@ -33,6 +33,11 @@
 	margin-right: 15px;
 }
 
+.ee-promotions-applies-to-filters {
+	background-color: #ededed;
+	padding: 10px;
+}
+
 .ee-promotions-applies-to-filters select {
 	width: 100%;
 }
