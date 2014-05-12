@@ -171,7 +171,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		EE_Registry::instance()->load_helper('Form_Fields');
 		//categories
 		$categories = get_terms( 'espresso_event_categories', array( 'hide_empty' => FALSE, 'fields' => 'id=>name' ) );
-		$cat_values[] = array( 'text' => __('Include all', 'event_espresso'), 'id' => 0 );
+		$cat_values[] = array( 'text' => __('Include all categories', 'event_espresso'), 'id' => 0 );
 		$default = ! empty( $_REQUEST['EVT_CAT_ID'] ) ? $_REQUEST['EVT_CAT_ID'] : '';
 		foreach( $categories as $id => $name ) {
 			$cat_values[] = array(
@@ -183,13 +183,13 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		//start date
 		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : '';
-		$start_date_filter = '<input type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_sdate . '">';
+		$start_date_filter = '<input type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_sdate . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//end date
 		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : '';
-		$end_date_filter = '<input type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '">';
+		$end_date_filter = '<input type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '"><span class="dashicons dashicons-calendar"></span>';
 
-		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter;
+		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<div style="clear: both"></div>';
 	}
 
 }

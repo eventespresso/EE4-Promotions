@@ -20,7 +20,9 @@
 ?>
 <div id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
 	<?php echo $header_content; ?>
-	<?php echo $filters; ?>
+	<div class="ee-promotions-applies-to-filters">
+		<?php echo $filters; ?>
+	</div>
 	<div class="ee-promotions-applies-to-selector">
 		<input type="checkbox" id="ee-select-all-<?php echo $scope_slug; ?>"><label class="ee-select-all-label" for="ee-select-all-<?php echo $scope_slug; ?>"><?php _e('select all below', 'event_espresso'); ?></label>
 		<div class="ee-sort-container right">
@@ -34,6 +36,7 @@
 		<div class="ee-promotions-applies-to-paging">
 			<?php echo $items_paging; ?>
 		</div>
+		<div style="clear:both"></div>
 		<input type="hidden" id="ee-selected-items-<?php echo $scope_slug; ?>" name="ee_promotions_applied_selected_items_<?php echo $scope_slug; ?>" value="<?php echo implode(',',$selected_items); ?>">
 		<input type="checkbox" id="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><label class="ee-display-selected-trigger-label" for="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><?php echo $display_selected_label; ?></label>
 	</div>

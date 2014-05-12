@@ -23,3 +23,50 @@
 	margin-right: 15px;
 }
 
+.ee-promotions-applies-to-filters select {
+	width: 100%;
+}
+
+
+.ee-promotions-applies-to-filters .promotions-date-filter {
+	position: relative;
+	width: 100%;
+	margin-top: 8px;
+	padding-right: 25px;
+}
+
+.ee-promotions-applies-to-filters .dashicons {
+	display: inline-block;
+	float: right;
+}
+
+.ee-promotions-applies-to-filters .dashicons-calendar:before {
+	position: absolute;
+	font-size: 18px;
+	top: -22px;
+	left: -18px;
+}
+
+.ee-promotions-applies-to-selector {
+	margin-top: 15px;
+}
+
+.ee-sort-container, .ee-promotions-applies-to-paging {
+	display: inline-block;
+	float: right;
+}
+
+.ee-promotions-applies-to-paging {
+	margin-top: 10px;
+}
+
+.ee-sort-container .dashicons:before {
+	font-size: 20px;
+}
+
+.ee-promotions-applies-to-items-container {
+	margin-top: 15px;
+	border: 1px solid grey;
+	padding: 10px;
+	min-height: 180px;
+}
