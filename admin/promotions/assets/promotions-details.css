@@ -36,6 +36,7 @@
 .ee-promotions-applies-to-filters {
 	background-color: #ededed;
 	padding: 10px;
+	padding-top: 1px;
 }
 
 .ee-promotions-applies-to-filters select {
