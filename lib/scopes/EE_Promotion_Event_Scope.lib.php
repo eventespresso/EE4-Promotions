@@ -128,6 +128,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$selected_items = $this->_get_applied_to_items( $PRO_ID );
 		$template_args = array(
 			'scope_slug' => $this->slug,
+			'scope' => $this,
 			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
 			'filters' => $this->_get_applies_to_filters(),
 			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items ),

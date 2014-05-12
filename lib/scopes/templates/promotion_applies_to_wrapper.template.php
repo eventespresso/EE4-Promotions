@@ -9,6 +9,7 @@
 /**
  * Tempate variables in use for this template
  * @type string $scope_slug		The slug for the scope this template serves.
+ * @type EE_Promotion_Scope $scope  The EE_Promotion_Scope object for labels etc.
  * @type string $header_content	Any header content for this template and scope.
  * @type string $filters 		Any filters this selector might use
  * @type string $items_to_select	All the selectable items for this page view.
@@ -21,6 +22,7 @@
 <div id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
 	<?php echo $header_content; ?>
 	<div class="ee-promotions-applies-to-filters">
+		<p><?php printf( __('Filter the %s returned.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
 		<?php echo $filters; ?>
 	</div>
 	<div class="ee-promotions-applies-to-selector">
