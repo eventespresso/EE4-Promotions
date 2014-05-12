@@ -174,9 +174,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 	protected function _add_feature_pointers() {}
-	public function load_scripts_styles() {}
-
-
 
 
 
@@ -196,11 +193,13 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-	public function load_scripts_styles_basic_settings() {
+	public function load_scripts_styles() {
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
 
 		EE_Registry::$i18n_js_strings['confirm_reset'] = __( 'Are you sure you want to reset ALL your Event Espresso Promotions Information? This cannot be undone.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings['codefieldEmptyError'] = __( 'eePromotionsHelper.generate_code requires a selector for the codefield param. None was provided.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings['codefieldInvalidError'] = __( 'The codefield paramater sent to eePromotionsHelper.generate_code is invalid.  It must be a valid selector for the input field holding the generated coupon code.', 'event_espresso' );
 		wp_localize_script( 'espresso_promotions_admin', 'eei18n', EE_Registry::$i18n_js_strings );
 	}
 
