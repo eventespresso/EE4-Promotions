@@ -19,6 +19,12 @@
 	width: 100px;
 }
 
+#promotion-details-form .dashicons-tagcloud {
+	font-size: 20px;
+	top: 0px;
+	margin-right: 3px;
+}
+
 #promotion-details-form .regular-text, #promotion-details-form select {
 	margin-right: 15px;
 }
