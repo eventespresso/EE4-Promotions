@@ -268,7 +268,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _promotions_metaboxes() {
 		$this->_set_promotion_object();
 		add_meta_box( 'promotion-details-mbox', __('Promotions', 'event-espresso'), array( $this, 'promotion_details_metabox'), $this->wp_page_slug, 'normal', 'high' );
-		add_meta_box( 'promotions-applied-to-mbox', __('Promotion applies to...', 'event_espresso'), array( $this, 'promotions_applied_to_metabox'), $this->wp_page_slug, 'side', 'high');
+		add_meta_box( 'promotions-applied-to-mbox', __('Promotion applies to...', 'event_espresso'), array( $this, 'promotions_applied_to_metabox'), $this->wp_page_slug, 'side', 'default');
 	}
 
 	/**
