@@ -154,14 +154,25 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	public function get_query_args() {
 		EE_Registry::instance()->load_helper('DTT_Helper');
 		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 1 );
-		//todo have to check for any filtered queries here.
+		//check for any existing dtt queries
 		$DTT_EVT_start = !empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : current_time('mysql');
 		$DTT_EVT_end = !empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( get_option('date_format') . ' ' . get_option('time_format'), EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
+
 		$_where = array(
 			'status' => 'publish',
 			'Datetime.DTT_EVT_end' => array( '<', $DTT_EVT_end ),
 			'Datetime.DTT_EVT_start' => array( '>', $DTT_EVT_start )
 			);
+
+		//category filters?
+		if ( !empty( $_REQUEST['EVT_CAT_ID'] ) ) {
+			$_where['Term_Taxonomy.term_id'] = $_REQUEST['EVT_CAT_ID'];
+		}
+
+		//event title?
+		if ( !empty( $_REQUEST['EVT_title_filter'] ) ) {
+			$_where['Event.EVT_name'] = array( 'LIKE', '%' . $_REQUEST['EVT_title_filter'] . '%' );
+		}
 		return array( '0' => $_where );
 	}
 
@@ -196,7 +207,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( get_option('date_format') . ' ' . get_option('time_format'), EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
 		$end_date_filter = '<input type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '"><span class="dashicons dashicons-calendar"></span>';
 
-		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<div style="clear: both"></div>';
+		//event name
+		$existing_name = ! empty( $_REQUEST['EVT_title_filter'] ) ? $_REQUEST['EVT_title_filter'] : '';
+		$event_title_filter = '<input type="text" id="EVT_title_filter" name="EVT_title_filter" class="promotions-general-filter ee-text-inp" value="' . $existing_name . '" placeholder="' . __('Event Title Filter', 'event_espresso') . '">';
+
+		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<br>' . $event_title_filter . '<div style="clear: both"></div>';
 	}
 
 }
