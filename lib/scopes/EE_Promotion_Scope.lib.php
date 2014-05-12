@@ -288,7 +288,7 @@ abstract class EE_Promotion_Scope {
 			$offset = ( $current_page -1 ) * $per_page;
 			$query_args['limit'] = array( $offset, $per_page );
 		}
-		$this->_model()->get_all( $query_args );
+		return $this->_model()->get_all( $query_args );
 	}
 
 
