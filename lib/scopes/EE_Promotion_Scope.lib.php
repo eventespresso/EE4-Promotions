@@ -338,8 +338,8 @@ abstract class EE_Promotion_Scope {
 		$checkboxes = '<ul class="promotion-applies-to-items-ul">';
 		foreach( $items_to_select as $id => $obj ) {
 			$checked = in_array($id, $selected_items) ? ' checked=checked' : '';
-			$checkboxes .= '<li><input type="checkbox" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . '>';
-			$checkboxes .= '<label for="PRO_applied_to_selected['.$id.']">' . $this->name($obj) . '</label>';
+			$checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['.$id.']" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . '>';
+			$checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['.$id.']">' . $this->name($obj) . '</label>';
 		}
 		$checkboxes .= '</ul>';
 		return $checkboxes;
