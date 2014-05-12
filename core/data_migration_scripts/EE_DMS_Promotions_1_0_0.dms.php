@@ -8,12 +8,13 @@ if (!defined('EVENT_ESPRESSO_VERSION'))
  * EE_DMS_Promotions_1_0_0
  *
  * @package			Event Espresso
- * @subpackage		
+ * @subpackage
  * @author				Mike Nelson
  *
  */
 class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	public function __construct() {
+		$this->_pretty_name = __('Create Promotions Addon table', 'event_espresso');
 		$this->_migration_stages = array();
 		parent::__construct();
 	}
@@ -31,12 +32,12 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 				$an_ee3_table_exists = true;
 			}
 		}
-		//check if the old 3.1 promotions tables are there. 
+		//check if the old 3.1 promotions tables are there.
 		return true;
 	}
 
 	public function schema_changes_after_migration() {
-		
+
 	}
 
 	public function schema_changes_before_migration() {
@@ -59,7 +60,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					PRIMARY KEY  (PRO_ID) ,
 					KEY PRC_ID (PRC_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
-		
+
 		$table_name = 'esp_promotion_object';
 		$sql = "POB_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			PRO_ID INT UNSIGNED NOT NULL,
@@ -70,7 +71,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 			KEY OBJ_ID (OBJ_ID),
 			KEY PRO_ID (PRO_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
-		
+
 		$table_name = 'esp_promotion_applied';
 		$sql = "PRA_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			PRO_ID INT UNSIGNED NOT NULL,
@@ -80,7 +81,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 			KEY OBJ_ID (OBJ_ID),
 			KEY PRO_ID (PRO_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
-		
+
 		$table_name = 'esp_promotion_rule';
 		$sql = "PRR_ID INT UNSIGNED NOT NULL AUTO_INCREMENT ,
 					PRO_ID INT UNSIGNED NOT NULL ,
@@ -91,9 +92,9 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					KEY PRO_ID (PRO_ID),
 					KEY RUL_ID (RUL_ID) ";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
-		
-		
-		
+
+
+
 		$table_name = 'esp_rule';
 		$sql = "RUL_ID INT UNSIGNED NOT NULL AUTO_INCREMENT ,
 					RUL_name VARCHAR(45) NOT NULL ,
