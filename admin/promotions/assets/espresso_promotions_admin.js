@@ -5,6 +5,27 @@ jQuery(document).ready(function($){
 	*/
 	var eePromotionsHelper = {
 
+		/**
+		 * cache for scope slug current lin use.
+		 *
+		 * @type {string}
+		*/
+		scopeSlug : '',
+
+
+
+
+		/**
+		 * returns the scope slug for the promotion scope that is currently being interacted with.
+		 *
+		 * @return {string}
+		 */
+		getScope: function() {
+			if (  this.scopeSlug  !== '' )
+				return this.scopeSlug;
+			this.scopeSlug = $('.ee-promotions-applies-to-main-container').attr('id').replace('ee-promotions-applies-to-', '');
+			return this.scopeSlug;
+		},
 
 
 		/**
@@ -51,18 +72,66 @@ jQuery(document).ready(function($){
 			//convert host to num.
 			for ( c=0; c < host.length; c++ ) {
 				num += host.charCodeAt(c);
-			};
+			}
 			ts = ts + String(num);
 			for(i=0;i<ts.length;i++) {
 				out+=Number(ts.substr(i, 2)).toString(36);
 			}
 			return (out);
+		},
+
+
+
+		/**
+		 * Used to toggle whether a scope item is selected or deselected.
+		 *
+		 * @param {string} selected the checkbox toggled
+		 *
+		 * @return {eePromotionsHelper}
+		 */
+		scopeItemToggle: function (selected) {
+			if ( typeof(selected) === 'undefined' ) {
+				console.log(eei18n.toggledScopeItemMissingParam);
+				return false;
+			}
+
+			var checkeditem = $(selected), curItems, itemsInput;
+
+			//selected or deselected?
+			var isSelected = $(selected).is(':checked');
+			var itemsInput = $('#ee-selected-items-' + this.getScope() );
+			var curItems =itemsInput.val().split(',');
+			if ( isSelected ) {
+				//adding item to hidden elements
+				curItems.push($(selected).val());
+			} else {
+				curItems = $().removeFromArray(curItems, $(selected).val());
+			}
+
+			itemsInput.val( curItems.join(',').replace(/^,|,$/,'') );
+			return this;
 		}
 
 	};
 
 
-	$('#promotion-details-form').on('click', '#generate-promo-code', function() {
+
+	/**
+	 * trigger for generating coupon code.
+	 */
+	$('#promotion-details-form').on('click', '#generate-promo-code', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
 		eePromotionsHelper.generate_code('#PRO_code');
+	});
+
+
+
+	/**
+	 * trigger for toggling the selection of a scope item
+	 */
+	$('.promotion-applies-to-items-ul').on('click', ':checkbox', function(e) {
+		e.stopPropagation();
+		eePromotionsHelper.scopeItemToggle(this);
 	});
 });
