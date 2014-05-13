@@ -42,7 +42,7 @@ function load_espresso_promotions() {
 	require_once ( plugin_dir_path( __FILE__ ) . 'EE_Promotions.class.php' );
 	EE_Promotions::register_addon();
 }
-add_action( 'AHEE__EE_System__load_espresso_addons', 'load_espresso_promotions' );
+add_action( 'AHEE__EE_System__load_espresso_addons', 'load_espresso_promotions', 5 );
 
 // End of file espresso_promotions.php
 // Location: wp-content/plugins/espresso-promotions/espresso_promotions.php
