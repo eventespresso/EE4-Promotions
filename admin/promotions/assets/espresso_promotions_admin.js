@@ -99,8 +99,8 @@ jQuery(document).ready(function($){
 
 			//selected or deselected?
 			var isSelected = $(selected).is(':checked');
-			var itemsInput = $('#ee-selected-items-' + this.getScope() );
-			var curItems =itemsInput.val().split(',');
+			itemsInput = $('#ee-selected-items-' + this.getScope() );
+			curItems = itemsInput.val().split(',');
 			if ( isSelected ) {
 				//adding item to hidden elements
 				curItems.push($(selected).val());
