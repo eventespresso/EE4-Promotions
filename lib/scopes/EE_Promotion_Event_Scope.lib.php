@@ -173,7 +173,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		if ( !empty( $_REQUEST['EVT_title_filter'] ) ) {
 			$_where['Event.EVT_name'] = array( 'LIKE', '%' . $_REQUEST['EVT_title_filter'] . '%' );
 		}
-		return array( '0' => $_where );
+
+		$orderby= !empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'ASC';
+
+
+		return array( '0' => $_where, 'order_by' => array( 'EVT_name' => $orderby ) );
 	}
 
 
