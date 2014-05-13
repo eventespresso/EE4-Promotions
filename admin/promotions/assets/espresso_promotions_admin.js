@@ -137,6 +137,9 @@ jQuery(document).ready(function($){
 
 
 
+	/**
+	 * Date and time picker trigger
+	 */
 	$('#post-body').on('focusin', '.ee-datepicker', function(e) {
 		e.preventDefault();
 		var data= $(this).data();
@@ -146,5 +149,14 @@ jQuery(document).ready(function($){
 		var next = $(data.nextField, 'container');
 		var doingstart = data.context == 'start' ? true : false;
 		dttPickerHelper.resetpicker().setDefaultDateRange('months', 1).picker(start, end, next, doingstart);
+	});
+
+
+
+	$('.ee-promotions-applies-to-selector').on('click', '.ee-select-all-trigger', function(e) {
+		e.stopPropagation();
+		$(':checkbox', '.promotion-applies-to-items-ul').each( function(i) {
+			$(this).trigger('click');
+		});
 	});
 });
