@@ -19,7 +19,7 @@
  * @type string $display_selected_label The test for the display selected label trigger/toggle.
  */
 ?>
-<div id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
+<div class="ee-promotions-applies-to-main-container" id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
 	<?php echo $header_content; ?>
 	<div class="ee-promotions-applies-to-filters">
 		<p><?php printf( __('Filter the %s returned.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
