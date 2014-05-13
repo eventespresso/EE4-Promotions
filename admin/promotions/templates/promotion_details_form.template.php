@@ -61,16 +61,16 @@
 		<td class="label-column">
 			<label for="PRO_start"><?php _e('Valid From', 'event_espresso'); ?></label>
 		</td>
-		<td class="field-column">
-			<input class="regular-text ee-datepicker" id="PRO_start" name="PRO_start" value="<?php echo $promotion->start(); ?>">
+		<td class="field-column ee-date-column">
+			<input class="regular-text ee-datepicker" id="PRO_start" name="PRO_start" value="<?php echo $promotion->start(); ?>"><span class="dashicons dashicons-calendar"></span>
 		</td>
 	</tr>
 	<tr>
 		<td class="label-column">
 			<label for="PRO_end"><?php _e('Valid Until', 'event_espresso'); ?></label>
 		</td>
-		<td class="field-column">
-			<input class="regular-text ee-datepicker" id="PRO_end" name="PRO_end" value="<?php echo $promotion->end(); ?>">
+		<td class="field-column ee-date-column">
+			<input class="regular-text ee-datepicker" id="PRO_end" name="PRO_end" value="<?php echo $promotion->end(); ?>"><span class="dashicons dashicons-calendar"></span>
 		</td>
 	</tr>
 	<tr>

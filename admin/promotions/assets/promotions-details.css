@@ -44,11 +44,14 @@
 }
 
 
-.ee-promotions-applies-to-filters .promotions-date-filter {
+.ee-promotions-applies-to-filters .promotions-date-filter, .ee-date-column .ee-datepicker {
 	position: relative;
-	width: 100%;
 	margin-top: 8px;
 	padding-right: 25px;
+}
+
+.ee-promotions-applies-to-filters .promotions-date-filter {
+	width: 100%;
 }
 
 .ee-promotions-applies-to-filters .promotions-general-filter {
@@ -66,6 +69,13 @@
 	font-size: 18px;
 	top: -22px;
 	left: -18px;
+}
+
+.ee-date-column .dashicons-calendar:before {
+	position:absolute;
+	font-size: 18px;
+	top: -10px;
+	left: -40px;
 }
 
 .ee-promotions-applies-to-selector {
