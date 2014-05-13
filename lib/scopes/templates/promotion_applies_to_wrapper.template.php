@@ -21,10 +21,14 @@
 ?>
 <div class="ee-promotions-applies-to-main-container" id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
 	<?php echo $header_content; ?>
-	<div class="ee-promotions-applies-to-filters">
-		<p><?php printf( __('Filter the %s returned.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
-		<?php echo $filters; ?>
-	</div>
+	<?php if ( !empty($filters) ) : ?>
+		<div class="ee-promotions-applies-to-filters">
+			<p><?php printf( __('Filter the %s returned.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
+			<?php echo $filters; ?>
+			<button class="button secondary-button right" id="ee-apply-promotion-filter"><?php _e('Apply', 'event_espresso'); ?></button>
+			<div style="clear:both;"></div>
+		</div>
+	<?php endif; ?>
 	<div class="ee-promotions-applies-to-selector">
 		<input type="checkbox" id="ee-select-all-<?php echo $scope_slug; ?>"><label class="ee-select-all-label" for="ee-select-all-<?php echo $scope_slug; ?>"><?php _e('select all below', 'event_espresso'); ?></label>
 		<div class="ee-sort-container right">

@@ -59,6 +59,10 @@
 	padding-top: 5px;
 }
 
+.ee-promotions-applies-to-filters .button {
+	margin-top: 8px;
+}
+
 .ee-promotions-applies-to-filters .dashicons {
 	display: inline-block;
 	float: right;
