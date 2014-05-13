@@ -134,4 +134,17 @@ jQuery(document).ready(function($){
 		e.stopPropagation();
 		eePromotionsHelper.scopeItemToggle(this);
 	});
+
+
+
+	$('#post-body').on('focusin', '.ee-datepicker', function(e) {
+		e.preventDefault();
+		var data= $(this).data();
+		var container = data.container == 'main' ? '#promotion-details-mbox' : '#promotions-applied-to-mbox';
+		var start = data.context == 'start' ? $(this, container) : $('[data-context="start"]', container);
+		var end = data.context == 'end' ? $(this, container) : $('[data-context="end"]', container );
+		var next = $(data.nextField, 'container');
+		var doingstart = data.context == 'start' ? true : false;
+		dttPickerHelper.resetpicker().setDefaultDateRange('months', 1).picker(start, end, next, doingstart);
+	});
 });
