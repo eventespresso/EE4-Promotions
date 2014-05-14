@@ -123,6 +123,8 @@ jQuery(document).ready(function($){
 		 */
 		getScopeSelectionItems: function() {
 			var data={};
+			//make sure the select all box is unchecked
+			$('.ee-select-all-trigger', '.ee-promotions-applies-to-selector').prop('checked', false);
 			//get selections from filters
 			$('select', '.ee-promotions-applies-to-filters').each( function(i) {
 				data[$(this).attr('name')] = $(this).val();
