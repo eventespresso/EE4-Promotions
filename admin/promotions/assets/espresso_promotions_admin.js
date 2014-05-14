@@ -114,6 +114,27 @@ jQuery(document).ready(function($){
 
 
 
+
+		/**
+		 * Used to toggle the sort status for the sort element
+		 *
+		 * @return {eePromotionsHelper}
+		 */
+		toggleSort: function() {
+			var sortClass, sortOrder, classReplace, current_sort = $('#ee-promotion-items-sort-order').text();
+			sortOrder = current_sort == 'ASC' ? 'DESC' : 'ASC';
+			sortClass = current_sort == 'ASC' ? 'dashicons-arrow-down' : 'dashicons-arrow-up';
+			classReplace = current_sort == 'ASC' ? 'dashicons-arrow-up' : 'dashicons-arrow-down';
+
+			//modify sort.
+			$('#ee-promotion-items-sort-order').text(sortOrder);
+			classReplace = $('.dashicons', '.ee-sort-container').attr('class').replace(classReplace, sortClass);
+			$('.dashicons', '.ee-sort-container').attr('class', classReplace);
+			return this;
+		},
+
+
+
 		/**
 		 * The method is used to get scope items for selection based on the indicated
 		 * filters and sort.  This is done more dynamically because different scopes may
@@ -137,7 +158,7 @@ jQuery(document).ready(function($){
 			data.PRO_scope_sort = $('#ee-promotion-items-sort-order').text();
 
 			//what's the display only selected set at?
-			data.PRO_order_by_selected = $('#ee-display-selected-trigger').val();
+			data.PRO_display_only_selected = $('#ee-display-selected-trigger-'+this.getScope()).val();
 
 			//what about paging?
 			data.paged = $('.current-page', '.ee-promotions-applies-to-paging').val();
@@ -251,4 +272,24 @@ jQuery(document).ready(function($){
 		eePromotionsHelper.getScopeSelectionItems();
 	});
 
+
+
+	/**
+	 * trigger for display only selected items filter.
+	 */
+	$('#post-body').on('click', '.ee-display-selected-only-trigger', function(e) {
+		e.stopPropagation();
+		eePromotionsHelper.getScopeSelectionItems();
+	});
+
+
+
+	/**
+	 * trigger for sorts
+	 */
+	$('#post-body').on('click', '.ee-sort-trigger', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		eePromotionsHelper.toggleSort().getScopeSelectionItems();
+	});
 });

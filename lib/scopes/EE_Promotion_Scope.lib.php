@@ -293,6 +293,14 @@ abstract class EE_Promotion_Scope {
 			$offset = ( $current_page -1 ) * $per_page;
 			$query_args['limit'] = array( $offset, $per_page );
 		}
+
+		//only display selected items toggle set?
+		if ( !empty( $_REQUEST['PRO_display_only_selected'] ) ) {
+			$selected_items = ! empty( $_REQUEST['selected_items'] ) ? explode(',',$_REQUEST['selected_items'] ) : array();
+			if ( !empty( $selected_items ) ) {
+				$query_args[0][$this->_model()->primary_key_name()] = array('IN', $selected_items);
+			}
+		}
 		return $this->_model()->get_all( $query_args );
 	}
 
