@@ -45,7 +45,10 @@
 		</div>
 		<div style="clear:both"></div>
 		<input type="hidden" id="ee-selected-items-<?php echo $scope_slug; ?>" name="ee_promotions_applied_selected_items_<?php echo $scope_slug; ?>" value="<?php echo implode(',',$selected_items); ?>">
-		<input value="1" type="checkbox" class="ee-display-selected-only-trigger" id="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><label class="ee-display-selected-trigger-label" for="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><?php echo $display_selected_label; ?></label>
+		<input value="1" type="checkbox" class="ee-display-selected-only-trigger" id="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><label class="ee-display-selected-trigger-label" for="ee-display-selected-trigger-<?php echo $scope_slug; ?>"><?php echo $display_selected_label; ?></label><br>
+		<div class="ee-promotions-selected-count-container">
+			<p><?php _e('Currently Selected:', 'event_espresso'); ?> <span class="ee-promotions-selected-count"><?php echo count($selected_items); ?></span></p>
+		</div>
 	</div>
 	<?php echo $footer_content; ?>
 </div>

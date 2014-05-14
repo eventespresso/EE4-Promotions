@@ -96,6 +96,7 @@ jQuery(document).ready(function($){
 			}
 
 			var checkeditem = $(selected), curItems, itemsInput;
+			var currentcount = $('.ee-promotions-selected-count','.ee-promotions-selected-count-container').text();
 
 			//selected or deselected?
 			var isSelected = $(selected).is(':checked');
@@ -104,11 +105,14 @@ jQuery(document).ready(function($){
 			if ( isSelected ) {
 				//adding item to hidden elements
 				curItems.push($(selected).val());
+				currentcount = parseInt( currentcount, 10) + 1;
 			} else {
 				curItems = $().removeFromArray(curItems, $(selected).val());
+				currentcount = parseInt( currentcount, 10 ) - 1;
 			}
 
 			itemsInput.val( curItems.join(',').replace(/^,|,$/,'') );
+			$('.ee-promotions-selected-count', '.ee-promotions-selected-count-container').text(currentcount);
 			return this;
 		},
 
@@ -255,8 +259,12 @@ jQuery(document).ready(function($){
 	 * trigger for toggling the selection of ALL promotion applies to items.
 	 */
 	$('.ee-promotions-applies-to-selector').on('click', '.ee-select-all-trigger', function(e) {
+		selecting = $(this).prop('checked');
 		$(':checkbox', '.ee-promotions-applies-to-items-container').each( function(i) {
-			$(this).trigger('click');
+			if ( $(this).prop('checked') === false && selecting )
+				$(this).trigger('click');
+			if( $(this).prop('checked') && ! selecting )
+				$(this).trigger('click');
 		});
 	});
 
