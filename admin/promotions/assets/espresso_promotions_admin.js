@@ -143,6 +143,9 @@ jQuery(document).ready(function($){
 			data.paged = $('.current-page', '.ee-promotions-applies-to-paging').val();
 			data.perpage = 10; //@todo this should be a value that can be set by user.
 
+			//make sure we send along any current selected items
+			data.selected_items = $('#ee-selected-items-'+this.getScope()).val();
+
 			//alright all the data is setup now let's set what we want to do on ajax success.
 			$(document).ajaxSuccess( function(event, xhr, ajaxoptions )  {
 				//we can get the response from xhr
@@ -174,13 +177,17 @@ jQuery(document).ready(function($){
 		 * @return {void}
 		 */
 		doAjax: function(data) {
+			$('.spinner').show();
 			data.ee_admin_ajax = true;
 			data.page = typeof(data.page) === 'undefined' ? 'espresso_promotions' : data.page;/**/
 
 			$.ajax({
 				type: 'POST',
 				url: ajaxurl,
-				data: data
+				data: data,
+				success: function(response, status, xhr) {
+					$('.spinner').hide();
+				}
 			});
 		}
 
@@ -202,8 +209,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for toggling the selection of a scope item
 	 */
-	$('.promotion-applies-to-items-ul').on('click', ':checkbox', function(e) {
-		e.stopPropagation();
+	$('.ee-promotions-applies-to-items-container').on('click', ':checkbox', function(e) {
 		eePromotionsHelper.scopeItemToggle(this);
 	});
 
@@ -228,8 +234,7 @@ jQuery(document).ready(function($){
 	 * trigger for toggling the selection of ALL promotion applies to items.
 	 */
 	$('.ee-promotions-applies-to-selector').on('click', '.ee-select-all-trigger', function(e) {
-		e.stopPropagation();
-		$(':checkbox', '.promotion-applies-to-items-ul').each( function(i) {
+		$(':checkbox', '.ee-promotions-applies-to-items-container').each( function(i) {
 			$(this).trigger('click');
 		});
 	});

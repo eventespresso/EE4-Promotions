@@ -106,3 +106,8 @@
 	min-height: 180px;
 	max-height: 360px;
 }
+
+.ee-promotions-applies-to-filters .spinner {
+	position: relative;
+	top: 10px;
+}

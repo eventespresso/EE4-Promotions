@@ -25,7 +25,7 @@
 		<div class="ee-promotions-applies-to-filters">
 			<p><?php printf( __('Filter the %s returned.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
 			<?php echo $filters; ?>
-			<button class="button secondary-button right" id="ee-apply-promotion-filter"><?php _e('Apply', 'event_espresso'); ?></button>
+			<button class="button secondary-button right" id="ee-apply-promotion-filter"><?php _e('Apply', 'event_espresso'); ?></button><span class="spinner"></span>
 			<div style="clear:both;"></div>
 		</div>
 	<?php endif; ?>
