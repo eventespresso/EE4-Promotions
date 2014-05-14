@@ -67,6 +67,9 @@ abstract class EE_Promotion_Scope {
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
+
+		//common ajax for admin
+		add_action('wp_ajax_promotion_scope_items', array( $this, 'ajax_get_applies_to_items_to_select'), 10 );
 	}
 
 
@@ -315,6 +318,30 @@ abstract class EE_Promotion_Scope {
 		return $selected;
 	}
 
+
+
+	/**
+	 * This is the ajax callback for modifying the applies_to_items_to_select results displayed
+	 * in the dom.
+	 * It may be called when new filters are requested for results or when paging is used.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return json json object with results.
+	 */
+	public function ajax_get_applies_to_items_to_select() {
+		$selected_items = ! empty( $_REQUEST['selected_items'] ) ? explode( ',', $_REQUEST['selected_items'] ) : array();
+		$requested_items = $this->get_scope_items();
+
+		$response['content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
+		$response['success'] = TRUE;
+		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
+		if ( NULL === error_get_last() || ! headers_sent() )
+			header('Content-Type: application/json; charset=UTF-8');
+
+		echo json_encode( $response );
+		exit();
+	}
 
 
 

@@ -110,6 +110,76 @@ jQuery(document).ready(function($){
 
 			itemsInput.val( curItems.join(',').replace(/^,|,$/,'') );
 			return this;
+		},
+
+
+
+		/**
+		 * The method is used to get scope items for selection based on the indicated
+		 * filters and sort.  This is done more dynamically because different scopes may
+		 * have different filters set.
+		 *
+		 * @return {eePromotionsHelper}
+		 */
+		getScopeSelectionItems: function() {
+			var data={};
+			//get selections from filters
+			$('select', '.ee-promotions-applies-to-filters').each( function(i) {
+				data[$(this).attr('name')] = $(this).val();
+			});
+			$('input', '.ee-promotions-applies-to-filters').each( function(i) {
+				data[$(this).attr('name')] = $(this).val();
+			});
+
+			//what's the sort set at?
+			data.PRO_scope_sort = $('#ee-promotion-items-sort-order').text();
+
+			//what's the display only selected set at?
+			data.PRO_order_by_selected = $('#ee-display-selected-trigger').val();
+
+			//what about paging?
+			data.paged = $('.current-page', '.ee-promotions-applies-to-paging').val();
+			data.perpage = 10; //@todo this should be a value that can be set by user.
+
+			//alright all the data is setup now let's set what we want to do on ajax success.
+			$(document).ajaxSuccess( function(event, xhr, ajaxoptions )  {
+				//we can get the response from xhr
+				var ct = xhr.getResponseHeader( "content-type" ) || "";
+				if ( ct.indexOf('json') > -1 ) {
+					var resp = xhr.responseText;
+					resp = $.parseJSON(resp);
+					//let's replace the current items in the selected items window.
+					$('.ee-promotions-applies-to-items-container', '.ee-promotions-applies-to-selector').html(resp.content);
+				}
+			});
+
+			//action
+			data.action = 'promotion_scope_items';
+
+			//do ajax
+			this.doAjax(data);
+		},
+
+
+
+		/**
+		 * Handles ajax requests.
+		 * NOTE: this does NOT handle any success actions.  It's up to the caller to set
+		 * what is expected on success.
+		 *
+		 * @param {object} data The data to go with the ajax package
+		 *
+		 * @return {void}
+		 */
+		doAjax: function(data) {
+			data.ee_admin_ajax = true;
+			data.page = typeof(data.page) === 'undefined' ? 'espresso_promotions' : data.page;/**/
+
+			$.ajax({
+				type: 'POST',
+				url: ajaxurl,
+				data: data
+			});
 		}
 
 	};
@@ -152,11 +222,26 @@ jQuery(document).ready(function($){
 	});
 
 
-
+	/**
+	 * trigger for toggling the selection of ALL promotion applies to items.
+	 */
 	$('.ee-promotions-applies-to-selector').on('click', '.ee-select-all-trigger', function(e) {
 		e.stopPropagation();
 		$(':checkbox', '.promotion-applies-to-items-ul').each( function(i) {
 			$(this).trigger('click');
 		});
 	});
+
+
+
+
+	/**
+	 * trigger for applying filters to the selected items.
+	 */
+	$('#post-body').on('click', '#ee-apply-promotion-filter', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		eePromotionsHelper.getScopeSelectionItems();
+	});
+
 });
