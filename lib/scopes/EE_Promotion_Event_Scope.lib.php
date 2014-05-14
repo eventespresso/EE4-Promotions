@@ -21,7 +21,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
 class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 
-	protected function _set_main_properties() {
+	protected function _set_main_properties_and_hooks() {
 		$this->label->singular = __('Event', 'event_espresso');
 		$this->label->plural = __('Events', 'event_espresso');
 		$this->slug = 'Event';

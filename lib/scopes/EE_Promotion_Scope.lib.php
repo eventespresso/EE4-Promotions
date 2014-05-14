@@ -65,21 +65,23 @@ abstract class EE_Promotion_Scope {
 	 */
 	public function __construct() {
 		$this->label = new stdClass();
-		$this->_set_main_properties();
+		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
 	}
 
 
 
 	/**
-	 * Child classes use this to set the main properties for the scope class.
-	 * Main properties are: $label, $slug, and $_model_name.
+	 * Child classes use this to set the main properties and any hooks for the scope class.
+	 * Main properties that should be set are: $label, $slug, and $_model_name.  This method is
+	 * called when scopes are instantiated and added to the EE_Registry::instance()->CFG->
+	 * addons->promotions->scopes property.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
-	abstract protected function _set_main_properties();
+	abstract protected function _set_main_properties_and_hooks();
 
 
 
@@ -166,6 +168,8 @@ abstract class EE_Promotion_Scope {
 	 * @return string html content.
 	 */
 	abstract public function get_admin_applies_to_selector( $PRO_ID );
+
+
 
 
 
