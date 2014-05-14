@@ -67,6 +67,9 @@ Class  EE_Promotions extends EE_Addon {
 		EE_Register_Model_Extensions::register('Promotions', array(
 			'model_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_model_extensions'),
 			'class_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_class_extensions')));
+
+		//setup EEI_Plugin_API implementation for promotion scopes for other plugins to register a promotion scope.
+		EEH_Autoloader::instance()->register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib/plugin_api' );
 	}
 
 

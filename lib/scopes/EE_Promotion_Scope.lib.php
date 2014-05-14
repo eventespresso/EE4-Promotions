@@ -67,8 +67,6 @@ abstract class EE_Promotion_Scope {
 		$this->label = new stdClass();
 		$this->_set_main_properties();
 		$this->_verify_properties_set();
-
-		//todo this would be a good place to hook into (not existing yet) a filter for the EEM_Base_Model relations
 	}
 
 
