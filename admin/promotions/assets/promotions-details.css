@@ -82,6 +82,13 @@
 	left: -40px;
 }
 
+.ee-date-column .dashicons-editor-removeformatting:before {
+	position:absolute;
+	font-size: 18px;
+	top: -10px;
+	left: -10px;
+}
+
 .ee-promotions-applies-to-selector {
 	margin-top: 15px;
 }

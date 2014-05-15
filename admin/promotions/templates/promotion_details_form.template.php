@@ -63,7 +63,7 @@
 			<label for="PRO_start"><?php _e('Valid From', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column ee-date-column">
-			<input data-context="start" data-container="main" data-next-field="#PRO_end" class="regular-text ee-datepicker" id="PRO_start" name="PRO_start" value="<?php echo $promotion->start(); ?>"><span class="dashicons dashicons-calendar"></span>
+			<input data-context="start" data-container="main" data-next-field="#PRO_end" class="regular-text ee-datepicker" id="PRO_start" name="PRO_start" value="<?php echo $promotion->start('Y-m-d', 'h:i a'); ?>"><span class="dashicons dashicons-calendar"></span><span class="dashicons dashicons-editor-removeformatting clickable clear-dtt" data-field="#PRO_start"></span>
 		</td>
 	</tr>
 	<tr>
@@ -71,7 +71,7 @@
 			<label for="PRO_end"><?php _e('Valid Until', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column ee-date-column">
-			<input data-context="end" data-container="main" data-next-field="#PRO_uses" class="regular-text ee-datepicker" id="PRO_end" name="PRO_end" value="<?php echo $promotion->end(); ?>"><span class="dashicons dashicons-calendar"></span>
+			<input data-context="end" data-container="main" data-next-field="#PRO_uses" class="regular-text ee-datepicker" id="PRO_end" name="PRO_end" value="<?php echo $promotion->end('Y-m-d', 'h:i a'); ?>"><span class="dashicons dashicons-calendar"></span><span class="dashicons dashicons-editor-removeformatting clickable clear-dtt" data-field="#PRO_end"></span>
 		</td>
 	</tr>
 	<tr>

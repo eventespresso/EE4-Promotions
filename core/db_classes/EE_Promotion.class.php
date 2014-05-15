@@ -178,7 +178,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function end($date_format=null,$time_format=null){
 		//if PRO_end is null then we return an empty string.  It is entirely possible for promotions to have NO dates
-		return empty( $this->_PRO_end ) ? '' : $this->_get_datetime('PRO_end',$date_format,$time_format);
+		$pro_end = $this->get_raw('PRO_end');
+		return empty( $pro_end ) ? '' : $this->_get_datetime('PRO_end',$date_format,$time_format);
 	}
 	/**
 	 * If this returns true, this promotion cannot be combined with other promotions.
@@ -246,7 +247,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function start($date_format=null,$time_format=null){
 		//if pro_start is null then we return an empty string.  It is entirely possible for promotions to have NO dates
-		return empty( $this->_PRO_start ) ? '' : $this->get_datetime('PRO_start', $date_format, $time_format);
+		$pro_start = $this->get_raw('PRO_start');
+		return empty( $pro_start ) ? '' : $this->get_datetime('PRO_start', $date_format, $time_format);
 	}
 	/**
 	 * Gets the number of times this promotion has been used in its particular scope
