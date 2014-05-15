@@ -186,23 +186,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-	public function load_scripts_styles_create_new() {
-		$this->load_scripts_styles_edit();
-	}
-
-
-
-
-	public function load_scripts_styles_edit() {
-		wp_register_style( 'promotions-details-css', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'promotions-details.css', array('ee-admin-css','espresso-ui-theme'), EE_PROMOTIONS_VERSION );
-		wp_enqueue_style( 'promotions-details-css' );
-	}
-
-
-
-
 
 	public function load_scripts_styles() {
+		wp_register_style( 'promotions-details-css', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'promotions-details.css', array('ee-admin-css','espresso-ui-theme'), EE_PROMOTIONS_VERSION );
+		wp_enqueue_style( 'promotions-details-css' );
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core', 'ee-datepicker', 'ee-parse-uri' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
 

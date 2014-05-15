@@ -118,3 +118,50 @@
 	position: relative;
 	top: 10px;
 }
+
+
+/** LIST TABLE **/
+.wp-list-table.promotion #id {
+	width: 3%;
+}
+
+.wp-list-table.promotion #name {
+	width: 15%;
+}
+
+.wp-list-table.promotion #code {
+	width: 20%;
+}
+
+.wp-list-table.promotion #applies_to {
+	width: 15%;
+}
+
+.wp-list-table.promotion #valid_from, .wp-list-table.promotion #valid_until {
+	width: 10%;
+}
+
+.wp-list-table.promotion #amount {
+	width: 8%;
+}
+
+.wp-list-table.promotion .column-amount {
+	text-align: right;
+}
+
+.wp-list-table.promotion #redeemed {
+	width: 8%;
+}
+
+.wp-list-table.promotion .column-redeemed {
+	text-align: right;
+}
+
+.wp-list-table.promotion #actions {
+	width: 15%;
+	text-align: right;
+}
+
+.wp-list-table.promotion .column-actions {
+	text-align: right;
+}
