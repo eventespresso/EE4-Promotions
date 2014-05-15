@@ -56,6 +56,18 @@ abstract class EE_Promotion_Scope {
 
 
 
+
+
+	/**
+	 * This is the default per page amount when no perpage value is set.
+	 *
+	 * @since 1.0.0
+	 * @var int
+	 */
+	protected $_per_page;
+
+
+
 	/**
 	 * Setup the basic structure of the scope class.
 	 *
@@ -67,6 +79,9 @@ abstract class EE_Promotion_Scope {
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
+
+		//set (and filter ) the per_page default.
+		$this->_per_page = apply_filters( 'FHEE__EE_Promotion_Scope___get_applies_to_items_paging__perpage_default', 10, $this->slug );
 
 		//common ajax for admin
 		add_action('wp_ajax_promotion_scope_items', array( $this, 'ajax_get_applies_to_items_to_select'), 10 );
@@ -303,7 +318,7 @@ abstract class EE_Promotion_Scope {
 		$query_args = $this->get_query_args();
 		if ( $paging ) {
 			$current_page = !empty( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
-			$per_page = !empty( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 10;
+			$per_page = !empty( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $this->_per_page;
 			$offset = ( $current_page -1 ) * $per_page;
 			$query_args['limit'] = array( $offset, $per_page );
 		}
@@ -415,9 +430,8 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_applies_to_items_paging( $total_items ) {
 		EE_Registry::instance()->load_helper('Template');
-		$perpage_default = apply_filters( 'FHEE__EE_Promotion_Scope___get_applies_to_items_paging__perpage_default', 10 );
 		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
-		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $perpage_default;
+		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $this->_per_page;
 		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
 		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}

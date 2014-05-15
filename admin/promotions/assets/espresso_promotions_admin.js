@@ -168,7 +168,7 @@ jQuery(document).ready(function($){
 
 			//what about paging?
 			data.paged = typeof( page ) !== 'undefined' ? page : $('.current-page', '.ee-promotions-applies-to-paging').val();
-			data.perpage = 10; //@todo this should be a value that can be set by user.
+			//data.perpage = 10; //@todo this should be a value that can be set by user.
 
 			//make sure we send along any current selected items
 			data.selected_items = $('#ee-selected-items-'+this.getScope()).val();
