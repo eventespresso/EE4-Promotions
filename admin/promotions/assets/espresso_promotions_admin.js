@@ -333,6 +333,19 @@ jQuery(document).ready(function($){
 
 
 	/**
+	 * capture enter keypress in any of the scope filter inputs
+	 *
+	 */
+	$('#post-body').on('keypress', '.ee-promotions-applies-to-filters>input', function(e){
+		if ( e.which == 13 ) {
+			e.preventDefault();
+			e.stopPropagation();
+			eePromotionsHelper.getScopeSelectionItems();
+		}
+	});
+
+
+	/**
 	 * clear calendar field
 	 */
 	$('#post-body').on('click', '.clear-dtt', function(e) {
