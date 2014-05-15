@@ -303,7 +303,7 @@ abstract class EE_Promotion_Scope {
 		$query_args = $this->get_query_args();
 		if ( $paging ) {
 			$current_page = !empty( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
-			$per_page = !empty( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 20;
+			$per_page = !empty( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : 10;
 			$offset = ( $current_page -1 ) * $per_page;
 			$query_args['limit'] = array( $offset, $per_page );
 		}
@@ -355,7 +355,13 @@ abstract class EE_Promotion_Scope {
 		$selected_items = ! empty( $_REQUEST['selected_items'] ) ? explode( ',', $_REQUEST['selected_items'] ) : array();
 		$requested_items = $this->get_scope_items();
 
-		$response['content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
+		//scope items list
+		$response['items_content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
+
+		//paging list
+		$total_items = $this->_get_total_items();
+		$response['items_paging'] = $this->_get_applies_to_items_paging( $total_items );
+
 		$response['success'] = TRUE;
 		// make sure there are no php errors or headers_sent.  Then we can set correct json header.
 		if ( NULL === error_get_last() || ! headers_sent() )

@@ -144,10 +144,12 @@ jQuery(document).ready(function($){
 		 * filters and sort.  This is done more dynamically because different scopes may
 		 * have different filters set.
 		 *
+		 * @param {string} page if sent this indicates what the page requested is.
 		 * @return {eePromotionsHelper}
 		 */
-		getScopeSelectionItems: function() {
+		getScopeSelectionItems: function(page) {
 			var data={};
+
 			//make sure the select all box is unchecked
 			$('.ee-select-all-trigger', '.ee-promotions-applies-to-selector').prop('checked', false);
 			//get selections from filters
@@ -165,7 +167,7 @@ jQuery(document).ready(function($){
 			data.PRO_display_only_selected = $('#ee-display-selected-trigger-'+this.getScope()).val();
 
 			//what about paging?
-			data.paged = $('.current-page', '.ee-promotions-applies-to-paging').val();
+			data.paged = typeof( page ) !== 'undefined' ? page : $('.current-page', '.ee-promotions-applies-to-paging').val();
 			data.perpage = 10; //@todo this should be a value that can be set by user.
 
 			//make sure we send along any current selected items
@@ -179,7 +181,10 @@ jQuery(document).ready(function($){
 					var resp = xhr.responseText;
 					resp = $.parseJSON(resp);
 					//let's replace the current items in the selected items window.
-					$('.ee-promotions-applies-to-items-container', '.ee-promotions-applies-to-selector').html(resp.content);
+					$('.ee-promotions-applies-to-items-container', '.ee-promotions-applies-to-selector').html(resp.items_content);
+
+					//update the current page
+					$('.ee-promotions-applies-to-paging', '#promotions-applied-to-mbox').html(resp.items_paging);
 				}
 			});
 
@@ -299,5 +304,29 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		e.stopPropagation();
 		eePromotionsHelper.toggleSort().getScopeSelectionItems();
+	});
+
+
+	/**
+	 * trigger for paging!
+	 */
+	$('#post-body').on('click', '.pagination-links>a', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var data = parseUri( $(this).attr('href') );
+		var paged = typeof( data.queryKey.paged ) !== 'undefined' ? data.queryKey.paged : 1;
+		eePromotionsHelper.getScopeSelectionItems(paged);
+	});
+
+
+
+	/**
+	 * clear calendar field
+	 */
+	$('#post-body').on('click', '.clear-dtt', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var data = $(this).data();
+		$(data.field).val('');
 	});
 });

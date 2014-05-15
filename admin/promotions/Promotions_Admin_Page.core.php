@@ -203,7 +203,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	public function load_scripts_styles() {
-		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core', 'ee-datepicker' ), EE_PROMOTIONS_VERSION, TRUE );
+		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core', 'ee-datepicker', 'ee-parse-uri' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
 
 		EE_Registry::$i18n_js_strings['confirm_reset'] = __( 'Are you sure you want to reset ALL your Event Espresso Promotions Information? This cannot be undone.', 'event_espresso' );
