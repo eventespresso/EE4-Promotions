@@ -132,7 +132,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 	public function description() {
 		$price = $this->get_first_related('Price');
-		return $price instanceof EE_Price ? $price->description() : '';
+		return $price instanceof EE_Price ? $price->desc() : '';
 	}
 
 
@@ -355,6 +355,21 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function set_order($order) {
 		return $this->set('PRO_order', $order);
+	}
+
+
+
+	/**
+	 * Return the related promotion objects for this promotion.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $query_args filter what objects get
+	 *                          	          returned by this.
+	 * @return EE_Promotion_Object[]
+	 */
+	public function promotion_objects( $query_args = array() ) {
+		return $this->get_many_related('Promotion_Object', $query_args );
 	}
 
 }

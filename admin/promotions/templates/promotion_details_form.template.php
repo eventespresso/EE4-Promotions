@@ -47,6 +47,7 @@
 		</td>
 		<td class="field-column">
 			<input class="regular-text ee-numeric" id="PRC_amount" name="PRC_amount" value="<?php echo $promotion->amount(); ?>">
+			<input type="hidden" name="PRC_ID" value="<?php echo $promotion->price_ID(); ?>">
 		</td>
 	</tr>
 	<tr>

@@ -73,6 +73,15 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'args' => array(TRUE)
 				),
 			'edit' => '_promotion_details',
+			'update_promotion' => array(
+				'func' => '_insert_update_promotions',
+				'noheader' => TRUE
+				),
+			'insert_promotion' => array(
+				'func' => '_insert_update_promotions',
+				'noheader' => TRUE,
+				'args' => array( TRUE )
+				),
 			'duplicate' => array(
 				'func' => '_duplicate_promotion',
 				'noheader' => TRUE
@@ -282,7 +291,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _promotion_details( $new = FALSE ) {
 		$id = $new ? '' : $this->_promotion->ID();
 		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
-		$view = $new ? 'insert_promotion_form' : 'update_promotion_form';
+		$view = $new ? 'insert_promotion' : 'update_promotion';
 		$this->_set_add_edit_form_tags($view);
 		$this->_set_publish_post_box_vars( 'PRO_ID', $id, FALSE, $redirect);
 		$this->display_admin_page_with_sidebar();
@@ -345,6 +354,82 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		}
 		$default = $this->_promotion->scope();
 		return EEH_Form_Fields::select_input( 'PRO_scope', $values, $default );
+	}
+
+
+
+	/**
+	 * Takes care of inserting/updating promotions.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $new Default false. Whether inserting or not.
+	 * @return void
+	 */
+	protected function _insert_update_promotions( $new = FALSE ) {
+		$promotion_values = array(
+			'PRO_ID' => !empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0,
+			'PRO_code' => !empty( $this->_req_data['PRO_code'] ) ? $this->_req_data['PRO_code'] : NULL,
+			'PRO_scope' => !empty( $this->_req_data['PRO_scope'] ) ? $this->_req_data['PRO_scope'] : 'Event',
+			'PRO_start' => !empty( $this->_req_data['PRO_start'] ) ? $this->_req_data['PRO_start'] : NULL,
+			'PRO_end' => ! empty( $this->_req_data['PRO_end'] ) ? $this->_req_data['PRO_end'] : NULL,
+			'PRO_uses' => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses'] : NULL,
+			'PRO_accept_msg' => ! empty( $this->_req_data['PRO_accept_msg'] ) ? $this->_req_data['PRO_accept_msg'] : '',
+			'PRO_decline_msg' => !empty( $this->_req_data['PRO_decline_msg'] ) ? $this->_req_data['PRO_decline_msg'] : ''
+			);
+		$promo_price_values = array(
+			'PRC_ID' => !empty( $this->_req_data['PRC_ID'] ) ? $this->_req_data['PRC_ID'] : 0,
+			'PRC_name' => !empty( $this->_req_data['PRC_name'] ) ? $this->_req_data['PRC_name'] : __('Special Promotion', 'event_espresso'),
+			'PRT_ID' => !empty( $this->_req_data['PRT_ID'] ) ? $this->_req_data['PRT_ID'] : 0,
+			'PRC_amount' => !empty( $this->_req_data['PRC_amount'] ) ? $this->_req_data['PRC_amount'] : 0,
+			'PRC_desc' => !empty( $this->_req_data['PRC_desc'] ) ? $this->_req_data['PRC_desc'] : ''
+			);
+
+		//first handle the price object
+		$price = empty( $promo_price_values['PRC_ID'] ) ? EE_Price::new_instance( $promo_price_values ) : EEM_Price::instance()->get_one_by_ID( $promo_price_values['PRC_ID'] );
+
+		if ( ! empty( $promo_price_values['PRC_ID'] ) ) {
+			//PRE-EXISTING PRICE so let's update the values.
+			foreach( $promo_price_values as $field => $value ) {
+				$price->set( $field, $value );
+			}
+		}
+
+		//save price
+		$price->save();
+
+		//next handle the promotions
+		$promotion = empty( $promotion_values['PRO_ID'] ) ? EE_Promotion::new_instance( $promotion_values ) : EEM_Promotion::instance()->get_one_by_ID( $promotion_values['PRO_ID'] );
+
+		if ( !empty( $promotion_values['PRO_ID'] ) ) {
+			//PRE-EXISTING promotion so let's update the values
+			foreach ( $promotion_values as $field => $value ) {
+				$promotion->set( $field, $value );
+			}
+		} else {
+			//new promotion so let's add the price id for the price relation
+			$promotion->set( 'PRC_ID', $price->ID() );
+		}
+
+		//save promotion
+		$promotion->save();
+
+		//hook for scopes and others to do their stuff.
+		do_action( 'AHEE__Promotions_Admin_Page___insert_update_promotion__after', $promotion, $this->_req_data );
+
+		if ( $promotion instanceof EE_Promotion && $new ) {
+			EE_Error::add_success( __('Promotion has been successfully created.', 'event_espresso') );
+		} else if ( $promotion instanceof EE_Promotion && ! $new ) {
+			EE_Error::add_success( __('Promotion has been successfully updated.', 'event_espresso') );
+		} else {
+			EE_Error::add_error( __('Something went wrong with saving the promotion', 'event_espresso' ), __FILE__, __FUNCTION__, __LINE__ );
+		}
+
+		$query_args = array(
+			'PRO_ID' => $promotion->ID(),
+			'action' => 'edit'
+			);
+		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
 	}
 
 

@@ -218,4 +218,46 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<br>' . $event_title_filter . '<div style="clear: both"></div>';
 	}
 
+
+
+
+	/**
+	 * save event relation for the applies to promotion
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Promotion $promotion
+	 * @param array  	    $data the incoming form data
+	 * @return void
+	 */
+	public function handle_promotion_update( EE_Promotion $promotion, $data ) {
+		//first do we have any selected items?
+		$selected_items = !empty( $data['ee_promotions_applied_selected_items_Event'] ) ? explode( ',', $data['ee_promotions_applied_selected_items_Event'] ) : array();
+		$evt_ids = array();
+
+		//existing pro_objects
+		$pro_objects = $promotion->promotion_objects();
+
+		//loop through existing and remove any that aren't present in the selected_items.
+		foreach( $pro_objects as $pro_obj ) {
+			if ( !in_array( $pro_obj->OBJ_ID(), $selected_items ) )
+				$promotion->delete_related('Promotion_Object', array( array( 'POB_ID' => $pro_obj->ID() ) ) );
+			$evt_ids[] = $pro_obj->OBJ_ID();
+		}
+
+		//k now let's make sure any that should be added are added.
+		foreach( $selected_items as $EVT_ID ) {
+			if( in_array( $EVT_ID, $evt_ids ) )
+				continue;
+			$pro_obj_values = array(
+				'PRO_ID' => $promotion->ID(),
+				'OBJ_ID' => $EVT_ID,
+				'POB_type' => $this->slug,
+				'POB_used' => 0
+				);
+			$promotion_obj = EE_Promotion_Object::new_instance( $pro_obj_values );
+			$promotion_obj->save();
+		}
+	}
+
 }

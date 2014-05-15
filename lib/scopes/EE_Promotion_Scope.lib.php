@@ -70,6 +70,9 @@ abstract class EE_Promotion_Scope {
 
 		//common ajax for admin
 		add_action('wp_ajax_promotion_scope_items', array( $this, 'ajax_get_applies_to_items_to_select'), 10 );
+
+		//hook into promotion details insert/update method
+		add_action( 'AHEE__Promotions_Admin_Page___insert_update_promotion__after', array( $this, 'handle_promotion_update' ), 10, 2 );
 	}
 
 
@@ -173,6 +176,17 @@ abstract class EE_Promotion_Scope {
 	abstract public function get_admin_applies_to_selector( $PRO_ID );
 
 
+
+	/**
+	 * This is the callback for the AHEE__Promotions_Admin_Page___insert_update_promotion__after action which makes sure scope applies to are attached properly to the promotion.
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Promotion $promotion the updated/inserted EE_Promotion object.
+	 * @param array              $data the incoming form data.
+	 * @return void
+	 */
+	abstract public function handle_promotion_update( EE_Promotion $promotion, $data );
 
 
 
@@ -321,7 +335,7 @@ abstract class EE_Promotion_Scope {
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
 		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
 		foreach( $PRO_OBJs as $PRO_OBJ ) {
-			$selected[] = $PRO_OBJ->obj_id();
+			$selected[] = $PRO_OBJ->OBJ_ID();
 		}
 		return $selected;
 	}
