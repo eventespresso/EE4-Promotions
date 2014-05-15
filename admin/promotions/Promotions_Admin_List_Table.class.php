@@ -100,20 +100,20 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_applies_to( EE_Promotion $item ) {
-		echo $item->applied_name();
+		echo $item->applied_to_name();
 	}
 
 
 
 	public function column_valid_from( EE_Promotion $item ) {
-		echo $item->start();
+		echo $item->get_date('PRO_start', 'M d/y');
 	}
 
 
 
 
 	public function column_valid_until( EE_Promotion $item ) {
-		echo $item->end();
+		echo $item->get_date('PRO_end', 'M d/y', '');
 	}
 
 
@@ -155,15 +155,13 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable"></div></a>';
 		$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable"></div></a>';
 		$content = '<div style="width:100%;">' . "\n\t";
-		$content .= impode( "\n\t", $actionlinks );
+		$content .= implode( "\n\t", $actionlinks );
 		$content .= "\n" . '</div>' . "\n";
 		echo $content;
 	}
 
 
 
-
-	//todo
 	protected function _get_promotions( $per_page = 10, $count = FALSE ) {
 		$_orderby = ! empty( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
 		switch( $_orderby ) {
@@ -200,6 +198,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$limit = array( $offset, $per_page );
 
 		$promotions = $count ? EEM_Promotion::instance()->count() : EEM_Promotion::instance()->get_all( array( 'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+		return $promotions;
 	}
 
 

@@ -39,8 +39,10 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string
 	 */
 	public function name( $EVT_ID ) {
-		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
+		if ( empty( $EVT_ID ) || ( is_array( $EVT_ID ) && count( $EVT_ID ) > 1 ) )
 			return $this->label->plural;
+
+		$EVT_ID = is_array( $EVT_ID ) ? $EVT_ID[0] : $EVT_ID;
 
 		$evt = $EVT_ID instanceof EE_Event ? $EVT_ID : $this->_get_model_object( $EVT_ID );
 		return $evt->name();

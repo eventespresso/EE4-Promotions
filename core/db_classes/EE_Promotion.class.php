@@ -240,6 +240,40 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * This simply returns the name for the applied to item attached to this scope.  The related scope object determines how this is displayed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function applied_to_name() {
+		$pro_objects = $this->promotion_objects();
+		$obj = 0;
+		if ( !empty( $pro_objects ) ) {
+			$obj = count( $pro_objects > 1 ) ? $obj : $pro_objects[0];
+		}
+
+		$applied_obj = ! empty( $obj ) ? $obj->get_first_related( $this->scope() ): 0;
+		return $this->scope_obj()->name( $applied_obj );
+	}
+
+
+
+
+	/**
+	 * This returns how many times this promotion has been redeeemed.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return int
+	 */
+	public function redeemed() {
+		return 'In progress...';
+	}
+
+
+
+	/**
 	 * Returns the date/time this promotion becomes available
 	 * @param type $date_format
 	 * @param type $time_format
