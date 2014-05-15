@@ -164,7 +164,7 @@ jQuery(document).ready(function($){
 			data.PRO_scope_sort = $('#ee-promotion-items-sort-order').text();
 
 			//what's the display only selected set at?
-			data.PRO_display_only_selected = $('#ee-display-selected-trigger-'+this.getScope()).val();
+			data.PRO_display_only_selected = $('#ee-display-selected-trigger-'+this.getScope()).prop('checked') ? 1 : 0;
 
 			//what about paging?
 			data.paged = typeof( page ) !== 'undefined' ? page : $('.current-page', '.ee-promotions-applies-to-paging').val();
