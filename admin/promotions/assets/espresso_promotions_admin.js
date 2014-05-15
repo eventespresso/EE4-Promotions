@@ -319,6 +319,18 @@ jQuery(document).ready(function($){
 	});
 
 
+	/**
+	 * capture enter keypress in paging input
+	 */
+	$('#post-body').on('keypress', '.current-page', function(e) {
+		if ( e.which == 13 ) {
+			e.preventDefault();
+			e.stopPropagation();
+			var paged = $(this).val();
+			eePromotionsHelper.getScopeSelectionItems(paged);
+		}
+	});
+
 
 	/**
 	 * clear calendar field
