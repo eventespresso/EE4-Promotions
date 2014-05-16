@@ -45,7 +45,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			'applies_to' => __('Applies To', 'event_espresso'),
 			'valid_from' => __('Valid From', 'event_espresso'),
 			'valid_until' => __('Valid Until', 'event_espresso'),
-			'amount' => __('Amount', 'event_espresso'),
+			'amount' => __('Discount', 'event_espresso'),
 			'redeemed' => __('Redeemed', 'event_espresso'),
 			'actions' => __('Actions', 'event_espresso')
 			);
@@ -121,7 +121,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_amount( EE_Promotion $item ) {
-		echo $item->amount();
+		echo $item->pretty_amount();
 	}
 
 

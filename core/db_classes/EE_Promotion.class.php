@@ -129,6 +129,12 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 
+	public function pretty_amount() {
+		$price = $this->get_first_related('Price');
+		return $price instanceof EE_Price ? $price->pretty_price() : 0;
+	}
+
+
 
 	public function description() {
 		$price = $this->get_first_related('Price');
