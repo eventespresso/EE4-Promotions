@@ -165,3 +165,36 @@
 .wp-list-table.promotion .column-actions {
 	text-align: right;
 }
+
+/** status strip **/
+
+/*upcoming*/
+.pro-status-PRU {
+	border-left-color: #00B1CA;
+}
+
+/*active*/
+.pro-status-PRA {
+	border-left-color: #70CC50;
+}
+
+/*expired*/
+.pro-status-PRX {
+	border-left-color: #AC9D9C;
+}
+
+.widefat td.column-pro_status, .widefat th.column-pro_status {
+	width: 2%;
+	padding: 0;
+	margin: 0;
+}
+
+.ee-status-legend-PRU {
+	background-color: #00B1CA;
+}
+.ee-status-legend-PRA {
+	background-color: #70CC50;
+}
+.ee-status-legend-PRX {
+	background-color: #AC9D9C;
+}
