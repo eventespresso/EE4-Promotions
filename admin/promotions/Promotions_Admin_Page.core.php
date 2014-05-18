@@ -236,7 +236,29 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 	protected function _list_table() {
 		$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+		$this->_template_args['after_list_table'] = $this->_display_legend( $this->_promotion_legend_items() );
 		$this->display_admin_list_table_page_with_no_sidebar();
+	}
+
+
+
+
+	protected function _promotion_legend_items() {
+		$items = array(
+			'active_status' => array(
+				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::active,
+				'desc' => EEH_Template::pretty_status( EE_Promotion::active, FALSE, 'sentence')
+				),
+			'upcoming_status' => array(
+				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::upcoming,
+				'desc' => EEH_Template::pretty_status( EE_Promotion::upcoming, FALSE, 'sentence')
+				),
+			'expired_status' => array(
+				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::expired,
+				'desc' => EEH_Template::pretty_status( EE_Promotion::expired, FALSE, 'sentence')
+				)
+			);
+		return $items;
 	}
 
 
