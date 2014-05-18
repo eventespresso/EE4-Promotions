@@ -23,6 +23,25 @@
  */
 class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
+	//constants
+
+	/**
+	 * Promotion hasn't started yet.
+	 */
+	const upcoming = 'PRU';
+
+
+	/**
+	 * Promotion is currently active
+	 */
+	const active = 'PRA';
+
+
+	/**
+	 * Promotion is expired;
+	 */
+	const expired = 'PRX';
+
 
 	/** ID", "event_espresso @var PRO_ID*/
 	protected $_PRO_ID = NULL;

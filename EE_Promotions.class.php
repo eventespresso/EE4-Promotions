@@ -70,6 +70,40 @@ Class  EE_Promotions extends EE_Addon {
 
 		//setup EEI_Plugin_API implementation for promotion scopes for other plugins to register a promotion scope.
 		EEH_Autoloader::instance()->register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib/plugin_api' );
+
+
+		//register promotion specific statuses
+		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( $this, 'promotion_stati' ), 10 );
+	}
+
+
+
+
+
+	/**
+	 * This registers the localization for the promotion statuses with the EEM_Status
+	 * translation array
+	 *
+	 * @param array  $stati_translation Current localized stati
+	 *
+	 * @return array  Current stati with promotion stati appended.
+	 */
+	public function promotion_stati( $stati_translation ) {
+		$promotion_stati = array(
+			EE_Promotion::upcoming => array(
+				__('upcoming', 'event_espresso'),
+				__('upcoming', 'event_espresso')
+				),
+			EE_Promotion::active => array(
+				__('active', 'event_espresso'),
+				__('active', 'event_espresso')
+				),
+			EE_Promotion::expired => array(
+				__('expired', 'event_espresso'),
+				__('expired', 'event_espresso')
+				)
+			);
+		return array_merge( $stati_translation, $promotion_stati );
 	}
 
 
