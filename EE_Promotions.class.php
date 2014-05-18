@@ -73,7 +73,7 @@ Class  EE_Promotions extends EE_Addon {
 
 
 		//register promotion specific statuses
-		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( $this, 'promotion_stati' ), 10 );
+		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( 'EE_Promotions', 'promotion_stati' ), 10 );
 	}
 
 
@@ -88,7 +88,7 @@ Class  EE_Promotions extends EE_Addon {
 	 *
 	 * @return array  Current stati with promotion stati appended.
 	 */
-	public function promotion_stati( $stati_translation ) {
+	public static function promotion_stati( $stati_translation ) {
 		$promotion_stati = array(
 			EE_Promotion::upcoming => array(
 				__('upcoming', 'event_espresso'),
