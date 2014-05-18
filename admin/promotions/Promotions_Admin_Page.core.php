@@ -257,6 +257,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'expired_status' => array(
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::expired,
 				'desc' => EEH_Template::pretty_status( EE_Promotion::expired, FALSE, 'sentence')
+				),
+			'unavailable_status' => array(
+				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::unavailable,
+				'desc' => EEH_Template::pretty_status( EE_Promotion::unavailable, FALSE, 'sentence')
 				)
 			);
 		return $items;

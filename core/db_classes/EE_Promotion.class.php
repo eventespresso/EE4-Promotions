@@ -43,6 +43,13 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	const expired = 'PRX';
 
 
+
+	/**
+	 * Promotion is unavailable
+	 */
+	const unavailable = 'PRN';
+
+
 	/** ID", "event_espresso @var PRO_ID*/
 	protected $_PRO_ID = NULL;
 
@@ -342,8 +349,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		$uses = $this->uses();
 		$used = $this->redeemed();
 
-		if ( $redeemed >= $uses )
-			return self::expired;
+		if ( $used >= $uses )
+			return self::unavailable;
 
 		//active (which means that the promotion is currently able to be used)
 		if ( ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {

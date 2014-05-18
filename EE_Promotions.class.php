@@ -101,6 +101,10 @@ Class  EE_Promotions extends EE_Addon {
 			EE_Promotion::expired => array(
 				__('expired', 'event_espresso'),
 				__('expired', 'event_espresso')
+				),
+			EE_Promotion::unavailable => array(
+				__('unavailable', 'event_espresso'),
+				__('unavailable', 'event_espresso')
 				)
 			);
 		return array_merge( $stati_translation, $promotion_stati );

@@ -54,6 +54,16 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 						)
 					)
 				),
+			3 => array(
+				'content_id' => 'promotion-status-' . EE_Promotion::unavailable,
+				'target' => '.pro-status-' . EE_Promotion::unavailable,
+				'content' => $this->_promotion_status_legend(EE_Promotion::unavailable),
+				'options' => array(
+					'position' => array(
+						'target' => 'mouse'
+						)
+					)
+				),
 			);
 	}
 
@@ -73,6 +83,7 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 			'active_status' => EE_Promotion::active,
 			'upcoming_status' => EE_Promotion::upcoming,
 			'expired_status' => EE_Promotion::expired,
+			'unavailable_status' => EE_Promotion::unavailable,
 			);
 
 		return EEH_Template::status_legend( $status_array, $status );
