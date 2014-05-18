@@ -267,14 +267,20 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * This returns how many times this promotion has been redeeemed.
+	 * This returns how many times this promotion has been redeeemed (via promotion object table)
 	 *
 	 * @since  1.0.0
 	 *
+	 * @param int 	$objID	 If a specific object ID is included then we only return the count
+	 * for that specific object ID.  Otherwise we sum all the values for the matching PRO_ID in
+	 * the Promotion Objects table.
 	 * @return int
 	 */
-	public function redeemed() {
-		return 'In progress...';
+	public function redeemed($objID = 0) {
+		$query_params[0] = array( 'PRO_ID' => $this->ID() );
+		if ( !empty( $objID ) )
+			$query_params[0]['OBJ_ID'] = $objID;
+		return EEM_Promotion_Object::instance()->sum( $query_params, 'POB_used' );
 	}
 
 
