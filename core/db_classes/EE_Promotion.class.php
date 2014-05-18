@@ -323,6 +323,36 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		return $this->get('PRO_uses');
 	}
 
+
+
+	/**
+	 * This returns the status for the promotion (which is a calculation based on the date strings)
+	 * Note that its possible promotion dates are null which DOES affect the calculation accordingly.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return EE_Promotion::const  One of the EE_Promotion constants
+	 */
+	public function status() {
+		$start = $this->get_raw('PRO_start');
+		$end = $this->get_raw('PRO_end');
+		$now = time();
+
+		//active (which means that the promotion is currently able to be used)
+		if ( ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
+			return self::active;
+		//upcoming
+		} else if ( $start > $now  ) {
+			return self::upcoming;
+		//k must be expired
+		} else {
+			return self::expired;
+		}
+	}
+
+
+
+
 	/**
 	 *
 	 * @param type $price_id

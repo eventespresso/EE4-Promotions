@@ -38,6 +38,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			);
 
 		$this->_columns = array(
+			'pro_status' => '',
 			'cb' => '<input type="checkbox" />',
 			'id' => __('ID', 'event_espresso'),
 			'name' => __('Name', 'event_espresso'),
@@ -75,6 +76,10 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		//$this->_views['trash']['count'] = $this->_trashed_count();
 	}
 
+
+	public function column_pro_status( EE_Promotion $item ) {
+		return '<span class="ee-status-strip ee-status-strip-td pro-status-' . $item->status() . '"></span>';
+	}
 
 
 	public function column_cb( EE_Promotion $item ) {
