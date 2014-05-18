@@ -163,6 +163,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	protected function _get_promotions( $per_page = 10, $count = FALSE ) {
+		$_where = array();
 		$_orderby = ! empty( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
 		switch( $_orderby ) {
 			case 'name' :
@@ -189,6 +190,17 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				break;
 		}
 
+		//search query params?
+		if ( !empty( $this->_req_data['s'] ) ) {
+			$s = $this->_req_data['s'];
+			$_where = array(
+				'OR' => array(
+					'Price.PRC_name' => array( 'LIKE', '%' . $s . '%' ),
+					'Price.PRC_desc' => array( 'LIKE', '%' . $s . '%' ),
+					'PRO_code' => array( 'LIKE',  '%' . $s . '%' )
+				) );
+		}
+
 		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'ASC';
 		$current_page = ! empty( $this->_req_data['paged'] ) ? $this->_req_data['paged'] : 1;
 		$per_page = ! empty( $per_page ) ? $per_page : 10;
@@ -197,7 +209,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$offset = ( $current_page - 1 ) * $per_page;
 		$limit = array( $offset, $per_page );
 
-		$promotions = $count ? EEM_Promotion::instance()->count() : EEM_Promotion::instance()->get_all( array( 'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+		$promotions = $count ? EEM_Promotion::instance()->count(array( $_where ) ) : EEM_Promotion::instance()->get_all( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
 		return $promotions;
 	}
 
