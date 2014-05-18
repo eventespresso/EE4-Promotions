@@ -135,6 +135,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					'label' => __('Promotions Overview', 'event_espresso'),
 					'order' => 10
 					),
+				'qtips' => array( 'Promotions_List_Table_Tips' ),
 				'list_table' => 'Promotions_Admin_List_Table',
 				'require_nonce' => FALSE
 			),
