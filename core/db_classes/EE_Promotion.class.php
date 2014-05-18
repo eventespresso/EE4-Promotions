@@ -338,6 +338,13 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		$end = $this->get_raw('PRO_end');
 		$now = time();
 
+		//check uses first... if uses has none left then expired.
+		$uses = $this->uses();
+		$used = $this->redeemed();
+
+		if ( $redeemed >= $uses )
+			return self::expired;
+
 		//active (which means that the promotion is currently able to be used)
 		if ( ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
 			return self::active;
