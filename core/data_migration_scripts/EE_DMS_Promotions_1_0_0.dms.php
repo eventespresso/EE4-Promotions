@@ -72,16 +72,6 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 			KEY PRO_ID (PRO_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
 
-		$table_name = 'esp_promotion_applied';
-		$sql = "PRA_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
-			PRO_ID INT UNSIGNED NOT NULL,
-			OBJ_ID INT UNSIGNED NOT NULL,
-			POB_type VARCHAR(45) NULL,
-			PRIMARY KEY  (PRA_ID),
-			KEY OBJ_ID (OBJ_ID),
-			KEY PRO_ID (PRO_ID)";
-		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
-
 		$table_name = 'esp_promotion_rule';
 		$sql = "PRR_ID INT UNSIGNED NOT NULL AUTO_INCREMENT ,
 					PRO_ID INT UNSIGNED NOT NULL ,

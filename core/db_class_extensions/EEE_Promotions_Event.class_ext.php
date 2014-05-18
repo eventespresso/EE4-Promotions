@@ -8,7 +8,7 @@ if (!defined('EVENT_ESPRESSO_VERSION'))
  * EE_Promotions_Event
  *
  * @package			Event Espresso
- * @subpackage		
+ * @subpackage
  * @author				Mike Nelson
  *
  */
@@ -17,15 +17,7 @@ class EEE_Promotions_Event extends EEE_Base_Class{
 		$this->_model_name_extended = 'Event';
 		parent::__construct();
 	}
-	/**
-	 * Adds the function promotions_applied onto all EE_Event objects, which returns all
-	 * the promotions which apply to this event
-	 * @param type $query_params
-	 * @return type
-	 */
-	public function ext_promotion_object_relations($query_params = array()){
-		return $this->_->get_many_related('Promotion_Applied', $query_params);
-	}
+
 	/**
 	 * Adds the function 'promotions' onto each EE_Event obejct.
 	 * Gets all theh promotions for this event, (but doesn't cache its results or anything).
