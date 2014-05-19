@@ -25,6 +25,67 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$this->label->singular = __('Event', 'event_espresso');
 		$this->label->plural = __('Events', 'event_espresso');
 		$this->slug = 'Event';
+
+		//filters
+		//filter for get_events on admin list table to only show events attached to specific promotion.
+		add_filter( 'FHEE__Events_Admin_Page__get_events__where', array( $this, 'event_list_query_params' ), 10, 2 );
+		//filter to show a helpful title on events list table when displaying events filtered by promotion
+		add_filter( 'FHEE__EE_Admin_Page___display_admin_list_table_page__before_list_table__template_arg', array( $this, 'before_events_list_table_content' ), 10, 4 );
+	}
+
+
+
+	/**
+	 * Callback for FHEE__Events_Admin_Page__get_events__where.  Event Scope adds
+	 * additional query params to the query retrieving the events in certain conditions.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param     	array $where   		current query where params for event query
+	 * @req_data	array $req_data	incoming request data.
+	 * @return array 			where query_args for get_events query.
+	 */
+	public function event_list_query_params( $where, $req_data ) {
+		if ( !empty( $req_data['EVT_IDs'] ) ) {
+			$evt_ids = explode( ',', $req_data['EVT_IDs'] );
+			$where['EVT_ID'] = array('IN', $evt_ids);
+		}
+		return $where;
+	}
+
+
+
+
+	/**
+	 * callback for the FHEE__EE_Admin_Page___display_admin_list_table_page__before_list_table__template_arg filter so if displaying events filtered by promotion we add helpful title for viewer.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $content      Any current content.
+	 * @param string $page_slug  Page slug of page
+	 * @param array  $req_data    Incoming request data.
+	 * @param string $req_action 'action' value for page
+	 *
+	 * @return string  If correct page then and conditions are met the new string. Otherwise existing.
+	 */
+	public function before_events_list_table_content( $content, $page_slug, $req_data, $req_action ) {
+		if ( ( $page_slug !== 'espresso_events' && $req_action !== 'default' ) || empty( $req_data['PRO_ID'] ) )
+			return $content;
+
+		$promotion = EEM_Promotion::instance()->get_one_by_ID( $req_data['PRO_ID'] );
+
+		if ( $promotion instanceof EE_Promotion ) {
+			$query_args = array(
+				'action' => 'edit',
+				'PRO_ID' => $promotion->ID()
+				);
+			EE_Registry::instance()->load_helper('URL');
+			$url = EEH_URL::add_query_args_and_nonce( $query_args, admin_url('admin.php?page=espresso_promotions'));
+			$pro_linked = '<a href="' . $url . '" title="' . __('Click to view promotion details.', 'event_espresso') . '">' . $promotion->name() . '</a>';
+			$content .= '<h3>' . sprintf( __('Viewing Events that the %s promotion applies to.', 'event_espresso' ), $pro_linked ) . '</h3>';
+		}
+
+		return $content;
 	}
 
 
