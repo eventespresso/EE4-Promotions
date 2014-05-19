@@ -58,31 +58,6 @@ class EED_Promotions extends EED_Module {
 
 
 
-	/**
-	 *    set_config
-	 *
-	 * @return EE_Promotions_Config
-	 */
-	protected static function _set_config(){
-		//return EED_Promotions::instance()->set_config( 'addons', 'EED_Promotions', 'EE_Promotions_Config' );
-	}
-
-
-
-	/**
-	 *    _get_config
-	 *
-	 * @return EE_Promotions_Config
-	 */
-	protected static function _get_config(){
-		//$config = EED_Promotions::instance()->get_config( 'addons', 'EED_Promotions', 'EE_Promotions_Config' );
-		//return $config instanceof EE_Promotions_Config ? $config : EED_Promotions::_set_config();
-	}
-
-
-
-
-
 	 /**
 	  *    run - initial module setup
 	  *
