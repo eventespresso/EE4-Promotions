@@ -107,6 +107,18 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		$evt = $EVT_ID instanceof EE_Event ? $EVT_ID : $this->_get_model_object( $EVT_ID );
 		return $evt->name();
+
+
+
+	/**
+	 * This returns a html span string for the event scope icon.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	protected function get_scope_icon() {
+		return '<span class="dashicons dashicons-flag"></span>';
 	}
 
 
