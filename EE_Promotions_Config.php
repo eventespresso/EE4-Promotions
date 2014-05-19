@@ -56,6 +56,17 @@ class EE_Promotions_Config extends EE_Config_Base {
 		return $scopes;
 	}
 
+
+	/**
+	 * Use to designate what properties get serialized with object.
+	 *
+	 * @since 1.0.0
+	 * @return array   Values represent properties to serialize
+	 */
+	public function __sleep() {
+		return array();
+	}
+
 }
 
 
