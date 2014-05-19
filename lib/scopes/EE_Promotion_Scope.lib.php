@@ -113,11 +113,16 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int|EE_Base_Class    $OBJ_ID ID or model object for the EE_Base_Class object being
-	 *                                     		  utilized.
+	 * @param int|EE_Base_Class    $OBJ_ID ID or model object for the EE_Base_Class object
+	 *                                     		  being utilized
+	 * @param bool|string 		$link 	  If false just return name, if 'admin' return name
+	 *                               			  wrapped in link to admin details.  If 'front' return
+	 *                               			  name wrapped in link to frontend details.
+	 * @param int     		$PRO_ID  Optional. Include the promo ID for potential
+	 *                           			    downstream code use.
 	 * @return string
 	 */
-	abstract public function name( $OBJ_ID );
+	abstract public function name( $OBJ_ID, $link = FALSE, $PRO_ID = 0 );
 
 
 
@@ -164,6 +169,7 @@ abstract class EE_Promotion_Scope {
 
 
 
+
 	/**
 	 * Returns query args for use in model queries on the
 	 * EEM model related to scope.  Note this also should
@@ -202,6 +208,36 @@ abstract class EE_Promotion_Scope {
 	 * @return void
 	 */
 	abstract public function handle_promotion_update( EE_Promotion $promotion, $data );
+
+
+
+
+	/**
+	 * This returns a html span string for the default scope icon.  Child classes can override.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	protected function get_scope_icon() {
+		return '<span class="dashicons dashicons-megaphone"></span>';
+	}
+
+
+
+
+	/**
+	 * this returns a styled span for the promo count.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $count  the count to display.
+	 *
+	 * @return string
+	 */
+	protected function get_promo_count_display( $count = 0 ) {
+		return '<span class="promotion-count-bubble">' . $count . '</span>';
+	}
 
 
 
