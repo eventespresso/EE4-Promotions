@@ -152,7 +152,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string
 	 */
 	public function get_admin_url( $EVT_ID ) {
-		$base_url = admin_url('admin.php?page="espresso_events"');
+		$base_url = admin_url('admin.php?page=espresso_events');
 		if ( empty( $EVT_ID ) || is_array( $EVT_ID) )
 			return $base_url;
 
