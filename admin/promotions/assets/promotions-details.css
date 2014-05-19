@@ -206,3 +206,21 @@
 .ee-status-legend-PRN {
 	background-color: #E44064;
 }
+
+
+/** count bubble **/
+.promotion-count-bubble {
+	background-color: #555555;
+	display: inline-block;
+	max-width: 40px;
+	min-width: 15px;
+	max-height: 15px;
+	margin-left: 5px;
+	line-height: 15px;
+	color: #fff;
+	font-size: 10px;
+	text-align: center;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 15px;
+}
