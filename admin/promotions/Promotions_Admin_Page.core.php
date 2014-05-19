@@ -352,7 +352,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 		$default = $this->_promotion->price_type_id();
 
-		return EEH_Form_Fields::select_input( 'PRT_name', $values, $default );
+		return EEH_Form_Fields::select_input( 'PRT_ID', $values, $default );
 	}
 
 
