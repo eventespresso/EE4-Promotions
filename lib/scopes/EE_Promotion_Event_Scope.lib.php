@@ -97,16 +97,59 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @param mixed int|array|EE_Event    $EVT_ID (or array of ids) or EE_Event object for
 	 *                                    		the EE_Event object being utilized.
+	 * @param mixed bool|string 		$link      if FALSE then just return name, otherwise
+	 *                            				'front' wraps name in link to frontend
+	 *                            				details, 'admin' wraps name in link to
+	 *                            				backend details.
+	 * @param int   			$PRO_ID Optional. Providing the Promotion ID
+	 *                         				  allows identification in downstream code
+	 *                         				  for what promotion is being handled. (i.e.
+	 *                         				  adding it to the query_args for the links).
 	 * @return string
 	 */
-	public function name( $EVT_ID ) {
-		if ( empty( $EVT_ID ) || ( is_array( $EVT_ID ) && count( $EVT_ID ) > 1 ) )
-			return $this->label->plural;
+	public function name( $EVT_ID, $link = FALSE, $PRO_ID = 0 ) {
+		if ( empty( $EVT_ID ) || ( is_array( $EVT_ID ) && count( $EVT_ID ) > 1 ) ) {
+			switch ( $link ) {
 
-		$EVT_ID = is_array( $EVT_ID ) ? $EVT_ID[0] : $EVT_ID;
+				case 'front' :
+					//@todo eventually a filter could be added here so that the link goes to a filtered archive view of the events JUST for this promotion in the frontend. For now we won't don anything (cause I doubt this will be used much).
+					$prepend = $append = '';
+					break;
+
+				case 'admin' :
+					$EVT_IDs = is_array( $EVT_ID ) && !empty( $EVT_ID ) ? implode(',', $EVT_ID ) : '';
+					$query_args = !empty( $EVT_IDs ) ? array( 'EVT_IDs' =>$EVT_IDs, 'PRO_ID' => $PRO_ID ) : array();
+					$url = add_query_arg( $query_args, $this->get_admin_url( NULL ) );
+					$prepend = '<a href="' . $url . '" title="' . __('See events this promotion applies to.', 'event_espresso') . '">';
+					$append = '</a>';
+					break;
+				default :
+					$prepend = $append = '';
+					break;
+
+			}
+			$promo_count = $this->get_promo_count_display( count( $EVT_ID ) );
+			return $this->get_scope_icon() . $prepend . $this->label->plural . $append . $promo_count;
+		}
 
 		$evt = $EVT_ID instanceof EE_Event ? $EVT_ID : $this->_get_model_object( $EVT_ID );
-		return $evt->name();
+
+		switch ($link ) {
+			case 'front' :
+				$url = $this->get_frontend_url( $evt->ID() );
+				$prepend = '<a href="' . $url . '" title="' . __('View details about this event.', 'event_espresso') . '">';
+				$append = '</a>';
+			case 'admin' :
+				$url = $this->get_admin_url( $evt->ID() );
+				$prepend = '<a href="' . $url . '" title="' . __('See details on this event', 'event_espresso') . '">';
+				$append = '</a>';
+				break;
+			default :
+				$prepend = $append = '';
+				break;
+		}
+		return $this->get_scope_icon() . $prepend . $evt->name() . $append;
+	}
 
 
 

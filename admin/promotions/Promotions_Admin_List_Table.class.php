@@ -105,7 +105,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_applies_to( EE_Promotion $item ) {
-		echo $item->applied_to_name();
+		echo $item->applied_to_name( 'admin' );
 	}
 
 

@@ -272,22 +272,39 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * This simply returns the name for the applied to item attached to this scope.  The related scope object determines how this is displayed.
+	 * This simply returns the name for the applied to item attached to this scope.  The related
+	 * scope object determines how this is displayed (i.e. if this is for multiple items then scope
+	 * object will just return the plural label for this scope item.  If there is only ONE item then it
+	 * will return the specific name of that one item).
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param mixed bool|string $link   If false then just return the related name.  If 'front' then
+	 * return the name wrapped in a hyperlink to the frontend details for the item.  If 'admin'
+	 * then return the name wrapped in a hyperlink to the admin details for the item.
 	 * @return string
 	 */
-	public function applied_to_name() {
+	public function applied_to_name( $link = FALSE ) {
 		$pro_objects = $this->promotion_objects();
 		$obj = 0;
+		$obj_ids = array();
 		if ( !empty( $pro_objects ) ) {
-			$obj = count( $pro_objects > 1 ) ? $obj : $pro_objects[0];
+			$obj = count( $pro_objects ) > 1 ? $pro_objects : array_shift($pro_objects);
 		}
 
-		$applied_obj = ! empty( $obj ) ? $obj->get_first_related( $this->scope() ): 0;
-		return $this->scope_obj()->name( $applied_obj );
+		$applied_obj = ! empty( $obj ) && $obj instanceof EE_Promotion_Object ? $obj->get_first_related( $this->scope() ) : $obj;
+
+		if ( is_array( $applied_obj )  ) {
+			foreach( $pro_objects as $pro_object ) {
+				$obj_ids[] = $pro_object->OBJ_ID();
+			}
+			$applied_obj = $obj_ids;
+		}
+
+		return $this->scope_obj()->name( $applied_obj, $link, $this->ID() );
 	}
+
+
 
 
 
