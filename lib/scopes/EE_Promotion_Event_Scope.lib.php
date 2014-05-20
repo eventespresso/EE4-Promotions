@@ -123,6 +123,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 					$prepend = '<a href="' . $url . '" title="' . __('See events this promotion applies to.', 'event_espresso') . '">';
 					$append = '</a>';
 					break;
+
 				default :
 					$prepend = $append = '';
 					break;
@@ -139,11 +140,14 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 				$url = $this->get_frontend_url( $evt->ID() );
 				$prepend = '<a href="' . $url . '" title="' . __('View details about this event.', 'event_espresso') . '">';
 				$append = '</a>';
+				break;
+
 			case 'admin' :
 				$url = $this->get_admin_url( $evt->ID() );
 				$prepend = '<a href="' . $url . '" title="' . __('See details on this event', 'event_espresso') . '">';
 				$append = '</a>';
 				break;
+
 			default :
 				$prepend = $append = '';
 				break;
