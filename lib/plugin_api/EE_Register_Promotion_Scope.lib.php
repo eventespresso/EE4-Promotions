@@ -78,7 +78,7 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 
 
 	public static function register_path( $scope_paths ) {
-		foreach ( self::$_registry as $promo_id => $config ) {
+		foreach ( self::$_registry as $config ) {
 			$scope_paths[] = $config['scope_path'];
 		}
 		return $scope_paths;
