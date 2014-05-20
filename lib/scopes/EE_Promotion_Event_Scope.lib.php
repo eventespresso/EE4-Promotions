@@ -225,7 +225,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	public function get_frontend_url( $EVT_ID ) {
 		EE_Registry::instance()->load_helper('Event_View');
 		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
-			return EEH_Event_View::event_archive_link();
+			return EEH_Event_View::event_archive_url();
 
 		return EEH_Event_View::event_link_url( $EVT_ID );
 	}
