@@ -162,10 +162,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param bool   $classonly used to indicate if we only want to return the icon class
+	 * or the entire html string.
 	 * @return string
 	 */
-	protected function get_scope_icon() {
-		return '<span class="dashicons dashicons-flag"></span>';
+	public function get_scope_icon( $classonly = FALSE ) {
+		return $classonly ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-flag"></span>';
 	}
 
 
