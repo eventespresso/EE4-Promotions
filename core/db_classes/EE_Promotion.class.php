@@ -1,25 +1,21 @@
-<?php if ( ! defined('EVENT_ESPRESSO_VERSION')) exit('No direct script access allowed');
+<?php
 /**
- * Event Espresso
+ * This file contains the EE_Base_Class implementation for EE_Promotion model object
  *
- * Event Registration and Management Plugin for WordPress
+ * @since 1.0.0
+ * @package EE Promotions
+ * @subpackage models
+ */
+if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
+
+/**
+ * EE_Base_Class for EE_Promotions
  *
- * @ package			Event Espresso
- * @ author				Seth Shoultes
- * @ copyright		(c) 2008-2011 Event Espresso  All Rights Reserved.
- * @ license			{@link http://eventespresso.com/support/terms-conditions/}   * see Plugin Licensing *
- * @ link					{@link http://www.eventespresso.com}
- * @ since		 		4.0
+ * @since 1.0.0
  *
- * ------------------------------------------------------------------------
- *
- * EE_Promotion class
- *
- * @package			Event Espresso
- * @subpackage		includes/classes/EE_Answer.class.php
- * @author				Mike Nelson
- *
- * ------------------------------------------------------------------------
+ * @package EE4 Promotions
+ * @subpackage models
+ * @author Mike Nelson
  */
 class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
@@ -27,98 +23,49 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 	/**
 	 * Promotion hasn't started yet.
+	 *
+	 * @since 1.0.0
+	 * @type string
 	 */
 	const upcoming = 'PRU';
 
 
 	/**
-	 * Promotion is currently active
+	 * Promotion is currently active.
+	 *
+	 * @since 1.0.0
+	 * @type string
 	 */
 	const active = 'PRA';
 
 
 	/**
-	 * Promotion is expired;
+	 * Promotion is expired.
+	 *
+	 * @since 1.0.0
+	 * @type string
 	 */
 	const expired = 'PRX';
 
 
 
 	/**
-	 * Promotion is unavailable
+	 * Promotion is unavailable.
+	 *
+	 * @since 1.0.0
+	 * @type string
 	 */
 	const unavailable = 'PRN';
 
 
-	/** ID", "event_espresso @var PRO_ID*/
-	protected $_PRO_ID = NULL;
-
-				/** Price ID", "event_espresso @var PRC_ID*/
-	protected $_PRC_ID = NULL;
-
-				/** Scope", "event_espresso @var PRO_scope*/
-	protected $_PRO_scope = NULL;
-
-				/** Start Date/Time", "event_espresso @var PRO_start*/
-	protected $_PRO_start = NULL;
-
-				/** End Date/Time", "event_espresso @var PRO_end*/
-	protected $_PRO_end = NULL;
-
-				/** Code", "event_espresso @var PRO_code*/
-	protected $_PRO_code = NULL;
-
-				/** Times used within a given scope", "event_espresso @var PRO_uses*/
-	protected $_PRO_uses = NULL;
-
-				/** Usable Globally?", "event_espresso @var PRO_global*/
-	protected $_PRO_global = NULL;
-
-				/** Times used Globally", "event_espresso @var PRO_global_uses*/
-	protected $_PRO_global_uses = NULL;
-
-				/** Exlusive? (ie, can't be used with other promotions)", "event_espresso @var PRO_exclusive*/
-	protected $_PRO_exclusive = NULL;
-
-				/** Accepted", "event_espresso @var PRO_accept_msg*/
-	protected $_PRO_accept_msg = NULL;
-
-				/** Declined", "event_espresso @var PRO_decline_msg*/
-	protected $_PRO_decline_msg = NULL;
-
-				/** Usable by default on all new items within promotion's scope", "event_espresso @var PRO_default*/
-	protected $_PRO_default = NULL;
-
-				/** Order", "event_espresso @var PRO_order*/
-	protected $_PRO_order = NULL;
 
 	/**
+	 * method for instantiating the object from client code.
 	 *
-	 * @var EE_Promotion_Rule[]
-	 */
-	protected $_Promotion_Rule = NULL;
-
-	/**
+	 * @since 1.0.0
 	 *
-	 * @var EE_Rule[]
-	 */
-	protected $_Rule = NULL;
-
-	/**
-	 *
-	 * @var EE_Price
-	 */
-	protected $_Price = NULL;
-
-	/**
-	 *
-	 * @var EE_Promotion_Object[] relation to join-model between promotions and whatevers
-	 */
-	protected $_Promotion_Object = NULL;
-	/**
-	 *
-	 * @param type $props_n_values
-	 * @return self
+	 * @param array $props_n_values array of fields and values to set on the object
+	 * @return EE_Promotion
 	 */
 	public static function new_instance( $props_n_values = array() ) {
 		$classname = __CLASS__;
@@ -127,14 +74,20 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 	/**
+	 * method for instantiating the object using values from the db.
 	 *
-	 * @param type $props_n_values
-	 * @return self
+	 * @since 1.0.0
+	 *
+	 * @param array $props_n_values
+	 * @return EE_Promotion
 	 */
 	public static function new_instance_from_db ( $props_n_values = array() ) {
 		return new self( $props_n_values, TRUE );
 	}
 	/**
+	 * get EE_Price ID.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return int
 	 */
@@ -143,18 +96,43 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 
+
+	/**
+	 * get EE_Price name.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
 	public function name() {
 		$price = $this->get_first_related('Price');
 		return $price instanceof EE_Price ? $price->name() : '';
 	}
 
 
+
+	/**
+	 * get EE_Price amount.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int
+	 */
 	public function amount() {
 		$price = $this->get_first_related('Price');
 		return $price instanceof EE_Price ? $price->amount() : 0;
 	}
 
 
+
+
+	/**
+	 * get EE_Price pretty amount.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
 	public function pretty_amount() {
 		$price = $this->get_first_related('Price');
 		return $price instanceof EE_Price ? $price->pretty_price() : 0;
@@ -162,6 +140,13 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 
+	/**
+	 * get EE_Price description.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
 	public function description() {
 		$price = $this->get_first_related('Price');
 		return $price instanceof EE_Price ? $price->desc() : '';
@@ -169,6 +154,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 
+
+	/**
+	 * get EE_Price_Type ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int
+	 */
 	public function price_type_id() {
 		$price = EEM_Price::instance()->get_one_by_ID( $this->price_ID() );
 		return $price instanceof EE_Price ? $price->type() : 0;
@@ -177,35 +170,66 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * get EE_promotion accept message text.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
 	public function accept_message(){
 		return $this->get('PRO_accept_msg');
 	}
+
+
+
+
 	/**
+	 * get EE_Promotion code.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
 	public function code(){
 		return $this->get('PRO_code');
 	}
+
+
+
+
 	/**
+	 * get EE_Promotion decline message text.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
 	public function decline_message(){
 		return $this->get('PRO_decline_msg');
 	}
+
+
+
+
 	/**
-	 * returns whether or not this promotion should be added by default to all items in its scope
+	 * returns whether or not this promotion should be added by default to all items in its scope.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return boolean
 	 */
 	public function is_default(){
 		return $this->get('PRO_default');
 	}
+
+
+
+
 	/**
-	 * Gets the date this promotion is no longer valid
+	 * Gets the date this promotion is no longer valid.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return string
 	 */
 	public function end($date_format=null,$time_format=null){
@@ -213,30 +237,61 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		$pro_end = $this->get_raw('PRO_end');
 		return empty( $pro_end ) ? '' : $this->_get_datetime('PRO_end',$date_format,$time_format);
 	}
+
+
+
+
+
 	/**
-	 * If this returns true, this promotion cannot be combined with other promotions.
-	 * If false, it can be
+	 * If this returns true, this promotion cannot be combined with other promotions. If false, it
+	 * cannot be.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return boolean
 	 */
 	public function is_exclusive(){
 		return $this->get('PRO_exlusive');
 	}
+
+
+
+
 	/**
-	 * Return whether or not this promotion can be used globally or not
+	 * Return whether or not this promotion can be used globally or not.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return boolean
 	 */
 	public function is_global(){
 		return $this->get('PRO_global');
 	}
+
+
+
+
+
 	/**
-	 * The number of times thsi promotion has been used globally
+	 * The number of times this promotion has been used globally.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return int
 	 */
 	public function global_uses(){
 		return $this->get('PRO_global_uses');
 	}
+
+
+
+
+
 	/**
-	 * the order in which this promotion should be applied
+	 * the order in which this promotion should be applied.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return int
 	 */
 	public function order(){
@@ -248,6 +303,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 	/**
 	 * The model this promotion should be applied to. Eg, Registration, Transaction, etc.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return string
 	 */
 	public function scope(){
@@ -329,7 +387,10 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * Returns the date/time this promotion becomes available
+	 * Returns the date/time this promotion becomes available.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param type $date_format
 	 * @param type $time_format
 	 * @return string
@@ -340,7 +401,10 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		return empty( $pro_start ) ? '' : $this->get_datetime('PRO_start', $date_format, $time_format);
 	}
 	/**
-	 * Gets the number of times this promotion has been used in its particular scope
+	 * Gets the number of times this promotion has been used in its particular scope.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return int
 	 */
 	public function uses(){
@@ -355,7 +419,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return EE_Promotion::const  One of the EE_Promotion constants
+	 * @return string  One of the EE_Promotion constant values.
 	 */
 	public function status() {
 		$start = $this->get_raw('PRO_start');
@@ -385,6 +449,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * set the EE_Price ID.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param type $price_id
 	 * @return boolean
@@ -393,10 +460,29 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		return $this->set('PRC_ID',$price_id);
 	}
 
+
+
+	/**
+	 * set the scope.
+	 *
+	 * @since 1.0.0
+	 * @todo  would likely be good to do some validation here to make sure the given scope matches a registered scope.
+	 *
+	 * @param string $scope
+	 * @return boolean
+	 */
 	public function set_scope($scope){
 		return $this->set('PRO_scope',$scope);
 	}
+
+
+
+
+
 	/**
+	 * Set the start time for the promotion.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param string $start
 	 * @returns boolean
@@ -404,7 +490,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function set_start($start) {
 		return $this->set('PRO_start', $start);
 	}
+
+
+
+
 	/**
+	 * Set the end time for the promotion.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param string $end
 	 * @returns boolean
@@ -412,7 +505,15 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function set_end($end) {
 		return $this->set('PRO_end', $end);
 	}
+
+
+
+
+
 	/**
+	 * Set the promotion code.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @param string $code
 	 * @returns boolean
@@ -420,64 +521,124 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function set_code($code) {
 		return $this->set('PRO_code', $code);
 	}
+
+
+
+
+
 	/**
-	 * Sets how many times this promotion has been used in the given scope
+	 * Sets how many times this promotion has been used in the given scope.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param int $uses
 	 * @returns boolean
 	 */
 	public function set_uses($uses) {
 		return $this->set('PRO_uses', $uses);
 	}
+
+
+
+
+
 	/**
-	 * Sets whether or not this promotion is global
+	 * Sets whether or not this promotion is global.
+	 *
+	 * @since 1.0.0
 	 * @param boolean $global
 	 * @returns boolean
 	 */
 	public function set_global($global) {
 		return $this->set('PRO_global', $global);
 	}
+
+
+
 	/**
-	 * Sets the number of times this promotion hsa been used globally
+	 * Sets the number of times this promotion hsa been used globally.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $global_uses
 	 * @returns boolean
 	 */
 	public function set_global_uses($global_uses) {
 		return $this->set('PRO_global_uses', $global_uses);
 	}
+
+
+
+
+
 	/**
-	 * Sets whether or not this promotion is exlusive (ie, cant be combiend with others)
+	 * Sets whether or not this promotion is exlusive (ie, cant be combiend with others).
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param boolean $exclusive
 	 * @returns boolean
 	 */
 	public function set_exclusive($exclusive) {
 		return $this->set('PRO_exclusive', $exclusive);
 	}
+
+
+
+
+
 	/**
-	 * sets the acceptance message
+	 * sets the acceptance message.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $accept_msg
 	 * @returns boolean
 	 */
 	public function set_accept_msg($accept_msg) {
 		return $this->set('PRO_accept_msg', $accept_msg);
 	}
+
+
+
+
+
 	/**
-	 * sets the declined message
+	 * sets the declined message.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $decline_msg
 	 * @returns boolean
 	 */
 	public function set_decline_msg($decline_msg) {
 		return $this->set('PRO_decline_msg', $decline_msg);
 	}
+
+
+
+
+
 	/**
-	 * Sets whether or not this promotion should be usable by DEFAULT on all new items in its scope
+	 * Sets whether or not this promotion should be usable by DEFAULT on all new items in its scope.
+	 *
+	 * @since 1.0.0
 	 * @param boolean $default
 	 * @returns boolean
 	 */
 	public function set_default($default) {
 		return $this->set('PRO_default', $default);
 	}
+
+
+
+
+
 	/**
-	 * sets the order of application on this promotion
+	 * sets the order of application on this promotion.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @param int $order
 	 * @returns boolean
 	 */
@@ -501,6 +662,3 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 }
-
-/* End of file EE_Answer.class.php */
-/* Location: /includes/classes/EE_Answer.class.php */
