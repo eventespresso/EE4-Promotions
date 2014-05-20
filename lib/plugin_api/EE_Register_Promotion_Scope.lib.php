@@ -57,7 +57,7 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 				__METHOD__,
 				sprintf(
 					__('An attempt was made to register "%s" as a promotion scope has failed because it was not registered at the correct time.  Please use the "AHEE__EE_System__load_espresso_addons" hook at a priority level higher than 5, to register promotion scopes.','event_espresso'),
-					$model_id
+					$promotion_id
 				),
 				'1.0.0'
 			);
