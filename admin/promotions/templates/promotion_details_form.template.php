@@ -43,7 +43,7 @@
 	</tr>
 	<tr>
 		<td class="label-column">
-			<label for="PRC_Amount"><?php _e('Amount', 'event_espresso'); ?></label>
+			<label for="PRC_amount"><?php _e('Amount', 'event_espresso'); ?></label>
 		</td>
 		<td class="field-column">
 			<input class="regular-text ee-numeric" id="PRC_amount" name="PRC_amount" value="<?php echo $promotion->amount(); ?>">
