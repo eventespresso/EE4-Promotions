@@ -214,18 +214,15 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'label' => __('All', 'event_espresso'),
 				'count' => 0,
 				'bulk_action' => array(
-					//'restore_venues' => __('Restore_from Trash', 'event_espresso'),
-					//'trash_promotions' => __('Move to Trash', 'event_espresso')
-					//'delete_venues' => __('Delete', 'event_espresso')
+					'trash_promotions' => __('Move to Trash', 'event_espresso')
 					)
 				),
-			/*'trash' => array(
+			'trash' => array(
 				'slug' => 'trash',
 				'label' => __('Trashed', 'event_espresso'),
 				'count' => 0,
 				'bulk_action' => array(
 					'restore_promotions' => __('Restore_from Trash', 'event_espresso'),
-					//'trash_venues' => __('Move to Trash', 'event_espresso'),
 					'delete_promotions' => __('Delete', 'event_espresso')
 					)
 				)/**/
