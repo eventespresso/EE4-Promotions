@@ -245,6 +245,14 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _promotion_legend_items() {
+		$scope_legend = array();
+		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
+			$scope_legend[$scope->slug] = array(
+				'class' => $scope->get_scope_icon(TRUE),
+				'desc' => $scope->label->singular
+				);
+		}
+
 		$items = array(
 			'active_status' => array(
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::active,
@@ -263,7 +271,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'desc' => EEH_Template::pretty_status( EE_Promotion::unavailable, FALSE, 'sentence')
 				)
 			);
-		return $items;
+		return array_merge( $scope_legend, $items);
 	}
 
 
