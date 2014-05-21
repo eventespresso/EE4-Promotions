@@ -52,7 +52,9 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$this->_labels = array(
 			'buttons' => array(
 				'add' => __('Add New Promotion', 'event_espresso'),
-				'edit' => __('Edit Promotion', 'event_espresso')
+				'edit' => __('Edit Promotion', 'event_espresso'),
+				'trash_promotion' => __('Trash Promotion', 'event_espresso'),
+				'restore_promotion' => __('Restore Promotion', 'event_espresso')
 				),
 			'publishbox' => array(
 				'create_new' => __('Save New Promotion', 'event_espresso'),
@@ -312,7 +314,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
 		$view = $new ? 'insert_promotion' : 'update_promotion';
 		$this->_set_add_edit_form_tags($view);
-		$this->_set_publish_post_box_vars( 'PRO_ID', $id, FALSE, $redirect);
+		$delete_route = $this->_promotion->get('PRO_deleted') ? 'restore_promotion' : 'trash_promotion';
+		$this->_set_publish_post_box_vars( 'PRO_ID', $id, 'trash_promotion', $redirect);
 		$this->display_admin_page_with_sidebar();
 	}
 
