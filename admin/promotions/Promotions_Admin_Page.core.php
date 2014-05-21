@@ -378,7 +378,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$name = $redeemed > 0 ? 'PRO_scope_disabled' : 'PRO_scope';
 		$default = $this->_promotion->scope();
 		$extra_params = $redeemed > 0 ? 'disabled="disabled"' : '';
-		$content = EEH_Form_Fields::select_input( 'PRO_scope', $values, $default, $extra_params );
+		$content = EEH_Form_Fields::select_input( $name, $values, $default, $extra_params );
 		if ( $redeemed > 0 ) {
 			$content .= '<input type="hidden" name="PRO_scope" value=' . $default . '">';
 		}
