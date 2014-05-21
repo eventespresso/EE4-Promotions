@@ -167,7 +167,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 
-	protected function _get_promotions( $per_page = 10, $count = FALSE ) {
+	protected function _get_promotions( $per_page = 10, $count = FALSE, $trash = FALSE ) {
 		$_where = array();
 		$_orderby = ! empty( $this->_req_data['orderby'] ) ? $this->_req_data['orderby'] : '';
 		switch( $_orderby ) {
@@ -214,7 +214,11 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$offset = ( $current_page - 1 ) * $per_page;
 		$limit = array( $offset, $per_page );
 
-		$promotions = $count ? EEM_Promotion::instance()->count(array( $_where ) ) : EEM_Promotion::instance()->get_all( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+		if ( $trash ) {
+			$promotions = $count ? EEM_Promotion::instance()->count_deleted(array( $_where ) ) : EEM_Promotion::instance()->get_all_deleted( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+		} else {
+			$promotions = $count ? EEM_Promotion::instance()->count(array( $_where ) ) : EEM_Promotion::instance()->get_all( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+		}
 		return $promotions;
 	}
 
@@ -222,6 +226,6 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	//not in use because promotions isn't a soft delete model currently.
 	protected function _trashed_count() {
-		return 0;
+		return $this->_get_promotions( $this->_per_page, TRUE, TRUE );
 	}
 }
