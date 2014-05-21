@@ -256,7 +256,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			'scope' => $this,
 			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
 			'filters' => $this->_get_applies_to_filters(),
-			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items ),
+			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items, $PRO_ID ),
 			'items_paging' => $this->_get_applies_to_items_paging( $total_items ),
 			'selected_items' => $selected_items,
 			'display_selected_label' => __('Display only selected Events', 'event_espresso' ),

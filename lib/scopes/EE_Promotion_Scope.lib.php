@@ -407,9 +407,10 @@ abstract class EE_Promotion_Scope {
 	public function ajax_get_applies_to_items_to_select() {
 		$selected_items = ! empty( $_REQUEST['selected_items'] ) ? explode( ',', $_REQUEST['selected_items'] ) : array();
 		$requested_items = $this->get_scope_items();
+		$PRO_ID = !empty( $_REQUEST['PRO_ID'] ) ? $_REQUEST['PRO_ID'] : 0;
 
 		//scope items list
-		$response['items_content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
+		$response['items_content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items, $PRO_ID ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
 
 		//paging list
 		$total_items = $this->_get_total_items();
@@ -438,17 +439,24 @@ abstract class EE_Promotion_Scope {
 	 * @param  EE_Base_Class[]    		$items_to_select
 	 * @param  array    $selected_items  	Should be an array of existing applied to items IDs (
 	 *                                    		EE_Base_Class ids)
+	 * @param int        $PRO_ID                 EE_Promotion object id. Optional. Default 0.
 	 * @return string                     		unordered list of checkboxes.
 	 */
-	protected function _get_applies_to_items_to_select( $items_to_select, $selected_items ) {
+	protected function _get_applies_to_items_to_select( $items_to_select, $selected_items, $PRO_ID = 0 ) {
 		$selected_items = (array) $selected_items;
+		$disabled = '';
 		//verification
 		if ( empty( $items_to_select ) || ! is_array( $items_to_select) || ! $items_to_select[key($items_to_select)] instanceof EE_Base_Class )
 			return sprintf( __('There are no active %s to assign to this scope.  You will need to create some first.', 'event_espresso'), $this->label->plural );
 		$checkboxes = '<ul class="promotion-applies-to-items-ul">';
 		foreach( $items_to_select as $id => $obj ) {
 			$checked = in_array($id, $selected_items) ? ' checked=checked' : '';
-			$checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['.$id.']" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . '>';
+			//disabled check
+			if ( !empty( $PRO_ID ) ) {
+				$promo_obj = EEM_Promotion_Object::instance()->get_one( array( array( 'PRO_ID' => $PRO_ID, 'OBJ_ID' => $id ) ) );
+				$disabled = $promo_obj instanceof EE_Promotion_Object && $promo_obj->used() > 0 ? ' disabled="disabled"' : '';
+			}
+			$checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['.$id.']" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . $disabled . '>';
 			$checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['.$id.']">' . $this->name($obj) . '</label>';
 		}
 		$checkboxes .= '</ul>';
