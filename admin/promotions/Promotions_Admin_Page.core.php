@@ -456,6 +456,67 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+
+	/**
+	 * Duplicates a promotion.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @return void
+	 */
+	protected function _duplicate_promotion() {
+		$success = TRUE;
+		//first verify we have a promotion id
+		$pro_id = !empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0;
+		if ( empty( $pro_id ) ) {
+			$success = FALSE;
+			EE_Error::add_error( __('Unable to duplicate the promotion because there was no ID present in the request.', 'event_espresso' ) );
+		}
+
+		if ( $success ) {
+			$orig_promo = EEM_Promotion::instance()->get_one_by_ID( $pro_id );
+			$new_promo = $orig_promo instanceof EE_Promotion ? clone $orig_promo : NULL;
+
+			if ( ! $new_promo instanceof EE_Promotion ) {
+				$success = FALSE;
+				EE_Error::add_error( __('Unable to duplicate the promotion because for some reason there isn\'t a promotion in the database for the given id.', 'event_espresso') );
+			}
+
+			if ( $success ) {
+				$new_promo->set('PRO_ID', 0);
+				$new_promo->save();
+				//we have to clone the promotion objects as well and then attach them to the new promo.
+				$promo_objects = $orig_promo->promotion_objects();
+				foreach ( $promo_objects as $promo_obj ) {
+					$new_promo_obj = clone $promo_obj;
+					$new_promo_obj->set('POB_ID', 0);
+					$new_promo_obj->set('PRO_ID', $new_promo->ID() );
+					$new_promo_obj->save();
+				}
+
+				//clone price obj
+				$price_obj = $orig_promo->get_first_related('Price');
+				$new_price = clone $price_obj;
+				$new_price->set('PRC_ID', 0 );
+				$new_price->save();
+				$new_promo->set('PRC_ID', $new_price->ID() );
+				$new_promo->save();
+			}
+		}
+
+		if ( $success ) {
+			EE_Error::add_success( __('Promotion successfully duplicated, make any additional edits and update.', 'event_espresso' ) );
+		}
+
+		$query_args = array(
+			'PRO_ID' => $pro_id,
+			'action' => !empty( $pro_id ) ? 'edit' : 'default'
+			);
+		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
+	}
+
+
+
 	/**
 	 * Handles either trashing or restoring a given promotion.
 	 *
