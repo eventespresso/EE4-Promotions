@@ -129,7 +129,8 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 					break;
 
 			}
-			$promo_count = $this->get_promo_count_display( count( $EVT_ID ) );
+			$count = is_array( $EVT_ID ) ? count( $EVT_ID ) : 0;
+			$promo_count = $this->get_promo_count_display( $count );
 			return $this->get_scope_icon() . $prepend . $this->label->plural . $append . $promo_count;
 		}
 

@@ -238,7 +238,7 @@ abstract class EE_Promotion_Scope {
 	 * @return string
 	 */
 	protected function get_promo_count_display( $count = 0 ) {
-		return '<span class="promotion-count-bubble">' . $count . '</span>';
+		return empty( $count ) ? '' :  '<span class="promotion-count-bubble">' . $count . '</span>';
 	}
 
 
