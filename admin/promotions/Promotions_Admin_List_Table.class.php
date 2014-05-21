@@ -23,7 +23,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	protected function _setup_data() {
-		$this->_data = $this->_get_promotions( $this->_per_page );
+		$this->_data = $this->_view == 'trash' ? $this->_get_promotions( $this->_per_page, FALSE, TRUE) : $this->_get_promotions( $this->_per_page );
 		$this->_all_data_count = $this->_get_promotions( $this->_per_page, TRUE );
 	}
 
@@ -172,7 +172,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			);
 		$trash_link = EEH_URL::add_query_args_and_nonce( $trash_query_args, EE_PROMOTIONS_ADMIN_URL );
 		$trash_text = $this->_view == 'trash' ? __('Delete Promotion permanently', 'event_espresso') : __('Trash Promotion', 'event_espresso');
-		$trash_class = $this->_view == 'trash' ? ' .red-icon' : '';
+		$trash_class = $this->_view == 'trash' ? ' red-icon' : '';
 		$actionlinks[] = '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable' . $trash_class . '"></div></a>';
 
 		$content = '<div style="width:100%;">' . "\n\t";
