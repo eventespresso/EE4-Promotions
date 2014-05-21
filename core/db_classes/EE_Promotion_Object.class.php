@@ -23,18 +23,18 @@
  */
 require_once ( EE_CLASSES . 'EE_Base_Class.class.php' );
 class EE_Promotion_Object extends EE_Base_Class{
-	
-	/** Price-to-Object ID", "event_espresso @var POB_ID*/ 
+
+	/** Price-to-Object ID", "event_espresso @var POB_ID*/
 	protected $_POB_ID = NULL;
-	/** Promotion Object", "event_espresso @var PRO_ID*/ 
+	/** Promotion Object", "event_espresso @var PRO_ID*/
 	protected $_PRO_ID = NULL;
-	/** ID of the Related Object", "event_espresso @var OBJ_ID*/ 
+	/** ID of the Related Object", "event_espresso @var OBJ_ID*/
 	protected $_OBJ_ID = NULL;
-	/** Model of Related Object", "event_espresso @var POB_type*/ 
+	/** Model of Related Object", "event_espresso @var POB_type*/
 	protected $_POB_type = NULL;
-	/** Times the promotion has been used for this object", "event_espresso @var POB_used*/ 
+	/** Times the promotion has been used for this object", "event_espresso @var POB_used*/
 	protected $_POB_used = NULL;
-			
+
 	/**
 	 *
 	 * @var EE_Promotion
@@ -42,10 +42,10 @@ class EE_Promotion_Object extends EE_Base_Class{
 	protected $_Promotion = NULL;
 	/**
 	 *
-	 * @var EE_Event 
+	 * @var EE_Event
 	 */
 	protected $_Event = NULL;
-	
+
 	/**
 	 *
 	 * @var EE_Venue
@@ -61,9 +61,9 @@ class EE_Promotion_Object extends EE_Base_Class{
 	 * @var EE_Datetime
 	 */
 	protected $_Datetime = NULL;
-	
+
 	/**
-	 * 
+	 *
 	 * @param type $props_n_values
 	 * @return EE_Promotion_Object
 	 */
@@ -74,7 +74,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type $props_n_values
 	 * @return EE_Promotion_Object
 	 */
@@ -98,7 +98,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 	function set_promotion_ID($promotion_ID) {
 		return $this->set('PRO_ID', $promotion_ID);
 	}
-	
+
 	/**
 	 * Gets OBJ_ID
 	 * @return int
@@ -136,7 +136,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 	 * @return int
 	 */
 	function used() {
-		return $this->get('PRO_used');
+		return $this->get('POB_used');
 	}
 
 	/**
@@ -145,7 +145,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 	 * @return boolean
 	 */
 	function set_used($used) {
-		return $this->set('PRO_used', $used);
+		return $this->set('POB_used', $used);
 	}
 
 	/**
@@ -164,6 +164,3 @@ class EE_Promotion_Object extends EE_Base_Class{
 	}
 
 }
-
-/* End of file EE_Answer.class.php */
-/* Location: /includes/classes/EE_Answer.class.php */
