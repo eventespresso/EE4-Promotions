@@ -56,6 +56,9 @@
 		</td>
 		<td class="field-column">
 			<?php echo $scope_selector; ?><span class="description"><?php _e('see sidebar to select items', 'event_espresso'); ?></span>
+			<?php if ( $promotion->redeemed() > 0 ) : ?>
+				<p><span class="description red"><?php _e( 'Scope selector has been disabled because this promotion has been redeemed at least once.  Also, any specific scope items in the "applied to" metabox" that are greyed out is because that specific scope item has been redeemed.  Any that have not been redeemed yet can be deselected.', 'event_espresso'); ?></span></p>
+			<?php endif; ?>
 		</td>
 	</tr>
 	<tr>

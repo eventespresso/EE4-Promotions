@@ -375,7 +375,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				);
 		}
 		$default = $this->_promotion->scope();
-		return EEH_Form_Fields::select_input( 'PRO_scope', $values, $default );
+		$extra_params = $this->_promotion->redeemed() > 0 ? 'disabled="disabled"' : '';
+		return EEH_Form_Fields::select_input( 'PRO_scope', $values, $default, $extra_params );
 	}
 
 
