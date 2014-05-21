@@ -64,6 +64,11 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 						)
 					)
 				),
+			4 => array(
+				'content_id' => 'promotions-delete-lock',
+				'target' => '.ee-lock-icon',
+				'content' => $this->_promotions_delete_message(),
+				),
 			);
 	}
 
@@ -87,5 +92,17 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 			);
 
 		return EEH_Template::status_legend( $status_array, $status );
+	}
+
+
+	/**
+	 * Message why deleting permanently a promotion is not possible.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	private function _promotions_delete_message() {
+		return  __('This lock-icon means that this promotion cannot be permanently deleted.  Promotions that have been redeemed cannot be permanently deleted from your system. However, trashing (not deleting) them does deactivate them from future redemptions.', 'event_espresso');
 	}
 }

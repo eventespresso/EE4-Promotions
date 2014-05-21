@@ -83,7 +83,8 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_cb( EE_Promotion $item ) {
-		printf( '<input type="checkbox" name="PRO_ID[]" value="%s" />', $item->ID() );
+		$checkbox = sprintf( '<input type="checkbox" name="PRO_ID[]" value="%s" />', $item->ID() );
+		echo $item->redeemed() > 0 && $this->_view == 'trash' ?  '<span class="ee-lock-icon"></span>' .  $checkbox : $checkbox;
 	}
 
 
@@ -167,13 +168,13 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		}
 
 		$trash_query_args = array(
-			'action' => $this->_view == 'trash' ? 'delete_promotion' : 'trash_promotion',
+			'action' => $this->_view == 'trash' && $item->redeemed() ? 'delete_promotion' : 'trash_promotion',
 			'PRO_ID' => $item->ID()
 			);
 		$trash_link = EEH_URL::add_query_args_and_nonce( $trash_query_args, EE_PROMOTIONS_ADMIN_URL );
 		$trash_text = $this->_view == 'trash' ? __('Delete Promotion permanently', 'event_espresso') : __('Trash Promotion', 'event_espresso');
 		$trash_class = $this->_view == 'trash' ? ' red-icon' : '';
-		$actionlinks[] = '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable' . $trash_class . '"></div></a>';
+		$actionlinks[] = $this->_view == 'trash' && $item->redeemed() > 0 ? '' : '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable' . $trash_class . '"></div></a>';
 
 		$content = '<div style="width:100%;">' . "\n\t";
 		$content .= implode( "\n\t", $actionlinks );

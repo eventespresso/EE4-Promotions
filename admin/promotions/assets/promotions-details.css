@@ -158,6 +158,11 @@
 	text-align: right;
 }
 
+.wp-list-table .ee-lock-icon:before {
+	margin-bottom: 5px;
+	margin-top: 0px;
+}
+
 /** status strip **/
 
 /*upcoming*/
