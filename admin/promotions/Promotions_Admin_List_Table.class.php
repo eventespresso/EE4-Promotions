@@ -144,21 +144,36 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$actionlinks = array();
 		EE_Registry::instance()->load_helper('URL');
 
-		$edit_query_args = array(
-			'action' => 'edit',
+		if ( $this->_view != 'trash' ) {
+			$edit_query_args = array(
+				'action' => 'edit',
+				'PRO_ID' => $item->ID()
+				);
+			$dupe_query_args = array(
+				'action' => 'duplicate',
+				'PRO_ID' => $item->ID()
+				);
+			$edit_link = EEH_URL::add_query_args_and_nonce( $edit_query_args, EE_PROMOTIONS_ADMIN_URL );
+			$dupe_link = EEH_URL::add_query_args_and_nonce( $dupe_query_args, EE_PROMOTIONS_ADMIN_URL );
+			$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable"></div></a>';
+			$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable"></div></a>';
+		} else {
+			$restore_query_args = array(
+				'action' => 'restore_promotion',
+				'PRO_ID' => $item->ID()
+			);
+			$restore_link = EEH_URL::add_query_args_and_nonce( $restore_query_args, EE_PROMOTIONS_ADMIN_URL );
+			$actionlinks[] = '<a href="' . $restore_link. '" title="' . __('Restore Promotion', 'event_espresso') . '"><div class="dashicons dashicons-backup"></div></a>';
+		}
+
+		$trash_query_args = array(
+			'action' => $this->_view == 'trash' ? 'delete_promotion' : 'trash_promotion',
 			'PRO_ID' => $item->ID()
 			);
+		$trash_link = EEH_URL::add_query_args_and_nonce( $trash_query_args, EE_PROMOTIONS_ADMIN_URL );
+		$trash_text = $this->_view == 'trash' ? __('Delete Promotion permanently', 'event_espresso') : __('Trash Promotion', 'event_espresso');
+		$actionlinks[] = '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable"></div></a>';
 
-		$dupe_query_args = array(
-			'action' => 'duplicate',
-			'PRO_ID' => $item->ID()
-			);
-
-		$edit_link = EEH_URL::add_query_args_and_nonce( $edit_query_args, EE_PROMOTIONS_ADMIN_URL );
-		$dupe_link = EEH_URL::add_query_args_and_nonce( $dupe_query_args, EE_PROMOTIONS_ADMIN_URL );
-
-		$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable"></div></a>';
-		$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable"></div></a>';
 		$content = '<div style="width:100%;">' . "\n\t";
 		$content .= implode( "\n\t", $actionlinks );
 		$content .= "\n" . '</div>' . "\n";
