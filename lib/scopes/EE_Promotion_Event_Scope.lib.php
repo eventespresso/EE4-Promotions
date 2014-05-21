@@ -69,7 +69,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string  If correct page then and conditions are met the new string. Otherwise existing.
 	 */
 	public function before_events_list_table_content( $content, $page_slug, $req_data, $req_action ) {
-		if ( ( $page_slug !== 'espresso_events' && $req_action !== 'default' ) || empty( $req_data['PRO_ID'] ) )
+		if ( $page_slug !== 'espresso_events' || $req_action !== 'default' || empty( $req_data['PRO_ID']) )
 			return $content;
 
 		$promotion = EEM_Promotion::instance()->get_one_by_ID( $req_data['PRO_ID'] );
