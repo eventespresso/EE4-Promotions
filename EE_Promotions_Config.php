@@ -35,6 +35,10 @@ class EE_Promotions_Config extends EE_Config_Base {
 
 
 
+	public function initialize_after_db() {
+		$this->scopes = $this->_get_scopes();
+	}
+
 
 	private function _get_scopes() {
 		$scopes = array();
@@ -55,6 +59,10 @@ class EE_Promotions_Config extends EE_Config_Base {
 		}
 		return $scopes;
 	}
+
+
+
+
 
 
 	/**
