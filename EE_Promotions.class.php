@@ -38,7 +38,6 @@ Class  EE_Promotions extends EE_Addon {
 				'base_path' 				=> EE_PROMOTIONS_PATH,
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
 				'plugin_slug' 			=> 'espresso_promotions',
-				'admin_callback'		=> 'additional_admin_hooks',
 				'config_class' 			=> 'EE_Promotions_Config',
 				'config_name'			=> 'promotions',
 				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
