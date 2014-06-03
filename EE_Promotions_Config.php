@@ -62,6 +62,9 @@ class EE_Promotions_Config extends EE_Config_Base {
 
 
 
+	public function __wakeup() {
+		$this->scopes = $this->_get_scopes();
+	}
 
 
 
