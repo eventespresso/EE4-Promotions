@@ -22,17 +22,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	public function can_migrate_from_version($versions) {
 		if(isset($versions['Promotions']) && version_compare('1.0.0',$versions['Promotions'])){
 			return false;
-		}else{
-			global $wpdb;
-			$table_name = $wpdb->prefix."events_discount_codes";
-			if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-				//ee3 category tables don't exist still
-				$an_ee3_table_exists = false;
-			}else{
-				$an_ee3_table_exists = true;
-			}
 		}
-		//check if the old 3.1 promotions tables are there.
 		return true;
 	}
 

@@ -12,7 +12,7 @@
 }
 
 #promotion-details-form tr td:last-child {
-	widht: 88%;
+	width: 88%;
 }
 
 #promotion-details-form .ee-numeric {
@@ -121,49 +121,46 @@
 
 
 /** LIST TABLE **/
-.wp-list-table.promotion #id {
+.wp-list-table.promotion .column-id {
 	width: 3%;
 }
 
-.wp-list-table.promotion #name {
-	width: 15%;
+.wp-list-table.promotion .column-name {
+	width: 12%;
 }
 
-.wp-list-table.promotion #code {
+.wp-list-table.promotion .column-code {
 	width: 20%;
 }
 
-.wp-list-table.promotion #applies_to {
+.wp-list-table.promotion .column-applies_to {
 	width: 15%;
 }
 
-.wp-list-table.promotion #valid_from, .wp-list-table.promotion #valid_until {
+.wp-list-table.promotion .column-valid_from, .wp-list-table.promotion .column-valid_until {
 	width: 10%;
 }
 
-.wp-list-table.promotion #amount {
-	width: 8%;
-}
-
 .wp-list-table.promotion .column-amount {
+	width: 8%;
 	text-align: right;
 }
 
-.wp-list-table.promotion #redeemed {
-	width: 8%;
-}
 
 .wp-list-table.promotion .column-redeemed {
+	width: 10%;
 	text-align: right;
 }
 
-.wp-list-table.promotion #actions {
+
+.wp-list-table.promotion .column-actions {
 	width: 15%;
 	text-align: right;
 }
 
-.wp-list-table.promotion .column-actions {
-	text-align: right;
+.wp-list-table .ee-lock-icon:before {
+	margin-bottom: 5px;
+	margin-top: 0px;
 }
 
 /** status strip **/
@@ -189,7 +186,7 @@
 }
 
 .widefat td.column-pro_status, .widefat th.column-pro_status {
-	width: 2%;
+	width: 1%;
 	padding: 0;
 	margin: 0;
 }

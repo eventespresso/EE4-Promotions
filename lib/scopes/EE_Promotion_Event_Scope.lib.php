@@ -69,7 +69,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string  If correct page then and conditions are met the new string. Otherwise existing.
 	 */
 	public function before_events_list_table_content( $content, $page_slug, $req_data, $req_action ) {
-		if ( ( $page_slug !== 'espresso_events' && $req_action !== 'default' ) || empty( $req_data['PRO_ID'] ) )
+		if ( $page_slug !== 'espresso_events' || $req_action !== 'default' || empty( $req_data['PRO_ID']) )
 			return $content;
 
 		$promotion = EEM_Promotion::instance()->get_one_by_ID( $req_data['PRO_ID'] );
@@ -123,12 +123,14 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 					$prepend = '<a href="' . $url . '" title="' . __('See events this promotion applies to.', 'event_espresso') . '">';
 					$append = '</a>';
 					break;
+
 				default :
 					$prepend = $append = '';
 					break;
 
 			}
-			$promo_count = $this->get_promo_count_display( count( $EVT_ID ) );
+			$count = is_array( $EVT_ID ) ? count( $EVT_ID ) : 0;
+			$promo_count = $this->get_promo_count_display( $count );
 			return $this->get_scope_icon() . $prepend . $this->label->plural . $append . $promo_count;
 		}
 
@@ -139,11 +141,14 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 				$url = $this->get_frontend_url( $evt->ID() );
 				$prepend = '<a href="' . $url . '" title="' . __('View details about this event.', 'event_espresso') . '">';
 				$append = '</a>';
+				break;
+
 			case 'admin' :
 				$url = $this->get_admin_url( $evt->ID() );
 				$prepend = '<a href="' . $url . '" title="' . __('See details on this event', 'event_espresso') . '">';
 				$append = '</a>';
 				break;
+
 			default :
 				$prepend = $append = '';
 				break;
@@ -158,10 +163,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param bool   $classonly used to indicate if we only want to return the icon class
+	 * or the entire html string.
 	 * @return string
 	 */
-	protected function get_scope_icon() {
-		return '<span class="dashicons dashicons-flag"></span>';
+	public function get_scope_icon( $classonly = FALSE ) {
+		return $classonly ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-flag"></span>';
 	}
 
 
@@ -221,7 +228,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	public function get_frontend_url( $EVT_ID ) {
 		EE_Registry::instance()->load_helper('Event_View');
 		if ( empty( $EVT_ID ) || is_array( $EVT_ID ) )
-			return EEH_Event_View::event_archive_link();
+			return EEH_Event_View::event_archive_url();
 
 		return EEH_Event_View::event_link_url( $EVT_ID );
 	}
@@ -249,7 +256,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			'scope' => $this,
 			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
 			'filters' => $this->_get_applies_to_filters(),
-			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items ),
+			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items, $PRO_ID ),
 			'items_paging' => $this->_get_applies_to_items_paging( $total_items ),
 			'selected_items' => $selected_items,
 			'display_selected_label' => __('Display only selected Events', 'event_espresso' ),

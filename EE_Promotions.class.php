@@ -38,7 +38,6 @@ Class  EE_Promotions extends EE_Addon {
 				'base_path' 				=> EE_PROMOTIONS_PATH,
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
 				'plugin_slug' 			=> 'espresso_promotions',
-				'admin_callback'		=> 'additional_admin_hooks',
 				'config_class' 			=> 'EE_Promotions_Config',
 				'config_name'			=> 'promotions',
 				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
@@ -69,7 +68,7 @@ Class  EE_Promotions extends EE_Addon {
 			'class_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_class_extensions')));
 
 		//setup EEI_Plugin_API implementation for promotion scopes for other plugins to register a promotion scope.
-		EEH_Autoloader::instance()->register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib/plugin_api' );
+		EEH_Autoloader::register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib/plugin_api' );
 
 
 		//register promotion specific statuses

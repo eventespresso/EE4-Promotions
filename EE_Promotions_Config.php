@@ -34,8 +34,6 @@ class EE_Promotions_Config extends EE_Config_Base {
 	}
 
 
-
-
 	private function _get_scopes() {
 		$scopes = array();
 		//first we require the promotion scope parent.
@@ -55,6 +53,13 @@ class EE_Promotions_Config extends EE_Config_Base {
 		}
 		return $scopes;
 	}
+
+
+
+	public function __wakeup() {
+		$this->scopes = $this->_get_scopes();
+	}
+
 
 
 	/**

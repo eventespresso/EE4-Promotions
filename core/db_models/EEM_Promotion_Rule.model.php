@@ -52,7 +52,7 @@ class EEM_Promotion_Rule extends EEM_Base {
 			'Promotion_Rule'=> new EE_Primary_Table('esp_promotion_rule', 'PRR_ID')
 		);
 		$this->_fields = array(
-			'Status'=>array(
+			'Promotion_Rule'=>array(
 				'PRR_ID'=>new EE_Primary_Key_Int_Field('PRR_ID', __("Relation ID between Promotion and Rule", "event_espresso")),
 				'PRO_ID'=>new EE_Foreign_Key_Int_Field('PRO_ID', __("Promotion ID", "event_espresso"), true, null, 'Promotion'),
 				'RUL_ID'=>new EE_Foreign_Key_Int_Field('RUL_ID', __("Rule ID", "event_espresso"), true, null, 'Rule'),

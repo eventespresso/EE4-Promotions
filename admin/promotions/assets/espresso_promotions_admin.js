@@ -166,6 +166,8 @@ jQuery(document).ready(function($){
 			//what's the display only selected set at?
 			data.PRO_display_only_selected = $('#ee-display-selected-trigger-'+this.getScope()).prop('checked') ? 1 : 0;
 
+			data.PRO_ID = $('#PRO_ID').val();
+
 			//what about paging?
 			data.paged = typeof( page ) !== 'undefined' ? page : $('.current-page', '.ee-promotions-applies-to-paging').val();
 			//data.perpage = 10; //@todo this should be a value that can be set by user.

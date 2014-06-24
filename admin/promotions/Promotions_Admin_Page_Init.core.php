@@ -68,7 +68,7 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 	 */
 	protected function _set_menu_map() {
 		$this->_menu_map = new EE_Admin_Page_Sub_Menu( array(
-			'menu_group' => 'management',
+			'menu_group' => 'addons',
 			'menu_order' => 25,
 			'show_on_menu' => TRUE,
 			'parent_slug' => 'espresso_events',

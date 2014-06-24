@@ -57,7 +57,7 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 				__METHOD__,
 				sprintf(
 					__('An attempt was made to register "%s" as a promotion scope has failed because it was not registered at the correct time.  Please use the "AHEE__EE_System__load_espresso_addons" hook at a priority level higher than 5, to register promotion scopes.','event_espresso'),
-					$model_id
+					$promotion_id
 				),
 				'1.0.0'
 			);
@@ -78,7 +78,7 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 
 
 	public static function register_path( $scope_paths ) {
-		foreach ( self::$_registry as $promo_id => $config ) {
+		foreach ( self::$_registry as $config ) {
 			$scope_paths[] = $config['scope_path'];
 		}
 		return $scope_paths;
