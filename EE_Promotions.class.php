@@ -35,7 +35,7 @@ Class  EE_Promotions extends EE_Addon {
 			array(
 				'version' 					=> EE_PROMOTIONS_VERSION,
 				'min_core_version' => '4.3.0',
-				'base_path' 				=> EE_PROMOTIONS_PATH,
+				'main_file_path' 		=> EE_PROMOTIONS_PATH,
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
 				'plugin_slug' 			=> 'espresso_promotions',
 				'config_class' 			=> 'EE_Promotions_Config',
