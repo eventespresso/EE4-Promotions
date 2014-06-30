@@ -8,7 +8,7 @@
  */
 
 define( 'EE_PLUGIN_DIR', dirname( dirname( dirname( dirname(__FILE__ ) ) ) ) . '/event-espresso-core/');
-define( 'EECAL_TESTS_DIR', dirname( dirname( __FILE__ ) ) . '/'  );
+define( 'EEPRO_TESTS_DIR', dirname( dirname( __FILE__ ) ) . '/'  );
 define( 'EEPRO_PLUGIN_DIR' , dirname( dirname( dirname(__FILE__)  ) ). '/' );
 
 if ( ! defined( 'EE_TESTS_DIR' ) ) {
