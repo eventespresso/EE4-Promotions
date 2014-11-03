@@ -76,8 +76,11 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 
 
 
-
-	public static function register_path( $scope_paths ) {
+	/**
+	 * @param array $scope_paths
+	 * @return array
+	 */
+	public static function register_path( $scope_paths = array() ) {
 		foreach ( self::$_registry as $config ) {
 			$scope_paths[] = $config['scope_path'];
 		}
@@ -86,6 +89,9 @@ class EE_Register_Promotion_Scope implements EEI_Plugin_API {
 
 
 
+	/**
+	 * @param mixed $promotion_id
+	 */
 	public static function deregister( $promotion_id = NULL ) {
 		if ( isset( self::$_registry[$promotion_id] ) ) {
 			unset( self::$_registry[$promotion_id] );
