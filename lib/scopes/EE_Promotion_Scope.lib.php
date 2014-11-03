@@ -113,8 +113,7 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int|EE_Base_Class    $OBJ_ID ID or model object for the EE_Base_Class object
-	 *                                     		  being utilized
+	 * @param int|EE_Base_Class 	$OBJ_ID ID or model object for the EE_Base_Class object being utilized
 	 * @param bool|string 		$link 	  If false just return name, if 'admin' return name
 	 *                               			  wrapped in link to admin details.  If 'front' return
 	 *                               			  name wrapped in link to frontend details.
@@ -191,7 +190,7 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param integer $PRO_ID The promotion ID for the applies to selector we are retreiving.
+	 * @param integer $PRO_ID The promotion ID for the applies to selector we are retrieving.
 	 * @return string html content.
 	 */
 	abstract public function get_admin_applies_to_selector( $PRO_ID );
@@ -217,12 +216,12 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool   $classonly used to indicate if we only want to return the icon class or the
+	 * @param bool   $class_only used to indicate if we only want to return the icon class or the
 	 * entire html string.
 	 * @return string
 	 */
-	public function get_scope_icon( $classonly = FALSE ) {
-		return $classonly ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-megaphone"></span>';
+	public function get_scope_icon( $class_only = FALSE ) {
+		return $class_only ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-megaphone"></span>';
 	}
 
 
@@ -243,13 +242,12 @@ abstract class EE_Promotion_Scope {
 
 
 
-
-
 	/**
 	 * This just returns the related model instance as set via the $_slug property.
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws EE_Error
 	 * @return  EEM_Base
 	 */
 	protected function _model() {
@@ -286,10 +284,9 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 * @throws EE_Error If $OBJ_ID does not correspond to a valid model object.
-	 *
 	 * @param  int     $OBJ_ID ID 	for the object to be retrieved.
 	 * @param  bool  $reset_cache Optional. If client wants to reset cache then set to true.
-	 *                            		Default false.
+	 * 			Default false.
 	 * @return  EE_Base_Class
 	 */
 	protected function _get_model_object( $OBJ_ID, $reset_cache = FALSE ) {
@@ -306,20 +303,18 @@ abstract class EE_Promotion_Scope {
 		if ( ! $obj instanceof $expected_class ) {
 			throw new EE_Error(
 				sprintf(
-					__( 'Unable to retrieve the model object related to the %s with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.', 'event_espresso' ),
+					__( 'Unable to retrieve the model object related to the %s class with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.', 'event_espresso' ),
 					get_class( $this ),
 					$OBJ_ID
 				)
 			);
 		}
-
 		//set to cache
+		/** @var $obj EE_Base_Class */
 		$this->_set_model_object( $obj );
-
 		//return
 		return $obj;
 	}
-
 
 
 
@@ -327,11 +322,9 @@ abstract class EE_Promotion_Scope {
 	 * Returns a total count of items matching the
 	 * query_args.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array     $query_args array of query args to
-	 *                               		   filter the count by.
-	 * @return int                 	   count of items.
+	 * @since    1.0.0
+	 * @internal param array $query_args array of query args to filter the count by.
+	 * @return int  count of items.
 	 */
 	protected function _get_total_items() {
 		$query_args = $this->get_query_args();
@@ -348,7 +341,7 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param  boolean   $paging     whether to include any paging paramaters that might be in the _REQUEST or not.
+	 * @param  boolean   $paging     whether to include any paging parameters that might be in the _REQUEST or not.
 	 * @return  EE_Base_Class[]
 	 * @access protected
 	 */
@@ -379,15 +372,15 @@ abstract class EE_Promotion_Scope {
 	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param  int    $PRO_ID Promotion that is applied.
-	 * @return  array               array of ids matching the items related to the scope.
+	 * @param  int 	$PRO_ID Promotion that is applied.
+	 * @return  array 	array of ids matching the items related to the scope.
 	 */
 	protected function _get_applied_to_items( $PRO_ID ) {
 		$selected = array();
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
 		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
 		foreach( $PRO_OBJs as $PRO_OBJ ) {
+			/** @var $PRO_OBJ EE_Promotion_Object */
 			$selected[] = $PRO_OBJ->OBJ_ID();
 		}
 		return $selected;
@@ -401,8 +394,7 @@ abstract class EE_Promotion_Scope {
 	 * It may be called when new filters are requested for results or when paging is used.
 	 *
 	 * @since  1.0.0
-	 *
-	 * @return json json object with results.
+	 * @return string json object with results.
 	 */
 	public function ajax_get_applies_to_items_to_select() {
 		$selected_items = ! empty( $_REQUEST['selected_items'] ) ? explode( ',', $_REQUEST['selected_items'] ) : array();
@@ -410,7 +402,7 @@ abstract class EE_Promotion_Scope {
 		$PRO_ID = !empty( $_REQUEST['PRO_ID'] ) ? $_REQUEST['PRO_ID'] : 0;
 
 		//scope items list
-		$response['items_content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items, $PRO_ID ) : __('<ul class="promotion-applies-to-items-ul"><li>No results for the given query</li></ul>', 'event_espresso');
+		$response['items_content'] = ! empty( $requested_items ) ? $this->_get_applies_to_items_to_select( $requested_items, $selected_items, $PRO_ID ) : sprintf( __( '%sNo results for the given query%s', 'event_espresso' ), '<ul class="promotion-applies-to-items-ul"><li>', '</li></ul>' );
 
 		//paging list
 		$total_items = $this->_get_total_items();
