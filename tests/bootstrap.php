@@ -16,7 +16,7 @@ require_once WP_TESTS_DIR . '/includes/functions.php';
 
 function _install_and_load_core_and_ee_promos() {
 	require EE_TESTS_DIR . 'includes/loader.php';
-	require EECAL_TESTS_DIR . 'includes/loader.php';
+	require EEPRO_TESTS_DIR . 'includes/loader.php';
 }
 tests_add_filter( 'muplugins_loaded', '_install_and_load_core_and_ee_promos' );
 
