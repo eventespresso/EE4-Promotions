@@ -29,11 +29,19 @@ class EE_Promotions_Config extends EE_Config_Base {
 
 
 
+	/**
+	 * 	constructor
+	 */
 	public function __construct() {
 		$this->scopes = $this->_get_scopes();
 	}
 
 
+
+	/**
+	 * 	_get_scopes
+	 * @return array
+	 */
 	private function _get_scopes() {
 		$scopes = array();
 		//first we require the promotion scope parent.
