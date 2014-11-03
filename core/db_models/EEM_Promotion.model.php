@@ -1,17 +1,6 @@
 <?php if ( ! defined('EVENT_ESPRESSO_VERSION')) exit('No direct script access allowed');
+require_once ( EE_MODELS . 'EEM_Base.model.php' );
 /**
- * Event Espresso
- *
- * Event Registration and Management Plugin for WordPress
- *
- * @ package			Event Espresso
- * @ author				Seth Shoultes
- * @ copyright		(c) 2008-2011 Event Espresso  All Rights Reserved.
- * @ license			http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
- * @ link					http://www.eventespresso.com
- * @ version		 	4.0
- *
- * ------------------------------------------------------------------------
  *
  * Promotion Model
  *
@@ -19,32 +8,33 @@
  * @subpackage		includes/models/
  * @author				Michael Nelson
  *
- * ------------------------------------------------------------------------
  */
-require_once ( EE_MODELS . 'EEM_Base.model.php' );
-
 class EEM_Promotion extends EEM_Soft_Delete_Base {
 
   	// private instance of the Attendee object
 	private static $_instance = NULL;
 
 	/**
-	 *		This funtion is a singleton method used to instantiate the EEM_Attendee object
+	 *		This function is a singleton method used to instantiate the EEM_Attendee object
 	 *
 	 *		@access public
-	 *		@return EEM_Attendee instance
-	 */	
+	 *		@return EEM_Promotion
+	 */
 	public static function instance(){
-	
-		// check if instance of EEM_Attendee already exists
-		if ( self::$_instance === NULL ) {
-			// instantiate Espresso_model 
+
+		// check if instance of EEM_Promotion already exists
+		if ( ! self::$_instance instanceof EEM_Promotion ) {
+			// instantiate Espresso_model
 			self::$_instance = new self();
 		}
-		// EEM_Attendee object
 		return self::$_instance;
 	}
 
+
+
+	/**
+	 * @return EEM_Promotion
+	 */
 	protected function __construct(){
 		$this->singular_item = __('Promotion','event_espresso');
 		$this->plural_item = __('Promotions','event_espresso');
@@ -62,7 +52,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				'PRO_uses'=>new EE_Integer_Field('PRO_uses', __("Times this can be used in a given scope", "event_espresso"), false,1),
 				'PRO_global'=>new EE_Boolean_Field('PRO_global', __("Usable Globally?", "event_espresso"), false,false),
 				'PRO_global_uses'=>new EE_Integer_Field('PRO_global_uses', __("Times it can be used in all scopes", "event_espresso"), false,0),
-				'PRO_exclusive'=>new EE_Boolean_Field('PRO_exclusive', __("Exlusive? (ie, can't be used with other promotions)", "event_espresso"), false,false),
+				'PRO_exclusive'=>new EE_Boolean_Field('PRO_exclusive', __("Exclusive? (ie, can't be used with other promotions)", "event_espresso"), false,false),
 				'PRO_accept_msg'=>new EE_Simple_HTML_Field('PRO_accept_msg', __("Acceptance Message", "event_espresso"), false, __("Accepted", "event_espresso")),
 				'PRO_decline_msg'=>new EE_Simple_HTML_Field('PRO_decline_msg', __("Declined Message", "event_espresso"), false,  __("Declined", "event_espresso")),
 				'PRO_default'=>new EE_Boolean_Field('PRO_default', __("Usable by default on all new items within promotion's scope", "event_espresso"), false, false),
@@ -75,7 +65,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 			'Rule'=>new EE_HABTM_Relation('Promotion_Rule'),
 			'Promotion_Object'=>new EE_Has_Many_Relation()
 		);
-		
+
 		parent::__construct();
 	}
 }
