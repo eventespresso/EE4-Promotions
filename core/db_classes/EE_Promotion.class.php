@@ -48,7 +48,6 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	const expired = 'PRX';
 
 
-
 	/**
 	 * Promotion is unavailable.
 	 *
@@ -68,9 +67,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return EE_Promotion
 	 */
 	public static function new_instance( $props_n_values = array() ) {
-		$classname = __CLASS__;
-		$has_object = parent::_check_for_object( $props_n_values, $classname );
-		return $has_object ? $has_object : new self( $props_n_values);
+		$has_object = parent::_check_for_object( $props_n_values, __CLASS__ );
+		return $has_object ? $has_object : new self( $props_n_values );
 	}
 
 	/**
@@ -224,15 +222,16 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 
-
 	/**
 	 * Gets the date this promotion is no longer valid.
 	 *
 	 * @since 1.0.0
 	 *
+	 * @param string $date_format
+	 * @param string $time_format
 	 * @return string
 	 */
-	public function end($date_format=null,$time_format=null){
+	public function end( $date_format='', $time_format='' ){
 		//if PRO_end is null then we return an empty string.  It is entirely possible for promotions to have NO dates
 		$pro_end = $this->get_raw('PRO_end');
 		return empty( $pro_end ) ? '' : $this->_get_datetime('PRO_end',$date_format,$time_format);
@@ -251,7 +250,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return boolean
 	 */
 	public function is_exclusive(){
-		return $this->get('PRO_exlusive');
+		return $this->get('PRO_exclusive');
 	}
 
 
@@ -337,7 +336,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed bool|string $link   If false then just return the related name.  If 'front' then
+	 * @param bool | string $link   If false then just return the related name.  If 'front' then
 	 * return the name wrapped in a hyperlink to the frontend details for the item.  If 'admin'
 	 * then return the name wrapped in a hyperlink to the admin details for the item.
 	 * @return string
@@ -368,7 +367,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * This returns how many times this promotion has been redeeemed (via promotion object table)
+	 * This returns how many times this promotion has been redeemed (via promotion object table)
 	 *
 	 * @since  1.0.0
 	 *
@@ -391,11 +390,11 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param type $date_format
-	 * @param type $time_format
+	 * @param string $date_format
+	 * @param string $time_format
 	 * @return string
 	 */
-	public function start($date_format=null,$time_format=null){
+	public function start( $date_format='', $time_format='' ){
 		//if pro_start is null then we return an empty string.  It is entirely possible for promotions to have NO dates
 		$pro_start = $this->get_raw('PRO_start');
 		return empty( $pro_start ) ? '' : $this->get_datetime('PRO_start', $date_format, $time_format);
@@ -453,11 +452,10 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param type $price_id
-	 * @return boolean
+	 * @param int $price_id
 	 */
 	public function set_price_ID($price_id){
-		return $this->set('PRC_ID',$price_id);
+		$this->set('PRC_ID',$price_id);
 	}
 
 
@@ -469,10 +467,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @todo  would likely be good to do some validation here to make sure the given scope matches a registered scope.
 	 *
 	 * @param string $scope
-	 * @return boolean
 	 */
 	public function set_scope($scope){
-		return $this->set('PRO_scope',$scope);
+		$this->set('PRO_scope',$scope);
 	}
 
 
@@ -485,10 +482,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $start
-	 * @returns boolean
 	 */
 	public function set_start($start) {
-		return $this->set('PRO_start', $start);
+		$this->set('PRO_start', $start);
 	}
 
 
@@ -500,10 +496,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $end
-	 * @returns boolean
 	 */
 	public function set_end($end) {
-		return $this->set('PRO_end', $end);
+		$this->set('PRO_end', $end);
 	}
 
 
@@ -516,10 +511,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $code
-	 * @returns boolean
 	 */
 	public function set_code($code) {
-		return $this->set('PRO_code', $code);
+		$this->set('PRO_code', $code);
 	}
 
 
@@ -532,10 +526,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param int $uses
-	 * @returns boolean
 	 */
 	public function set_uses($uses) {
-		return $this->set('PRO_uses', $uses);
+		$this->set('PRO_uses', $uses);
 	}
 
 
@@ -547,10 +540,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 * @param boolean $global
-	 * @returns boolean
 	 */
 	public function set_global($global) {
-		return $this->set('PRO_global', $global);
+		$this->set('PRO_global', $global);
 	}
 
 
@@ -561,10 +553,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $global_uses
-	 * @returns boolean
 	 */
 	public function set_global_uses($global_uses) {
-		return $this->set('PRO_global_uses', $global_uses);
+		$this->set('PRO_global_uses', $global_uses);
 	}
 
 
@@ -572,15 +563,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * Sets whether or not this promotion is exlusive (ie, cant be combiend with others).
+	 * Sets whether or not this promotion is exclusive (ie, cant be combined with others).
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param boolean $exclusive
-	 * @returns boolean
 	 */
 	public function set_exclusive($exclusive) {
-		return $this->set('PRO_exclusive', $exclusive);
+		$this->set('PRO_exclusive', $exclusive);
 	}
 
 
@@ -593,10 +583,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $accept_msg
-	 * @returns boolean
 	 */
 	public function set_accept_msg($accept_msg) {
-		return $this->set('PRO_accept_msg', $accept_msg);
+		$this->set('PRO_accept_msg', $accept_msg);
 	}
 
 
@@ -609,10 +598,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param string $decline_msg
-	 * @returns boolean
 	 */
 	public function set_decline_msg($decline_msg) {
-		return $this->set('PRO_decline_msg', $decline_msg);
+		$this->set('PRO_decline_msg', $decline_msg);
 	}
 
 
@@ -624,10 +612,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 *
 	 * @since 1.0.0
 	 * @param boolean $default
-	 * @returns boolean
 	 */
 	public function set_default($default) {
-		return $this->set('PRO_default', $default);
+		$this->set('PRO_default', $default);
 	}
 
 
@@ -640,10 +627,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param int $order
-	 * @returns boolean
 	 */
 	public function set_order($order) {
-		return $this->set('PRO_order', $order);
+		$this->set('PRO_order', $order);
 	}
 
 
