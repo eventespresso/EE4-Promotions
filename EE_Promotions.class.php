@@ -1,4 +1,12 @@
 <?php if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit(); }
+
+// define the plugin directory path and URL
+define( 'EE_PROMOTIONS_BASENAME', plugin_basename( EE_PROMOTIONS_PLUGIN_FILE ));
+define( 'EE_PROMOTIONS_PATH', plugin_dir_path( __FILE__ ));
+define( 'EE_PROMOTIONS_URL', plugin_dir_url( __FILE__ ));
+define( 'EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS );
+define( 'EE_PROMOTIONS_CORE', EE_PROMOTIONS_PATH . 'core' . DS);
+
 /**
  * ------------------------------------------------------------------------
  *
@@ -14,29 +22,25 @@
 Class  EE_Promotions extends EE_Addon {
 
 	/**
-	 * class constructor
+	 * @var string activation_indicator_option_name
 	 */
-	public function __construct() {
-		$this->_activation_indicator_option_name = 'ee_espresso_promotions_activation';
-		// register our activation hook
-		register_activation_hook( __FILE__, array( $this, 'set_activation_indicator_option' ));
-	}
+	const activation_indicator_option_name = 'ee_espresso_promotions_activation';
 
+
+
+	/**
+	 * register_addon
+	 */
 	public static function register_addon() {
-		// define the plugin directory path and URL
-		define( 'EE_PROMOTIONS_PATH', plugin_dir_path( __FILE__ ));
-		define( 'EE_PROMOTIONS_URL', plugin_dir_url( __FILE__ ));
-		define( 'EE_PROMOTIONS_PLUGIN_FILE', plugin_basename( __FILE__ ));
-		define( 'EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS );
-		define( 'EE_PROMOTIONS_CORE',EE_PROMOTIONS_PATH . DS . 'core' . DS);
 		// register addon via Plugin API
 		EE_Register_Addon::register(
 			'Promotions',
 			array(
 				'version' 					=> EE_PROMOTIONS_VERSION,
-				'min_core_version' => '4.3.0',
-				'main_file_path' 		=> EE_PROMOTIONS_PATH,
+				'min_core_version' => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
+				'main_file_path' 		=> EE_PROMOTIONS_PLUGIN_FILE,
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
+				'admin_callback'		=> 'additional_admin_hooks',
 				'plugin_slug' 			=> 'espresso_promotions',
 				'config_class' 			=> 'EE_Promotions_Config',
 				'config_name'			=> 'promotions',
@@ -52,29 +56,64 @@ Class  EE_Promotions extends EE_Addon {
 					'Promotions_Admin_List_Table' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
 				),
 				'pue_options'			=> array(
-					'pue_plugin_slug' 		=> 'espresso-promotions',
-					'plugin_basename' 	=> EE_PROMOTIONS_PLUGIN_FILE,
+					'pue_plugin_slug' 		=> 'eea-espresso-promotions',
 					'checkPeriod' 				=> '24',
 					'use_wp_update' 		=> FALSE
 				)
 			)
 		);
-		EE_Register_Model::register('Promotions', array(
-			'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
-			'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes')
-		));
-		EE_Register_Model_Extensions::register('Promotions', array(
-			'model_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_model_extensions'),
-			'class_extension_paths'=>array(EE_PROMOTIONS_CORE . 'db_class_extensions')));
-
+		EE_Register_Model::register(
+			'Promotions',
+			array(
+				'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
+				'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes')
+			)
+		);
+		EE_Register_Model_Extensions::register(
+			'Promotions',
+			array(
+				'model_extension_paths'=>array( EE_PROMOTIONS_CORE . 'db_model_extensions' . DS ),
+				'class_extension_paths'=>array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS )
+			)
+		);
 		//setup EEI_Plugin_API implementation for promotion scopes for other plugins to register a promotion scope.
-		EEH_Autoloader::register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib/plugin_api' );
-
-
+		EEH_Autoloader::register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api' );
 		//register promotion specific statuses
 		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( 'EE_Promotions', 'promotion_stati' ), 10 );
 	}
 
+
+
+	/**
+	 * 	additional_admin_hooks
+	 *
+	 *  @access 	public
+	 *  @return 	void
+	 */
+	public function additional_admin_hooks() {
+		// is admin and not in M-Mode ?
+		if ( is_admin() && ! EE_Maintenance_Mode::instance()->level() ) {
+			add_filter( 'plugin_action_links', array( $this, 'plugin_actions' ), 10, 2 );
+		}
+	}
+
+
+
+	/**
+	 * plugin_actions
+	 *
+	 * Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
+	 * @param $links
+	 * @param $file
+	 * @return array
+	 */
+	public function plugin_actions( $links, $file ) {
+		if ( $file == EE_PROMOTIONS_BASENAME ) {
+			// before other links
+			array_unshift( $links, '<a href="admin.php?page=espresso_promotions">' . __('Settings') . '</a>' );
+		}
+		return $links;
+	}
 
 
 
