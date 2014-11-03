@@ -73,8 +73,8 @@ class EES_Promotions  extends EES_Shortcode {
 		// this will trigger the EED_Espresso_Promotions module's run() method during the pre_get_posts hook point,
 		// this allows us to initialize things, enqueue assets, etc,
 		// as well, this saves an instantiation of the module in an array, using 'promotions' as the key, so that we can retrieve it
-		EE_Registry::instance()->REQ->set( 'ee', 'promotions' );
-		EED_Espresso_Promotions::$shortcode_active = TRUE;
+//		EE_Registry::instance()->REQ->set( 'ee', 'promotions' );
+//		EED_Promotions::$shortcode_active = TRUE;
 	}
 
 
@@ -86,7 +86,7 @@ class EES_Promotions  extends EES_Shortcode {
 	 *
 	 * @access 	public
 	 * @param 	array $attributes
-	 * @return 	void
+	 * @return 	string
 	 */
 	public function process_shortcode( $attributes = array() ) {
 		// make sure $attributes is an array
@@ -95,7 +95,7 @@ class EES_Promotions  extends EES_Shortcode {
 			array(),
 			(array)$attributes
 		);
-		return EE_Registry::instance()->modules['promotions']->display_promotions( $attributes );
+		return EE_Registry::instance()->modules['promotions'] instanceof EED_Promotions ? EE_Registry::instance()->modules['promotions']->display_promotions( $attributes ) : '';
 	}
 
 
