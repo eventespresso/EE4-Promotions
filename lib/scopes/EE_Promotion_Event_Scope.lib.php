@@ -39,11 +39,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * Callback for FHEE__Events_Admin_Page__get_events__where.  Event Scope adds
 	 * additional query params to the query retrieving the events in certain conditions.
 	 *
-	 * @since 1.0.0
+	 * @since       1.0.0
 	 *
-	 * @param     	array $where   		current query where params for event query
-	 * @req_data	array $req_data	incoming request data.
-	 * @return array 			where query_args for get_events query.
+	 * @param 	array $where current query where params for event query
+	 * @param 	array $req_data    incoming request data.
+	 * @return array            where query_args for get_events query.
 	 */
 	public function event_list_query_params( $where, $req_data ) {
 		if ( !empty( $req_data['EVT_IDs'] ) ) {
@@ -94,17 +94,15 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * Child scope classes indicate what gets returned when a "name" is requested.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param mixed int|array|EE_Event    $EVT_ID (or array of ids) or EE_Event object for
-	 *                                    		the EE_Event object being utilized.
-	 * @param mixed bool|string 		$link      if FALSE then just return name, otherwise
-	 *                            				'front' wraps name in link to frontend
-	 *                            				details, 'admin' wraps name in link to
-	 *                            				backend details.
-	 * @param int   			$PRO_ID Optional. Providing the Promotion ID
-	 *                         				  allows identification in downstream code
-	 *                         				  for what promotion is being handled. (i.e.
-	 *                         				  adding it to the query_args for the links).
+	 * @param  int | EE_Event | EE_Event[] $EVT_ID
+	 * 			Event ID (or array of IDs) or EE_Event object for the EE_Event object being utilized.
+	 * @param bool | string $link
+	 * 			if FALSE then just return name,
+	 * 			otherwise 'front' wraps name in link to frontend details,
+	 * 			'admin' wraps name in link to backend details.
+	 * @param int $PRO_ID
+	 * 			Optional. Providing the Promotion ID  allows identification in downstream code
+	 * 			for what promotion is being handled. (i.e. adding it to the query_args for the links).
 	 * @return string
 	 */
 	public function name( $EVT_ID, $link = FALSE, $PRO_ID = 0 ) {
@@ -162,13 +160,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * This returns a html span string for the event scope icon.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param bool   $classonly used to indicate if we only want to return the icon class
+	 * @param bool   $class_only used to indicate if we only want to return the icon class
 	 * or the entire html string.
 	 * @return string
 	 */
-	public function get_scope_icon( $classonly = FALSE ) {
-		return $classonly ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-flag"></span>';
+	public function get_scope_icon( $class_only = FALSE ) {
+		return $class_only ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-flag"></span>';
 	}
 
 
@@ -177,9 +174,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * Child scope classes indicate what gets returned when a "description" is requested.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param  mixed int|array|EE_Event   $EVT_ID   (or array of IDS)  or EE_Event object
-	 *                                    		for the EE_Event object being utilized
+	 * @param  int | EE_Event | EE_Event[]   $EVT_ID   (or array of IDS)  or EE_Event object for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function description( $EVT_ID ) {
@@ -197,8 +192,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * Admin url usually points to the details page for the given id.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param  mixed int|array   $EVT_ID   ID or array of ids for the EE_Event object being utilized
+	 * @param  int | EE_Event[]   $EVT_ID   ID or array of ids for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function get_admin_url( $EVT_ID ) {
@@ -221,8 +215,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * Frontend url usually points to the single page view for the given id.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param  mixed int|array   $EVT_ID   ID or array of ids for the EE_Event object being utilized
+	 * @param  int | EE_Event[]   $EVT_ID   ID or array of ids for the EE_Event object being utilized
 	 * @return string
 	 */
 	public function get_frontend_url( $EVT_ID ) {
@@ -242,8 +235,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param integer $PRO_ID The promotion ID for the applies to selector we are
-	 *                        	        retreiving.
+	 * @param integer $PRO_ID The promotion ID for the applies to selector we are retrieving.
 	 * @return string html
 	 */
 	public function get_admin_applies_to_selector( $PRO_ID ) {
@@ -254,7 +246,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$template_args = array(
 			'scope_slug' => $this->slug,
 			'scope' => $this,
-			'header_content' => __('<p>Check off the specific events that this promotion will be applied to.</p>', 'event_espresso'),
+			'header_content' => sprintf( __('%sCheck off the specific events that this promotion will be applied to.%s', 'event_espresso'), '<p>', '</p>' ),
 			'filters' => $this->_get_applies_to_filters(),
 			'items_to_select' => $this->_get_applies_to_items_to_select( $items_to_select, $selected_items, $PRO_ID ),
 			'items_paging' => $this->_get_applies_to_items_paging( $total_items ),
@@ -329,12 +321,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 1 );
 
 		//start date
-		$existing_sdate = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d h:i a' , current_time('timestamp') );
-		$start_date_filter = '<input data-context="start" data-container="scope" data-next-field="#EVT_end_date_filter" type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_sdate . '"><span class="dashicons dashicons-calendar"></span>';
+		$existing_start_date = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d h:i a' , current_time('timestamp') );
+		$start_date_filter = '<input data-context="start" data-container="scope" data-next-field="#EVT_end_date_filter" type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_start_date . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//end date
-		$existing_edate = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( 'Y-m-d h:i a' , EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
-		$end_date_filter = '<input data-context="end" data-container="scope" data-next-field="#EVT_title_filter" type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_edate . '"><span class="dashicons dashicons-calendar"></span>';
+		$existing_end_date = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( 'Y-m-d h:i a' , EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
+		$end_date_filter = '<input data-context="end" data-container="scope" data-next-field="#EVT_title_filter" type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_end_date . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//event name
 		$existing_name = ! empty( $_REQUEST['EVT_title_filter'] ) ? $_REQUEST['EVT_title_filter'] : '';
