@@ -13,15 +13,20 @@ if (!defined('EVENT_ESPRESSO_VERSION'))
  *
  */
 class EEE_Promotions_Event extends EEE_Base_Class{
+
+	/**
+	 * 	constructor
+	 * @return EEE_Promotions_Event
+	 */
 	public function __construct() {
 		$this->_model_name_extended = 'Event';
 		parent::__construct();
 	}
 
 	/**
-	 * Adds the function 'promotions' onto each EE_Event obejct.
-	 * Gets all theh promotions for this event, (but doesn't cache its results or anything).
-	 * @param type $query_params
+	 * Adds the function 'promotions' onto each EE_Event object.
+	 * Gets all the promotions for this event, (but doesn't cache its results or anything).
+	 * @param array $query_params
 	 * @return EE_Promotion[]
 	 */
 	public function ext_promotions($query_params = array()){
