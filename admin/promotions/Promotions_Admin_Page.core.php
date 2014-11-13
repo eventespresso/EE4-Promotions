@@ -251,7 +251,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'desc' => $scope->label->singular
 				);
 		}
-
 		$items = array(
 			'active_status' => array(
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::active,
@@ -268,8 +267,12 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'unavailable_status' => array(
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::unavailable,
 				'desc' => EEH_Template::pretty_status( EE_Promotion::unavailable, FALSE, 'sentence')
-				)
-			);
+				),
+			array(
+				'class' => '',
+				'desc' => '<span class="ee-infinity-sign">&#8734;</span>   ' . __('Unlimited', 'event_espresso')
+			)
+		);
 		return array_merge( $scope_legend, $items);
 	}
 
