@@ -95,7 +95,8 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_name( EE_Promotion $item ) {
-		echo $item->name();
+		$edit_link = EEH_URL::add_query_args_and_nonce( array( 'action' => 'edit', 'PRO_ID' => $item->ID() ), EE_PROMOTIONS_ADMIN_URL );
+		echo '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '">' . $item->name() . '</a>';
 	}
 
 
