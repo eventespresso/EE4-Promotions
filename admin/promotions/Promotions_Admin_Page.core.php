@@ -321,10 +321,14 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-
+	/**
+	 * promotion_details_metabox
+	 */
 	public function promotion_details_metabox() {
+		$promotion_uses = $this->_promotion->uses();
 		$form_args = array(
 			'promotion' => $this->_promotion,
+			'promotion_uses' => $promotion_uses !== EE_INF_IN_DB ? $promotion_uses : '',
 			'price_type_selector' => $this->_get_price_type_selector(),
 			'scope_selector' => $this->_get_promotion_scope_selector()
 			);
@@ -334,7 +338,9 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-
+	/**
+	 * promotions_applied_to_metabox
+	 */
 	public function promotions_applied_to_metabox() {
 		//we use the scope to get the metabox content.
 		$scope = $this->_promotion->scope_obj();
@@ -346,7 +352,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-
+	/**
+	 * _get_price_type_selector
+	 * @return string
+	 */
 	protected function _get_price_type_selector() {
 		//get Price Types for discount base price type.
 		$price_types = EEM_Price_Type::instance()->get_all(  array( array( 'PBT_ID' => EEM_Price_Type::base_type_discount ) ) );
@@ -372,7 +381,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			$values[] = array(
 				'text' => $scope->label->singular,
 				'id' => $scope_name
-				);
+			);
 		}
 		$redeemed = $this->_promotion->redeemed();
 		$name = $redeemed > 0 ? 'PRO_scope_disabled' : 'PRO_scope';
@@ -402,17 +411,17 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'PRO_scope' => !empty( $this->_req_data['PRO_scope'] ) ? $this->_req_data['PRO_scope'] : 'Event',
 			'PRO_start' => !empty( $this->_req_data['PRO_start'] ) ? $this->_req_data['PRO_start'] : NULL,
 			'PRO_end' => ! empty( $this->_req_data['PRO_end'] ) ? $this->_req_data['PRO_end'] : NULL,
-			'PRO_uses' => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses'] : NULL,
+			'PRO_uses' => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses'] : EE_INF_IN_DB,
 			'PRO_accept_msg' => ! empty( $this->_req_data['PRO_accept_msg'] ) ? $this->_req_data['PRO_accept_msg'] : '',
 			'PRO_decline_msg' => !empty( $this->_req_data['PRO_decline_msg'] ) ? $this->_req_data['PRO_decline_msg'] : ''
-			);
+		);
 		$promo_price_values = array(
 			'PRC_ID' => !empty( $this->_req_data['PRC_ID'] ) ? $this->_req_data['PRC_ID'] : 0,
 			'PRC_name' => !empty( $this->_req_data['PRC_name'] ) ? $this->_req_data['PRC_name'] : __('Special Promotion', 'event_espresso'),
 			'PRT_ID' => !empty( $this->_req_data['PRT_ID'] ) ? $this->_req_data['PRT_ID'] : 0,
 			'PRC_amount' => !empty( $this->_req_data['PRC_amount'] ) ? $this->_req_data['PRC_amount'] : 0,
 			'PRC_desc' => !empty( $this->_req_data['PRC_desc'] ) ? $this->_req_data['PRC_desc'] : ''
-			);
+		);
 
 		//first handle the price object
 		$price = empty( $promo_price_values['PRC_ID'] ) ? EE_Price::new_instance( $promo_price_values ) : EEM_Price::instance()->get_one_by_ID( $promo_price_values['PRC_ID'] );
