@@ -47,7 +47,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			'valid_from' => __('Valid From', 'event_espresso'),
 			'valid_until' => __('Valid Until', 'event_espresso'),
 			'amount' => __('Discount', 'event_espresso'),
-			'redeemed' => __('Redeemed', 'event_espresso'),
+			'redeemed' => __('Uses', 'event_espresso'),
 			'actions' => __('Actions', 'event_espresso')
 			);
 
@@ -136,7 +136,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_redeemed( EE_Promotion $item ) {
-		echo $item->redeemed();
+		echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses();
 	}
 
 
@@ -157,15 +157,15 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				);
 			$edit_link = EEH_URL::add_query_args_and_nonce( $edit_query_args, EE_PROMOTIONS_ADMIN_URL );
 			$dupe_link = EEH_URL::add_query_args_and_nonce( $dupe_query_args, EE_PROMOTIONS_ADMIN_URL );
-			$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable"></div></a>';
-			$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable"></div></a>';
+			$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable ee-icon-size-20"></div></a>';
+			$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable ee-icon-size-16"></div></a>';
 		} else {
 			$restore_query_args = array(
 				'action' => 'restore_promotion',
 				'PRO_ID' => $item->ID()
 			);
 			$restore_link = EEH_URL::add_query_args_and_nonce( $restore_query_args, EE_PROMOTIONS_ADMIN_URL );
-			$actionlinks[] = '<a href="' . $restore_link. '" title="' . __('Restore Promotion', 'event_espresso') . '"><div class="dashicons dashicons-backup"></div></a>';
+			$actionlinks[] = '<a href="' . $restore_link. '" title="' . __('Restore Promotion', 'event_espresso') . '"><div class="dashicons dashicons-backup ee-icon-size-18"></div></a>';
 		}
 
 		$trash_query_args = array(
@@ -175,7 +175,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$trash_link = EEH_URL::add_query_args_and_nonce( $trash_query_args, EE_PROMOTIONS_ADMIN_URL );
 		$trash_text = $this->_view == 'trash' ? __('Delete Promotion permanently', 'event_espresso') : __('Trash Promotion', 'event_espresso');
 		$trash_class = $this->_view == 'trash' ? ' red-icon' : '';
-		$actionlinks[] = $this->_view == 'trash' && $item->redeemed() > 0 ? '' : '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable' . $trash_class . '"></div></a>';
+		$actionlinks[] = $this->_view == 'trash' && $item->redeemed() > 0 ? '' : '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable ee-icon-size-18' . $trash_class . '"></div></a>';
 
 		$content = '<div style="width:100%;">' . "\n\t";
 		$content .= implode( "\n\t", $actionlinks );
