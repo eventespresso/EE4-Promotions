@@ -21,18 +21,17 @@
  *
  * ------------------------------------------------------------------------
  */
-require_once ( EE_CLASSES . 'EE_Base_Class.class.php' );
 class EE_Promotion_Object extends EE_Base_Class{
 
-	/** Price-to-Object ID", "event_espresso @var POB_ID*/
+	/** Price-to-Object ID", "event_espresso @var $_POB_ID*/
 	protected $_POB_ID = NULL;
-	/** Promotion Object", "event_espresso @var PRO_ID*/
+	/** Promotion Object", "event_espresso @var $_PRO_ID*/
 	protected $_PRO_ID = NULL;
-	/** ID of the Related Object", "event_espresso @var OBJ_ID*/
+	/** ID of the Related Object", "event_espresso @var $_OBJ_ID*/
 	protected $_OBJ_ID = NULL;
-	/** Model of Related Object", "event_espresso @var POB_type*/
+	/** Model of Related Object", "event_espresso @var $_POB_type*/
 	protected $_POB_type = NULL;
-	/** Times the promotion has been used for this object", "event_espresso @var POB_used*/
+	/** Times the promotion has been used for this object", "event_espresso @var $_POB_used*/
 	protected $_POB_used = NULL;
 
 	/**
@@ -64,7 +63,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 
 	/**
 	 *
-	 * @param type $props_n_values
+	 * @param array $props_n_values
 	 * @return EE_Promotion_Object
 	 */
 	public static function new_instance( $props_n_values = array() ) {
@@ -75,7 +74,7 @@ class EE_Promotion_Object extends EE_Base_Class{
 
 	/**
 	 *
-	 * @param type $props_n_values
+	 * @param array $props_n_values
 	 * @return EE_Promotion_Object
 	 */
 	public static function new_instance_from_db ( $props_n_values = array() ) {
@@ -93,10 +92,9 @@ class EE_Promotion_Object extends EE_Base_Class{
 	/**
 	 * Sets promotion_ID
 	 * @param int $promotion_ID
-	 * @return boolean
 	 */
 	function set_promotion_ID($promotion_ID) {
-		return $this->set('PRO_ID', $promotion_ID);
+		$this->set('PRO_ID', $promotion_ID);
 	}
 
 	/**
@@ -110,10 +108,9 @@ class EE_Promotion_Object extends EE_Base_Class{
 	/**
 	 * Sets OBJ_ID
 	 * @param int $OBJ_ID
-	 * @return boolean
 	 */
 	function set_OBJ_ID($OBJ_ID) {
-		return $this->set('OBJ_ID', $OBJ_ID);
+		$this->set('OBJ_ID', $OBJ_ID);
 	}
 	/**
 	 * Gets type
@@ -126,10 +123,9 @@ class EE_Promotion_Object extends EE_Base_Class{
 	/**
 	 * Sets type
 	 * @param string $type
-	 * @return boolean
 	 */
 	function set_type($type) {
-		return $this->set('POB_type', $type);
+		$this->set('POB_type', $type);
 	}
 	/**
 	 * Gets used
@@ -142,10 +138,17 @@ class EE_Promotion_Object extends EE_Base_Class{
 	/**
 	 * Sets used
 	 * @param int $used
-	 * @return boolean
 	 */
 	function set_used($used) {
-		return $this->set('POB_used', $used);
+		$this->set('POB_used', $used);
+	}
+
+	/**
+	 * increment_used used
+	 * @param int $amount
+	 */
+	function increment_used( $amount = 1 ) {
+		$this->set_used( $this->used() + $amount );
 	}
 
 	/**
