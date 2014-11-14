@@ -210,6 +210,17 @@ abstract class EE_Promotion_Scope {
 
 
 
+	/**
+	 * returns one of the EEM_Line_Item line type constants that should be used when generating a promotion line item for this scope
+	 *
+	 * @since   1.0.0
+	 *
+	 * @return string
+	 */
+	abstract public function get_promotion_line_item_type();
+
+
+
 
 	/**
 	 * This returns a html span string for the default scope icon.  Child classes can override.
@@ -438,8 +449,9 @@ abstract class EE_Promotion_Scope {
 		$selected_items = (array) $selected_items;
 		$disabled = '';
 		//verification
-		if ( empty( $items_to_select ) || ! is_array( $items_to_select) || ! $items_to_select[key($items_to_select)] instanceof EE_Base_Class )
+		if ( empty( $items_to_select ) || ! is_array( $items_to_select) || ! $items_to_select[key($items_to_select)] instanceof EE_Base_Class ) {
 			return sprintf( __('There are no active %s to assign to this scope.  You will need to create some first.', 'event_espresso'), $this->label->plural );
+		}
 		$checkboxes = '<ul class="promotion-applies-to-items-ul">';
 		foreach( $items_to_select as $id => $obj ) {
 			$checked = in_array($id, $selected_items) ? ' checked=checked' : '';
@@ -494,4 +506,126 @@ abstract class EE_Promotion_Scope {
 			throw new EE_Error( sprintf( __( 'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.', 'event_espresso'), $classname ) );
 	}
 
+
+
+	/**
+	 * find_applicable_items_in_cart
+	 * searches the cart for any items that the supplied promotion applies to.
+	 * can be overridden by specific promotion scope classes for greater performance or specificity
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Promotion $promotion
+	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
+	 * @return EE_Line_Item[]
+	 */
+	public function find_applicable_items_in_cart( EE_Promotion $promotion, EE_Line_Item $total_line_item ) {
+		$applicable_items = array();
+		// retrieve promotion objects for this promotion type scope
+		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug )));
+		if ( ! empty( $promotion_objects )) {
+			foreach ( $promotion_objects as $promotion_object ) {
+				// can the promotion still be be redeemed fro this scope object?
+				if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+					$applicable_items[] = $promotion_object->OBJ_ID();
+				}
+			}
+		}
+		return $this->get_object_line_items_for_transaction( $total_line_item, $applicable_items );
+	}
+
+
+
+	/**
+	 * find_applicable_items_in_cart
+	 * searches the cart for any items that this promotion applies to
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
+	 * @param string $OBJ_type
+	 * @param array $OBJ_IDs
+	 * @return EE_Line_Item[]
+	 */
+	protected function get_object_line_items_for_transaction( EE_Line_Item $total_line_item, $OBJ_IDs = array(), $OBJ_type = '' ) {
+		/** @type EEM_Line_Item $EEM_Line_Item */
+		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
+		return $EEM_Line_Item->get_object_line_items_for_transaction(
+			$total_line_item->TXN_ID(),
+			empty( $OBJ_type ) ? $this->slug : $OBJ_type,
+			$OBJ_IDs
+		);
+	}
+
+
+
+	/**
+	 * find_applicable_items_in_cart
+	 * searches the cart for any items that this promotion applies to
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Line_Item $parent_line_item the line item to create the new promotion line item under
+	 * @param EE_Promotion $promotion the promotion object that the line item is being created for
+	 * @param string       $promo_name
+	 * @throws \EE_Error
+	 * @return EE_Line_Item
+	 */
+	public function generate_promotion_line_item( EE_Line_Item $parent_line_item, EE_Promotion $promotion, $promo_name = '' ) {
+		// verify EE_Line_Item
+		if ( ! $parent_line_item instanceof EE_Line_Item ) {
+			throw new EE_Error( __( 'A valid EE_Line_Item object is required to generate a promotion line item.', 'event_espresso' ));
+		}
+		// verify EE_Promotion
+		if ( ! $promotion instanceof EE_Promotion ) {
+			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
+		}
+
+		// generate promotion line_item
+		return EE_Line_Item::new_instance(
+			array(
+				'LIN_code' 			=> 'promotion',
+				'TXN_ID'				=> $parent_line_item->TXN_ID(),
+				'LIN_name' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
+				'LIN_desc' 			=> $promotion->description(),
+				'LIN_unit_price' 	=> 0,
+				'LIN_percent' 		=> $promotion->amount(),
+				'LIN_is_taxable' 	=> FALSE,
+				'LIN_order' 			=> 0, 		// set in add_item()
+				'LIN_total' 			=> $promotion->calculated_amount_on_value( $parent_line_item->total() ),
+				'LIN_quantity' 	=> NULL,
+				'LIN_parent' 		=> $parent_line_item->ID(), 		// Parent ID (this item goes towards that Line Item's total)
+				'LIN_type'			=> $this->get_promotion_line_item_type(),
+				'OBJ_ID' 				=> $promotion->ID(), 		// ID of Item purchased
+				'OBJ_type'			=> 'Promotion' 	// Model Name this Line Item is for
+			)
+		);
+
+	}
+
+
+
+	/**
+	 * find_applicable_items_in_cart
+	 *
+	 * @param EE_Promotion $promotion
+	 * @param int          $OBJ_ID
+	 * @throws \EE_Error
+	 * @return bool
+	 */
+	public function increment_promotion_scope_uses( EE_Promotion $promotion, $OBJ_ID = 0 ) {
+		$EEM_Promotion_Object = EE_Registry::instance()->load_model( 'Promotion_Object' );
+		// retrieve promotion object having the given ID and type scope
+		$promotion_object = $EEM_Promotion_Object->get_one( array( array( 'PRO_ID' => $promotion->ID(), 'OBJ_ID' => $OBJ_ID )));
+		if ( $promotion_object instanceof EE_Promotion_Object ) {
+			$promotion_object->increment_used();
+			return TRUE;
+		}
+		throw new EE_Error( __( 'A valid EE_Promotion_Object object could not be found.', 'event_espresso' ));
+	}
+
+
+
+
 }
+// end of file: wp-content/plugins/espresso-promotions/lib/scopes/EE_Promotion_Scope.lib.php
