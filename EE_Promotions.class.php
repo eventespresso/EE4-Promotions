@@ -21,11 +21,6 @@ define( 'EE_PROMOTIONS_CORE', EE_PROMOTIONS_PATH . 'core' . DS);
  */
 Class  EE_Promotions extends EE_Addon {
 
-	/**
-	 * @var string activation_indicator_option_name
-	 */
-	const activation_indicator_option_name = 'ee_espresso_promotions_activation';
-
 
 
 	/**
