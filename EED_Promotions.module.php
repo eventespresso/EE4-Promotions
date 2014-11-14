@@ -19,6 +19,7 @@
  * @package			Event Espresso
  * @subpackage		espresso-promotions
  * @author 				Brent Christensen
+ * @property EE_Promotions_Config $_config
  *
  * ------------------------------------------------------------------------
  */
@@ -32,6 +33,15 @@ class EED_Promotions extends EED_Module {
 
 
 
+	/**
+	 * @return EED_Promotions
+	 */
+	public static function instance() {
+		return parent::get_instance( __CLASS__ );
+	}
+
+
+
 	 /**
 	  * 	set_hooks - for hooking into EE Core, other modules, etc
 	  *
@@ -40,6 +50,9 @@ class EED_Promotions extends EED_Module {
 	  */
 	 public static function set_hooks() {
 		 EE_Config::register_route( 'promotions', 'EED_Promotions', 'run' );
+		 add_action( 'wp_enqueue_scripts', array( 'EED_Promotions', 'translate_js_strings' ), 1 );
+		 add_action( 'wp_enqueue_scripts', array( 'EED_Promotions', 'enqueue_scripts' ));
+		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
 	 }
 
 	 /**
@@ -49,10 +62,32 @@ class EED_Promotions extends EED_Module {
 	  *  @return 	void
 	  */
 	 public static function set_hooks_admin() {
-		 // ajax hooks
+		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
+		 // _get_promotions
 		 add_action( 'wp_ajax_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
 		 add_action( 'wp_ajax_nopriv_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
+		 // submit_promo_code
+		 add_action( 'wp_ajax_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+		 add_action( 'wp_ajax_nopriv_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+		// TXN admin
+		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
+		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
+		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
 	 }
+
+
+
+	/**
+	 *    set_config
+	 *
+	 * @return EE_Promotions_Config
+	 */
+	protected function set_config(){
+		$this->set_config_section( 'addons' );
+		$this->set_config_class( 'EE_Promotions_Config' );
+		$this->set_config_name( 'promotions' );
+		return $this->config();
+	}
 
 
 
@@ -66,9 +101,20 @@ class EED_Promotions extends EED_Module {
 	  * @return    void
 	  */
 	 public function run( $WP ) {
-		 EED_Promotions::_set_config();
-		 add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ));
+		 EED_Promotions::instance()->set_config();
 	 }
+
+
+
+	/**
+	 * 		translate_js_strings
+	 *
+	 * 		@access 		public
+	 * 		@return 		void
+	 */
+	public function translate_js_strings() {
+		EE_Registry::$i18n_js_strings['no_promotions_code'] = __( 'Please enter a valid Promotion Code.', 'event_espresso' );
+	}
 
 
 
@@ -81,20 +127,20 @@ class EED_Promotions extends EED_Module {
 	 *  @access 	public
 	 *  @return 	void
 	 */
-	public function enqueue_scripts() {
+	public static function enqueue_scripts() {
 		//Check to see if the promotions css file exists in the '/uploads/espresso/' directory
-		if ( is_readable( EVENT_ESPRESSO_UPLOAD_DIR . "css/promotions.css")) {
+		if ( is_readable( EVENT_ESPRESSO_UPLOAD_DIR . 'css' . DS . 'promotions.css' )) {
 			//This is the url to the css file if available
-			wp_register_style( 'espresso_promotions', EVENT_ESPRESSO_UPLOAD_URL . 'css/espresso_promotions.css' );
+			wp_register_style( 'espresso_promotions', EVENT_ESPRESSO_UPLOAD_URL . 'css' . DS . 'promotions.css' );
 		} else {
 			// EE promotions style
-			wp_register_style( 'espresso_promotions', EE_PROMOTIONS_URL . 'css/espresso_promotions.css' );
+			wp_register_style( 'espresso_promotions', EE_PROMOTIONS_URL . 'css' . DS . 'promotions.css' );
 		}
 		// promotions script
-		wp_register_script( 'espresso_promotions', EE_PROMOTIONS_URL . 'scripts/espresso_promotions.js', array( 'jquery' ), EE_PROMOTIONS_VERSION, TRUE );
+		wp_register_script( 'espresso_promotions', EE_PROMOTIONS_URL . 'scripts' . DS . 'promotions.js', array( 'single_page_checkout' ), EE_PROMOTIONS_VERSION, TRUE );
 
-		// is the shortcode or widget in play?
-		if ( EED_Promotions::$shortcode_active ) {
+		if ( EED_Promotions::load_assets() ) {
+			// load JS
 			wp_enqueue_style( 'espresso_promotions' );
 			wp_enqueue_script( 'espresso_promotions' );
 		}
@@ -104,14 +150,394 @@ class EED_Promotions extends EED_Module {
 
 
 	 /**
-	  *    _get_promotions
+	  *    load_assets
 	  *
 	  * @access    	public
-	  * @return    	string
+	  * @return    	bool
 	  */
+	public static function load_assets() {
+		return ! is_admin() && ( apply_filters( 'EED_Single_Page_Checkout__SPCO_active', FALSE ) || EED_Promotions::$shortcode_active ) ? TRUE : FALSE;
+	}
+
+
+
+	/**
+	 *    transactions_list_table_total
+	 *
+	 * @access 	public
+	 * @param 	string $TXN_total
+	 * @param 	EE_Transaction $transaction
+	 * @return 	string
+	 */
+	public static function transactions_list_table_total( $TXN_total = '', EE_Transaction $transaction ) {
+		foreach( $transaction->line_items( array( array( 'OBJ_type' => 'Promotion' ))) as $promotion_line_item ) {
+			$edit_link = EEH_URL::add_query_args_and_nonce( array( 'action' => 'edit', 'PRO_ID' => $promotion_line_item->OBJ_ID() ), EE_PROMOTIONS_ADMIN_URL );
+			$TXN_total = '<a href="' . $edit_link . '" title="' . __('A Promotion was redeemed during this Transaction. Click to View Promotion', 'event_espresso') . '">' . ' <sup><span class="dashicons dashicons-tag green-icon ee-icon-size-12"></span></sup>' . $TXN_total . '</a>';
+			break;
+		}
+		return $TXN_total;
+	}
+
+
+
+	/**
+	 *    transactions_list_table_legend
+	 *
+	 * @access 	public
+	 * @param 	array $legend_items
+	 * @return 	array
+	 */
+	public static function transactions_list_table_legend( $legend_items = array() ) {
+		$legend_items['promotion_redeemed'] = array(
+			'class' => 'dashicons dashicons-tag green-icon ee-icon-size-12',
+			'desc' => __('Promotion was redeemed during Transaction', 'event_espresso')
+		);
+		return $legend_items;
+	}
+
+
+
+	/**
+	 *    add_promotions_form_inputs
+	 *
+	 * @access 	public
+	 * @param 	EE_Form_Section_Proper $before_payment_options
+	 * @return 	EE_Form_Section_Proper
+	 */
+	public static function add_promotions_form_inputs( $before_payment_options ) {
+		EED_Promotions::instance()->set_config();
+		return EED_Promotions::instance()->_add_promotions_form_inputs( $before_payment_options );
+	}
+
+
+
+
+	 /**
+	  *    _add_promotions_form_inputs
+	  *
+	  * @access    	private
+	  * @param 	EE_Form_Section_Proper $before_payment_options
+	  * @return    	EE_Form_Section_Proper
+	  */
+	private function _add_promotions_form_inputs( $before_payment_options ) {
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ));
+		EE_Registry::instance()->load_helper( 'HTML' );
+		$before_payment_options->add_subsections(
+			array(
+				'promotions_form' => new EE_Form_Section_Proper(
+					array(
+						'layout_strategy'	 	=> new EE_No_Layout(),
+						'subsections' 			=> array(
+							'ee_promotion_code_input' 	=> new EE_Text_Input(
+								array(
+									'default'					=> '',
+									'html_id' 					=> 'ee-promotion-code-input',
+									'html_class' 			=> 'ee-promotion-code-input ee-reg-qstn',
+									'html_name' 			=> 'ee_promotion_code_input',
+									'html_label_text' 	=> apply_filters(
+										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_input__html_label_text',
+										EEH_HTML::h4( $this->_config->public_name_singular )
+									)
+								)
+							),
+							'ee_promotion_code_submit' 	=> new EE_Submit_Input(
+								array(
+									'html_id' 			=> 'ee-promotion-code',
+									'html_class' 	=> 'spco-next-step-btn',
+									'html_name' 	=> 'ee_promotion_code_submit',
+									'default' 			=> apply_filters(
+										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_submit__default',
+										sprintf( __( 'Submit %s', 'event_espresso' ), $this->_config->public_short_name_singular )
+									)
+								)
+							),
+							'ee_promotion_code_header' => new EE_Form_Section_HTML(
+								EEH_HTML::div( ' ', '', 'clear-float' )
+							)
+						)
+					)
+				)
+			)
+		);
+
+//		$promo_code = $this->_submit_promo_code( 'HNH_e15f1e61qp1hy1d2ko1d2o1x9' );
+//		d( $promo_code );
+
+		return $before_payment_options;
+	}
+
+
+
+
+	/**
+	 *    submit_promo_code
+	 *
+	 * @access 	public
+	 * @return 	void
+	 */
+	public static function submit_promo_code() {
+		EED_Promotions::instance()->set_config();
+		EED_Promotions::instance()->_submit_promo_code();
+	}
+
+
+
+	/**
+	 * 	_submit_promo_code
+	 *
+	 * @access        private
+	 * @return        void
+	 */
+	private function _submit_promo_code() {
+		$return_data = array();
+		// get the EE_Cart object being used for the current transaction
+		/** @type EE_Cart $EE_Cart */
+		$EE_Cart = EE_Registry::instance()->SSN->cart();
+		$promotion = $this->get_promotion_details_from_request();
+		if ( $promotion ) {
+			// determine if the promotion can be applied to an item in the current cart
+			$applicable_items = $this->get_applicable_items( $promotion, $EE_Cart );
+			if ( ! empty( $applicable_items )) {
+				// add line item
+				if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
+					$EE_Cart->recalculate_all_cart_totals();
+					$EE_Cart->save_cart( FALSE );
+					$return_data = $this->_get_payment_info( $EE_Cart );
+					$return_data['success'] = $this->_config->public_name_singular . ' ' . $promotion->accept_message();
+//					printr( $return_data, '$return_data  <br /><span style="font-size:10px;font-weight:normal;">' . __FILE__ . '<br />line no: ' . __LINE__ . '</span>', 'auto' );
+					EED_Single_Page_Checkout::update_checkout();
+				} else {
+					EE_Error::add_attention( $this->_config->public_name_singular . ' ' . $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
+				}
+			}
+		}
+		$this->generate_JSON_response( $return_data );
+	}
+
+
+
+
+	/**
+	 * 	get_promotion_details_from_request
+	 *
+	 * @access 	public
+	 * @param string $promo_code
+	 * @return 	EE_Promotion | bool
+	 */
+	public function get_promotion_details_from_request( $promo_code = '' ) {
+		// get promo code from $_REQUEST or use incoming default value
+		$promo_code = sanitize_text_field( EE_Registry::instance()->REQ->get( 'promo_code', $promo_code ));
+		/** @type EEM_Promotion $EEM_Promotion */
+		$EEM_Promotion = EE_Registry::instance()->load_model( 'Promotion' );
+		// $EEM_Promotion->show_next_x_db_queries();
+		$promo = $EEM_Promotion->get_promotion_details_via_code( $promo_code );
+		if ( ! $promo instanceof EE_Promotion ) {
+			EE_Error::add_attention(
+				sprintf(
+					__( 'We\'re sorry, but the %1$s "%2$s" appears to be invalid.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
+					strtolower( $this->_config->public_short_name_singular ),
+					$promo_code,
+					'<br />'
+				),
+				__FILE__, __FUNCTION__, __LINE__
+			);
+			return FALSE;
+		}
+		return $promo;
+	}
+
+
+
+	/**
+	 * 	validate_promotion
+	 *
+	 * 	determine if the promotion has global uses left and can be applied to a valid item in the current cart
+	 *
+	 * @access    public
+	 * @param \EE_Promotion $promotion
+	 * @param \EE_Cart      $cart
+	 * @return EE_Line_Item[]
+	 */
+	public function get_applicable_items( EE_Promotion $promotion, EE_Cart $cart ) {
+		$applicable_items = array();
+		// verify EE_Promotion
+		if ( $promotion instanceof EE_Promotion ) {
+			if ( $promotion->global_uses_left() ) {
+				$applicable_items = $promotion->scope_obj()->find_applicable_items_in_cart( $promotion, $cart->get_grand_total() );
+			}
+		}
+		if ( empty( $applicable_items )) {
+			EE_Error::add_attention(
+				sprintf(
+					__( 'We\'re sorry, but the %1$s "%2$s" could not be applied to any %4$s.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
+					strtolower( $this->_config->public_short_name_singular ),
+					$promotion->code(),
+					'<br />',
+					$promotion->scope_obj()->label->plural
+				),
+				__FILE__, __FUNCTION__, __LINE__
+			);
+		}
+		return $applicable_items;
+	}
+
+
+
+	/**
+	 * generate_promotion_line_items
+	 * if the promotion in question has not already been redeemed for the given line item,
+	 * then have a line item generated by the promotion scope object, and increment
+	 *
+	 * @access    public
+	 * @param \EE_Promotion $promotion
+	 * @param \EE_Line_Item[] $applicable_items
+	 * @return    boolean
+	 */
+	public function generate_promotion_line_items( EE_Promotion $promotion, $applicable_items = array() ) {
+		$success = FALSE;
+		// verify EE_Promotion
+		if ( $promotion instanceof EE_Promotion ) {
+			foreach ( $applicable_items as $applicable_item ) {
+				if ( $this->verify_no_existing_promotion_line_items( $applicable_item, $promotion )) {
+					$promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item( $applicable_item, $promotion, $promotion->name() );
+					if ( $promotion_line_item instanceof EE_Line_Item ) {
+						$success = $this->add_promotion_line_item( $applicable_item, $promotion_line_item, $promotion ) ? TRUE : $success;
+					}
+				}
+			}
+		}
+		return $success;
+	}
+
+
+
+
+	/**
+	 * find_applicable_items_in_cart
+	 * searches the cart for any items that this promotion applies to
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Line_Item $parent_line_item
+	 * @param EE_Promotion $promotion
+	 * @return EE_Line_Item
+	 */
+	public function verify_no_existing_promotion_line_items( EE_Line_Item $parent_line_item, EE_Promotion $promotion ) {
+		/** @type EEM_Line_Item $EEM_Line_Item */
+		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
+		// check that promotion hasn't already been applied
+		$existing_promotion_line_item = $EEM_Line_Item->get_existing_promotion_line_item( $parent_line_item, $promotion );
+		if ( $existing_promotion_line_item instanceof EE_Line_Item ) {
+			EE_Error::add_attention(
+				sprintf(
+					__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' ),
+					$existing_promotion_line_item->name(),
+					$parent_line_item->desc(),
+					$parent_line_item->OBJ_type(),
+					$existing_promotion_line_item->OBJ_type()
+				),
+				__FILE__, __FUNCTION__, __LINE__
+			);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
+
+
+	/**
+	 *    add_promotion_line_item
+	 *
+	 * @access 	public
+	 * @param EE_Line_Item $parent_line_item the line item that the new promotion was added to as a child line item
+	 * @param EE_Line_Item $promotion_line_item the line item representing the new promotion
+	 * @param EE_Promotion $promotion the promotion object that the line item was created for
+	 * @return 	boolean
+	 */
+	public function add_promotion_line_item( EE_Line_Item $parent_line_item, EE_Line_Item $promotion_line_item, EE_Promotion $promotion ) {
+		EE_Registry::instance()->load_helper( 'Line_Item' );
+		// add it to the cart
+		if ( EEH_Line_Item::add_item( $parent_line_item, $promotion_line_item )) {
+			if ( $promotion->scope_obj()->increment_promotion_scope_uses( $promotion, $parent_line_item->OBJ_ID() )) {
+				return TRUE;
+			} else {
+				// todo: throw error and revert adding promotion line_item
+			}
+		}
+		return FALSE;
+	}
+
+
+
+	/**
+	 *    _get_payment_info
+	 *
+	 * @access    public
+	 * @param EE_Cart $EE_Cart
+	 * @return    array
+	 */
+	public function _get_payment_info( EE_Cart $EE_Cart ) {
+		// autoload Line_Item_Display classes
+		EEH_Autoloader::register_line_item_display_autoloaders();
+		$Line_Item_Display = new EE_Line_Item_Display( 'spco' );
+		return array( 'payment_info' => $Line_Item_Display->display_line_item( $EE_Cart->get_grand_total() ));
+	}
+
+
+
+	/**
+	 *    generate_JSON_response
+	 *
+	 *        allows you to simply echo or print an EE_SPCO_JSON_Response object to produce a  JSON encoded string
+	 *        ie: $json_response = new EE_SPCO_JSON_Response();
+	 *        echo $json_response;
+	 *
+	 * @access    public
+	 * @param array $return_data
+	 * @return    void
+	 */
+	public function generate_JSON_response( $return_data = array() ) {
+		$JSON_response = array();
+		// grab notices
+		$notices = EE_Error::get_notices( FALSE );
+		// add notices to JSON response, but only if they exist
+		if ( isset( $notices['attention'] )) {
+			$JSON_response['attention'] = $notices['attention'];
+		}
+		if ( isset( $notices['errors'] )) {
+			$JSON_response['errors'] = $notices['errors'];
+		}
+		if ( isset( $notices['success'] )) {
+			$JSON_response['success'] = $notices['success'];
+		}
+
+		if ( empty( $JSON_response ) && empty( $return_data )) {
+			$JSON_response['errors'] = sprintf(
+				__( 'The %1$s entered could not be processed for an unknown reason.%2$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
+				strtolower( $this->_config->public_short_name_singular ),
+				'<br />'
+			);
+		}
+		// add return_data array to main JSON response array, IF it contains anything
+		$JSON_response['return_data'] = $return_data;
+		// filter final array
+		$JSON_response = apply_filters( 'FHEE__EED_Promotions__generate_JSON_response__JSON_response', $JSON_response );
+		// return encoded array
+		echo json_encode( $JSON_response );
+		exit();
+	}
+
+
+
+	/**
+	 *    _get_promotions
+	 *
+	 * @access    	public
+	 * @return    	string
+	 */
 	public static function _get_promotions(  ) {
 		// get promotions options
-		$config = EED_Promotions::_get_config();
+//		$config = EED_Promotions::_get_config();
 		return '';
 	}
 
@@ -126,24 +552,12 @@ class EED_Promotions extends EED_Module {
 	  */
 	public function display_promotions(  ) {
 		// get promotions options
-		$config = EED_Promotions::_get_config();
+//		$config = EED_Promotions::_get_config();
 		return '';
 	}
 
 
 
-	/**
-	 *		@ override magic methods
-	 *		@ return void
-	 */
-	public function __set($a,$b) { return FALSE; }
-	public function __get($a) { return FALSE; }
-	public function __isset($a) { return FALSE; }
-	public function __unset($a) { return FALSE; }
-	public function __clone() { return FALSE; }
-	public function __wakeup() { return FALSE; }
-	public function __destruct() { return FALSE; }
-
- }
+}
 // End of file EED_Promotions.module.php
 // Location: /wp-content/plugins/espresso-promotions/EED_Promotions.module.php
