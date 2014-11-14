@@ -43,19 +43,19 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 		);
 		$this->_fields = array(
 			'Promotion'=>array(
-				'PRO_ID'=>new EE_Primary_Key_Int_Field('PRO_ID', __("ID", "event_espresso")),
-				'PRC_ID'=>new EE_Foreign_Key_Int_Field('PRC_ID', __("Price ID", "event_espresso"), false, 0, 'Price'),
-				'PRO_scope'=>new EE_Plain_Text_Field('PRO_scope', __("Scope", "event_espresso"), false, ''),
-				'PRO_start'=>new EE_Datetime_Field('PRO_start', __("Start Date/Time", "event_espresso"), true, null),
-				'PRO_end'=>new EE_Datetime_Field('PRO_end', __("End Date/Time", "event_espresso"), true, null),
-				'PRO_code'=>new EE_Plain_Text_Field('PRO_code', __("Code", "event_espresso"), true, ''),
-				'PRO_uses'=>new EE_Integer_Field('PRO_uses', __("Times this can be used in a given scope", "event_espresso"), false,1),
-				'PRO_global'=>new EE_Boolean_Field('PRO_global', __("Usable Globally?", "event_espresso"), false,false),
-				'PRO_global_uses'=>new EE_Integer_Field('PRO_global_uses', __("Times it can be used in all scopes", "event_espresso"), false,0),
-				'PRO_exclusive'=>new EE_Boolean_Field('PRO_exclusive', __("Exclusive? (ie, can't be used with other promotions)", "event_espresso"), false,false),
+				'PRO_ID'=>new EE_Primary_Key_Int_Field('PRO_ID', __('ID', 'event_espresso')),
+				'PRC_ID'=>new EE_Foreign_Key_Int_Field('PRC_ID', __("Price ID", "event_espresso"), false, 0, 'Price' ),
+				'PRO_scope'=>new EE_Plain_Text_Field('PRO_scope', __("Scope", "event_espresso"), false, '' ),
+				'PRO_start'=>new EE_Datetime_Field('PRO_start', __("Start Date/Time", "event_espresso"), true, null ),
+				'PRO_end'=>new EE_Datetime_Field('PRO_end', __("End Date/Time", "event_espresso"), true, null ),
+				'PRO_code'=>new EE_Plain_Text_Field('PRO_code', __("Code", "event_espresso"), true, '' ),
+				'PRO_uses'=>new EE_Integer_Field('PRO_uses', __("Times this can be used in a given scope", "event_espresso"), false, 1 ),
+				'PRO_global'=>new EE_Boolean_Field('PRO_global', __("Usable Globally?", "event_espresso"), false, false ),
+				'PRO_global_uses'=>new EE_Integer_Field('PRO_global_uses', __("Times it can be used in all scopes", "event_espresso"), false, EE_INF_IN_DB ),
+				'PRO_exclusive'=>new EE_Boolean_Field('PRO_exclusive', __("Exclusive? (ie, can't be used with other promotions)", "event_espresso"), false, false ),
 				'PRO_accept_msg'=>new EE_Simple_HTML_Field('PRO_accept_msg', __("Acceptance Message", "event_espresso"), false, __("Accepted", "event_espresso")),
 				'PRO_decline_msg'=>new EE_Simple_HTML_Field('PRO_decline_msg', __("Declined Message", "event_espresso"), false,  __("Declined", "event_espresso")),
-				'PRO_default'=>new EE_Boolean_Field('PRO_default', __("Usable by default on all new items within promotion's scope", "event_espresso"), false, false),
+				'PRO_default'=>new EE_Boolean_Field('PRO_default', __("Usable by default on all new items within promotion's scope", "event_espresso"), false, false ),
 				'PRO_order'=>new EE_Integer_Field('PRO_order', __("Order", "event_espresso"), false,0),
 				'PRO_deleted'=>new EE_Trashed_Flag_Field('PRO_deleted', __("Deleted", 'event_espresso'), false, false),
 			));
@@ -68,6 +68,29 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 		parent::__construct();
 	}
+
+
+
+	/**
+	 * get_promotion_details_via_code
+	 *
+	 * @param string $promo_code
+	 * @param array  $additional_query_params
+	 * @return EE_Promotion
+	 */
+	public function get_promotion_details_via_code( $promo_code = '', $additional_query_params = array() ) {
+		return $this->get_one(
+			array_merge(
+				$additional_query_params,
+				array(
+					0 => array( 'PRO_code' => $promo_code )
+				)
+			)
+		);
+	}
+
+
+
 }
 // End of file EEM_Promotion.model.php
 // Location: /includes/models/EEM_Promotion.model.php
