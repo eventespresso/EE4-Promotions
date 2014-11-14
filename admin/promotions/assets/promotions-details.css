@@ -1,20 +1,3 @@
-#promotion-details-form table {
-	width: 100%;
-}
-
-#promotion-details-form tr td {
-	vertical-align: top;
-}
-
-#promotion-details-form tr td:first-child {
-	width: 18%;
-	min-width: 125px;
-}
-
-#promotion-details-form tr td:last-child {
-	width: 88%;
-}
-
 #promotion-details-form .ee-numeric {
 	width: 100px;
 }
@@ -29,8 +12,13 @@
 	margin-right: 3px;
 }
 
-#promotion-details-form .regular-text, #promotion-details-form select {
+#promotion-details-form .regular-text,
+#promotion-details-form select {
 	margin-right: 15px;
+}
+
+.ee-promotions-selected-count {
+	margin: 1em 0;
 }
 
 .ee-promotions-applies-to-filters {
@@ -43,10 +31,17 @@
 	width: 100%;
 }
 
+.ee-promotions-filter-lbl {
+	margin-top: 1em;
+	font-size: .8em;
+	line-height : .8em;
+	letter-spacing: 1px;
+	color: #999;
+}
 
-.ee-promotions-applies-to-filters .promotions-date-filter, .ee-date-column .ee-datepicker {
+.ee-promotions-applies-to-filters .promotions-date-filter,
+.ee-date-column .ee-datepicker {
 	position: relative;
-	margin-top: 8px;
 	padding-right: 25px;
 }
 
@@ -55,7 +50,6 @@
 }
 
 .ee-promotions-applies-to-filters .promotions-general-filter {
-	margin-top: 8px;
 	padding-top: 5px;
 }
 
@@ -111,7 +105,8 @@
 	border: 1px solid grey;
 	padding: 1px 10px;
 	min-height: 180px;
-	max-height: 360px;
+	height:auto;
+	max-height: 640px;
 }
 
 .ee-promotions-applies-to-filters .spinner {
@@ -119,43 +114,61 @@
 	top: 10px;
 }
 
-
 /** LIST TABLE **/
+.wp-list-table.promotion th,
+.wp-list-table.promotion th a {
+	vertical-align: middle;
+	font-size:13px;
+}
+
+.wp-list-table.promotion th.column-cb,
+.wp-list-table.promotion th.column-id {
+	text-align: center;
+}
+
 .wp-list-table.promotion .column-id {
-	width: 3%;
+	width: 5%;
+	text-align: right;
 }
 
 .wp-list-table.promotion .column-name {
-	width: 12%;
+	width: 15%;
 }
 
 .wp-list-table.promotion .column-code {
-	width: 20%;
+	/*width: 20%;*/
 }
 
 .wp-list-table.promotion .column-applies_to {
-	width: 15%;
+	width: 10%;
 }
 
-.wp-list-table.promotion .column-valid_from, .wp-list-table.promotion .column-valid_until {
-	width: 10%;
+.wp-list-table.promotion .column-valid_from,
+.wp-list-table.promotion .column-valid_until {
+	width: 9.5%;
+	text-align: right;
 }
 
 .wp-list-table.promotion .column-amount {
-	width: 8%;
+	width: 6%;
 	text-align: right;
+	line-height: 1em;
 }
-
 
 .wp-list-table.promotion .column-redeemed {
-	width: 10%;
-	text-align: right;
+	width: 8%;
+	text-align: center;
 }
 
-
 .wp-list-table.promotion .column-actions {
-	width: 15%;
+	width: 6%;
 	text-align: right;
+}
+.wp-list-table.promotion .column-actions .dashicons {
+	margin-right:0;
+}
+.wp-list-table.promotion .column-actions .dashicons-edit {
+	margin-right:.4em;
 }
 
 .wp-list-table .ee-lock-icon:before {
@@ -212,7 +225,7 @@
 	max-width: 40px;
 	min-width: 15px;
 	max-height: 15px;
-	margin-left: 5px;
+	margin-left: 1em;
 	padding: 2px;
 	line-height: 15px;
 	color: #fff;
@@ -221,4 +234,8 @@
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 15px;
+}
+
+#reset-promo-code-prefix {
+	margin: 0 1em;
 }
