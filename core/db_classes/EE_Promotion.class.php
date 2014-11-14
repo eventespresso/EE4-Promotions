@@ -82,6 +82,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public static function new_instance_from_db ( $props_n_values = array() ) {
 		return new self( $props_n_values, TRUE );
 	}
+
+
+
 	/**
 	 * get EE_Price ID.
 	 *
@@ -103,8 +106,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return string
 	 */
 	public function name() {
-		$price = $this->get_first_related('Price');
-		return $price instanceof EE_Price ? $price->name() : '';
+		$price = $this->price();
+		return $this->price() instanceof EE_Price ? $price->name() : '';
 	}
 
 
@@ -117,8 +120,11 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return int
 	 */
 	public function amount() {
-		$price = $this->get_first_related('Price');
-		return $price instanceof EE_Price ? $price->amount() : 0;
+		$price = $this->price();
+		if ( $price instanceof EE_Price ) {
+			return $price->type_obj()->is_discount() ? $price->amount() * -1 : $price->amount();
+		}
+		return 0;
 	}
 
 
@@ -132,8 +138,42 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return string
 	 */
 	public function pretty_amount() {
-		$price = $this->get_first_related('Price');
+		$price = $this->price();
 		return $price instanceof EE_Price ? $price->pretty_price() : 0;
+	}
+
+
+
+	/**
+	 * given a passed float value, this will calculate and return the total promotion discount for that value
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param float $total_discount_is_applied_to
+	 * @return string
+	 */
+	public function calculated_amount_on_value( $total_discount_is_applied_to = 0.00 ) {
+		if ( $this->is_percent() ) {
+			return floatval( $this->amount() / 100 * $total_discount_is_applied_to );
+		} else {
+			return $this->amount();
+		}
+	}
+
+
+
+
+	/**
+	 * whether promo discount is percentage or dollar based
+	 * defaults to TRUE
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function is_percent() {
+		$price = $this->price();
+		return $price instanceof EE_Price ? $price->is_percent() : TRUE;
 	}
 
 
@@ -146,7 +186,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return string
 	 */
 	public function description() {
-		$price = $this->get_first_related('Price');
+		$price = $this->price();
 		return $price instanceof EE_Price ? $price->desc() : '';
 	}
 
@@ -287,6 +327,21 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * The remaining number of times this promotion can be used globally.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return int
+	 */
+	public function global_uses_left(){
+		return $this->global_uses() === EE_INF_IN_DB ? INF : $this->global_uses() - $this->redeemed();
+	}
+
+
+
+
+
+	/**
 	 * the order in which this promotion should be applied.
 	 *
 	 * @since 1.0.0
@@ -399,6 +454,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		$pro_start = $this->get_raw('PRO_start');
 		return empty( $pro_start ) ? '' : $this->get_datetime('PRO_start', $date_format, $time_format);
 	}
+
+
+
 	/**
 	 * Gets the number of times this promotion has been used in its particular scope.
 	 *
@@ -413,6 +471,34 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * Gets the number of times this promotion has been used in its particular scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $OBJ_ID
+	 * @return int
+	 */
+	public function uses_left( $OBJ_ID = 0 ){
+		return $this->uses() === EE_INF_IN_DB ? INF : $this->uses() - $this->redeemed( $OBJ_ID );
+	}
+
+
+
+	/**
+	 * Gets the number of times this promotion has been used in its particular scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \EE_Promotion_Object $promotion_object
+	 * @return int
+	 */
+	public function uses_left_for_scope_object( EE_Promotion_Object $promotion_object ){
+		return $this->uses() === EE_INF_IN_DB ? INF : $this->uses() - $promotion_object->used();
+	}
+
+
+
+	/**
 	 * This returns the status for the promotion (which is a calculation based on the date strings)
 	 * Note that its possible promotion dates are null which DOES affect the calculation accordingly.
 	 *
@@ -421,16 +507,15 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return string  One of the EE_Promotion constant values.
 	 */
 	public function status() {
+		//check uses first... if uses has none left then expired.
+		$uses = $this->uses();
+		if ( $uses !== EE_INF_IN_DB && $uses <= $this->redeemed() ) {
+			return self::unavailable;
+		}
+
 		$start = $this->get_raw('PRO_start');
 		$end = $this->get_raw('PRO_end');
 		$now = time();
-
-		//check uses first... if uses has none left then expired.
-		$uses = $this->uses();
-		$used = $this->redeemed();
-
-		if ( $used >= $uses )
-			return self::unavailable;
 
 		//active (which means that the promotion is currently able to be used)
 		if ( ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
@@ -635,6 +720,18 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * Return the related Price object for this promotion.
+	 *
+	 * @since 1.0.0
+	 * @return EE_Price
+	 */
+	public function price() {
+		return $this->get_first_related('Price');
+	}
+
+
+
+	/**
 	 * Return the related promotion objects for this promotion.
 	 *
 	 * @since 1.0.0
@@ -644,7 +741,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return EE_Promotion_Object[]
 	 */
 	public function promotion_objects( $query_args = array() ) {
-		return $this->get_many_related('Promotion_Object', $query_args );
+		return $this->get_many_related( 'Promotion_Object', $query_args );
 	}
 
 }
