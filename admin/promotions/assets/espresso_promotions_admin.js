@@ -53,8 +53,11 @@ jQuery(document).ready(function($){
 			}
 
 			//made it here?  K let's generate the code if we have a prefix we'll use it.
-			var prefix = field.val().length > 0 ? field.val() + '_' : '';
-			code = prefix + this.uniqid();
+			var prefix = $('#PRO_code_prefix' );
+			if ( prefix.val() === '' && field.val().length > 0 ) {
+				prefix.val( field.val() + '_' );
+			}
+			code = prefix.val() + this.uniqid();
 			field.val(code);
 			return this;
 		},
@@ -225,6 +228,19 @@ jQuery(document).ready(function($){
 
 	};
 
+	//reset prefix
+	$('#PRO_code_prefix' ).val('');
+
+
+	/**
+	 * trigger for resetting coupon code prefix.
+	 */
+	$('#promotion-details-form').on('click', '#reset-promo-code-prefix', function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		$('#PRO_code_prefix' ).val('');
+		$('#PRO_code' ).val('');
+	});
 
 
 	/**
@@ -356,4 +372,5 @@ jQuery(document).ready(function($){
 		var data = $(this).data();
 		$(data.field).val('');
 	});
+
 });
