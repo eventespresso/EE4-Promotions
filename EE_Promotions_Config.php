@@ -27,13 +27,38 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 */
 	public $scopes;
 
+	/**
+	 * what to call promo codes on the frontend. ie: Promo codes, coupon codes, etc
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	public $public_name_singular;
+	/**
+	 * @var string
+	 */
+	public $public_name_plural;
+	/**
+	 * @var string
+	 */
+	public $public_short_name_singular;
+	/**
+	 * @var string
+	 */
+	public $public_short_name_plural;
+
 
 
 	/**
 	 * 	constructor
+	 * @return EE_Promotions_Config
 	 */
 	public function __construct() {
 		$this->scopes = $this->_get_scopes();
+		$this->public_name_singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_name_singular', __( 'Promotion Code', 'event_espresso' ));
+		$this->public_name_plural = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_name_plural', __( 'Promotion Codes', 'event_espresso' ));
+		$this->public_short_name_singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_short_name_singular', __( 'Promo Code', 'event_espresso' ));
+		$this->public_short_name_plural = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_short_name_plural', __( 'Promo Codes', 'event_espresso' ));
 	}
 
 
