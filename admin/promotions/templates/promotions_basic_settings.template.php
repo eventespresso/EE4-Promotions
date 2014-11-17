@@ -16,7 +16,7 @@
 						<?php _e('How Non-Code Promotions* are advertised and displayed above the Ticket Selector.', 'event_espresso'); ?>
 						<br />
 						<span class="smaller-text">
-							<?php _e('* "Non-Code Promotions" are promotions that do not use a text code and are applied automatically when all of the promotions qualifying requirements are met (ie: start date, selected events, etc).', 'event_espresso'); ?>
+							<?php _e('* "Non-Code Promotions" are promotions that do not use a text code, and are applied automatically when all of the promotion\'s qualifying requirements are met (ie: start date, selected events, etc).', 'event_espresso'); ?>
 						</span>
 					</p>
 				</td>
