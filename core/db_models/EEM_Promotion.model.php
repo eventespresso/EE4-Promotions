@@ -82,8 +82,30 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 		return $this->get_one(
 			array_merge(
 				$additional_query_params,
+				array( array( 'PRO_code' => $promo_code ))
+			)
+		);
+	}
+
+
+
+	/**
+	 * get_all_active_codeless_promotions
+	 * retrieves all promotions that are currently active based on the current time and do NOT utilize a code
+	 *
+	 * @param array  $additional_query_params
+	 * @return EE_Promotion
+	 */
+	public function get_all_active_codeless_promotions( $additional_query_params = array() ) {
+		return $this->get_all(
+			array_merge(
+				$additional_query_params,
 				array(
-					0 => array( 'PRO_code' => $promo_code )
+					array(
+						'PRO_start' => array( '<', current_time( 'mysql' )),
+						'PRO_end' => array( '>', current_time( 'mysql' )),
+						'PRO_code' => NULL
+					)
 				)
 			)
 		);
