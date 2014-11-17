@@ -209,6 +209,11 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+
+	/**
+	 * _set_list_table_views_default
+	 * @access protected
+	 */
 	protected function _set_list_table_views_default() {
 		$this->_views = array(
 			'all' => array(
@@ -234,6 +239,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+	/**
+	 * _list_table
+	 * @access protected
+	 */
 	protected function _list_table() {
 		$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
 		$this->_template_args['after_list_table'] = $this->_display_legend( $this->_promotion_legend_items() );
@@ -249,10 +258,12 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _promotion_legend_items() {
 		$scope_legend = array();
 		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
-			$scope_legend[$scope->slug] = array(
-				'class' => $scope->get_scope_icon(TRUE),
-				'desc' => $scope->label->singular
+			if ( $scope instanceof EE_Promotion_Scope ) {
+				$scope_legend[$scope->slug] = array(
+					'class' => $scope->get_scope_icon(TRUE),
+					'desc' => $scope->label->singular
 				);
+			}
 		}
 		$items = array(
 			'active_status' => array(
@@ -281,6 +292,11 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+
+	/**
+	 * _set_promotion_object
+	 * @access protected
+	 */
 	protected function _set_promotion_object() {
 		//only set if not set already
 		if ( $this->_promotion instanceof EE_Promotion )
@@ -381,6 +397,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+	/**
+	 * _get_promotion_scope_selector
+	 * @access protected
+	 */
 	protected function _get_promotion_scope_selector() {
 		$values = array();
 		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope_name => $scope ) {
@@ -629,9 +649,9 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param int  $PRO_ID    if given this is the id for the promotion to be permanantly deleted.
+	 * @param int  $PRO_ID    if given this is the id for the promotion to be permanently deleted.
 	 * @param bool $redirect if true then redirect, otherwise don't
-	 * @return bool value of $sucess;
+	 * @return bool value of $success;
 	 */
 	protected function _delete_promotion( $PRO_ID = 0, $redirect = TRUE ){
 		$success = TRUE;
@@ -657,7 +677,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				} else {
 					//first delete permanently the related prices
 					$promotion->delete_related_permanently( 'Price' );
-					//next delete related promotoin objects permanently
+					//next delete related promotion objects permanently
 					$promotion->delete_related_permanently( 'Promotion_Object' );
 
 					//now delete the promotion permanently
@@ -723,8 +743,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-
-
+	/**
+	 * _basic_settings
+	 * @access protected
+	 */
 	protected function _basic_settings() {
 		$this->_settings_page( 'promotions_basic_settings.template.php' );
 	}
@@ -734,6 +756,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 	/**
 	 * _settings_page
+	 * @access protected
 	 * @param $template
 	 */
 	protected function _settings_page( $template ) {
@@ -762,6 +785,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			EE_Question_Option::new_instance( array( 'QSO_value' => 'red', 'QSO_desc' => __('red', 'event_espresso')))
 		);
 
+		$this->_template_args = add_filter( 'FHEE__Promotions_Admin_Page___settings_page___template_args', $this->_template_args );
+
 		$this->_template_args['return_action'] = $this->_req_action;
 		$this->_template_args['reset_url'] = EE_Admin_Page::add_query_args_and_nonce( array('action'=> 'reset_settings','return_action'=>$this->_req_action), EE_PROMOTIONS_ADMIN_URL );
 		$this->_set_add_edit_form_tags( 'update_settings' );
@@ -771,11 +796,22 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 
+
+	/**
+	 * 	_usage
+	 * @access protected
+	 */
 	protected function _usage() {
 		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotions_usage_info.template.php', array(), TRUE );
 		$this->display_admin_page_with_no_sidebar();
 	}
 
+
+
+	/**
+	 * 	_update_settings
+	 * @access protected
+	 */
 	protected function _update_settings(){
 
 		EE_Registry::instance()->load_helper( 'Class_Tools' );
@@ -784,9 +820,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			$config = new EE_Promotions_Config();
 			$count = 1;
 		} else {
-//			if ( isset( $this->_req_data['promotions']['banner_template'] ) && ! empty( $this->_req_data['promotions']['banner_template'] )) {
-//				$this->_req_data['promotions']['banner_template'] = 'promo-banner-' . $this->_req_data['promotions']['banner_template'] . '.template.php';
-//			}
+
 			$config =  EE_Registry::instance()->CFG->addons->promotions;
 			$count=0;
 			//otherwise we assume you want to allow full html
@@ -812,6 +846,13 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
+	/**
+	 * _sanitize_config_input
+	 * @param $top_level_key
+	 * @param $second_level_key
+	 * @param $value
+	 * @return int|null
+	 */
 	private function _sanitize_config_input( $top_level_key, $second_level_key, $value ){
 		$sanitization_methods = array(
 			'display'=>array(
