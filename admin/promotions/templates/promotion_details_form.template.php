@@ -97,10 +97,11 @@
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="PRC_desc"><?php _e('Description', 'event_espresso'); ?></label>
+			<label for="PRC_desc"><?php _e('Banner Text / Description', 'event_espresso'); ?></label>
 		</th>
 		<td class="field-column">
 			<textarea class="ee-full-textarea-inp" id="PRC_desc" name="PRC_desc"><?php echo $promotion->description(); ?></textarea>
+			<p class="description"><?php _e('This is the text that will be displayed in the Promotion Banners if they are being used (see Settings Tab) as well as anywhere that the Promotion details are listed.', 'event_espresso'); ?></p>
 		</td>
 	</tr>
 	<tr>
@@ -109,6 +110,7 @@
 		</th>
 		<td class="field-column">
 			<textarea class="ee-full-textarea-inp" id="PRO_accept_msg" name="PRO_accept_msg"><?php echo $promotion->accept_message(); ?></textarea>
+			<p class="description"><?php _e('If using Promotion Codes, this will be shown when a code has been successfully verified and applied to a registrant\'s order.', 'event_espresso'); ?></p>
 		</td>
 	</tr>
 	<tr>
@@ -117,6 +119,7 @@
 		</th>
 		<td class="field-column">
 			<textarea class="ee-full-textarea-inp" id="PRO_decline_msg" name="PRO_decline_msg"><?php echo $promotion->decline_message(); ?></textarea>
+			<p class="description"><?php _e('If using Promotion Codes, this will be shown when a code entered by a registrant can not be verified or applied to their order.', 'event_espresso'); ?></p>
 		</td>
 	</tr>
 </table>
