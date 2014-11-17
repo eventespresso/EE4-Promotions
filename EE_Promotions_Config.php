@@ -31,21 +31,17 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * what to call promo codes on the frontend. ie: Promo codes, coupon codes, etc
 	 *
 	 * @since 1.0.0
-	 * @var string
+	 * @var stdClass
 	 */
-	public $public_name_singular;
+	public $label;
 	/**
 	 * @var string
 	 */
-	public $public_name_plural;
+	public $banner_template;
 	/**
 	 * @var string
 	 */
-	public $public_short_name_singular;
-	/**
-	 * @var string
-	 */
-	public $public_short_name_plural;
+	public $ribbon_banner_color;
 
 
 
@@ -54,11 +50,11 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return EE_Promotions_Config
 	 */
 	public function __construct() {
+		echo '<h2 style="color:#E76700;">new EE_Promotions_Config()<br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h2>';
 		$this->scopes = $this->_get_scopes();
-		$this->public_name_singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_name_singular', __( 'Promotion Code', 'event_espresso' ));
-		$this->public_name_plural = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_name_plural', __( 'Promotion Codes', 'event_espresso' ));
-		$this->public_short_name_singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_short_name_singular', __( 'Promo Code', 'event_espresso' ));
-		$this->public_short_name_plural = apply_filters( 'FHEE__EE_Promotions_Config____construct__public_short_name_plural', __( 'Promo Codes', 'event_espresso' ));
+		$this->label = new stdClass();
+		$this->label->singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__label_singular', __( 'Promotion Code', 'event_espresso' ));
+		$this->label->plural = apply_filters( 'FHEE__EE_Promotions_Config____construct__label_plural', __( 'Promotion Codes', 'event_espresso' ));
 	}
 
 
@@ -95,15 +91,15 @@ class EE_Promotions_Config extends EE_Config_Base {
 
 
 
-	/**
-	 * Use to designate what properties get serialized with object.
-	 *
-	 * @since 1.0.0
-	 * @return array   Values represent properties to serialize
-	 */
-	public function __sleep() {
-		return array();
-	}
+//	/**
+//	 * Use to designate what properties get serialized with object.
+//	 *
+//	 * @since 1.0.0
+//	 * @return array   Values represent properties to serialize
+//	 */
+//	public function __sleep() {
+//		return array();
+//	}
 
 }
 
