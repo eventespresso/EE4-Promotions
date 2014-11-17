@@ -63,3 +63,167 @@ General Styles
 		margin: 1em 0;
 	}
 }
+
+
+
+/* ribbon style */
+
+
+.ee-promo-banner-ribbon-dv {
+	width: 100%;
+	height: 90px;
+	margin: 2em auto 0 ;
+	position: relative;
+}
+
+.ee-promo-banner-ribbon-dv div {
+	box-sizing: border-box;
+}
+
+.ee-promo-banner-ribbon-dv > div {
+	height: 50px;
+}
+
+.ee-promo-banner-ribbon-main-dv {
+	position: relative;
+	display: block;
+	width:100%;
+	height: auto !important;
+	left: 40%;
+	top: 0;
+	padding: 5px;
+	margin-left: -40%;
+	z-index: 10;
+}
+
+.ee-promo-banner-ribbon-main-dv .ee-promo-banner-text-dv {
+	border: 1px dashed rgba(255, 255, 255, 0.5);
+	min-height: 40px;
+	height: auto !important;;
+	color: #FFF;
+	text-align: center;
+	vertical-align: middle;
+}
+
+/*  BACK RIBBONS  */
+.ee-promo-banner-ribbon-back-dv {
+	position: absolute;
+	width: 8%;
+	top: 12px;
+}
+.ee-promo-banner-ribbon-back-left-dv {
+	left: -5%;
+}
+.ee-promo-banner-ribbon-back-right-dv {
+	right: -5%;
+}
+
+/*  SKEWS  */
+.ee-promo-banner-ribbon-skew-dv {
+	position: absolute;
+	width: 3%;
+	top: 6px;
+	z-index: 5;
+}
+.ee-promo-banner-ribbon-skew-left-dv {
+	left: 0;
+	transform: skew( 00deg, 25deg );
+}
+.ee-promo-banner-ribbon-skew-right-dv {
+	right: 0;
+	transform: skew( 00deg, -25deg );
+}
+
+/*  ARROWS  */
+.ee-promo-banner-ribbon-arrow-dv {
+	position: absolute;
+	z-index: 2;
+	width: 0;
+	height: 25px !important;
+}
+ /*  LEFT ARROWS  */
+.ee-promo-banner-ribbon-back-left-dv > .ee-promo-banner-ribbon-arrow-dv {
+	left: -29px;
+}
+.ee-promo-banner-ribbon-arrow-top-dv {
+	top: 0px;
+	border-top: 0px solid transparent;
+	border-bottom: 25px solid transparent;
+}
+.ee-promo-banner-ribbon-arrow-bottom-dv {
+	top: 25px;
+	border-top: 25px solid transparent;
+	border-bottom:0px solid transparent;
+}
+/*  RIGHT ARROWS  */
+.ee-promo-banner-ribbon-back-right-dv > .ee-promo-banner-ribbon-arrow-dv {
+	right: -29px;
+}.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv {
+	border-bottom: 25px solid transparent;
+	border-top: 0px solid transparent;
+	border-right: none!important;
+ }
+.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv {
+	border-top: 25px solid transparent;
+	border-bottom: 0px solid transparent;
+	border-right: none!important;
+}
+
+.ee-promo-separator-dv {
+	line-height:10px!important;
+}
+
+
+/* lite-blue */
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-main-dv { background : #00B1CA; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-dv { background: #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #007484; }
+
+/* blue */
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-main-dv { background : #005B9E; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-dv { background: #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #002F52; }
+
+/* green */
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-main-dv { background : #70CC50; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-dv { background: #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-skew-dv { background: #457E31; }
+
+/* pink */
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-main-dv { background : #E44064; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-dv { background: #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-skew-dv { background: #932940; }
+
+/* red */
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-main-dv { background : #B4113F; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-dv { background: #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-skew-dv { background: #5E0921; }
+
+
+
+.ee-promo-banner-plain-text-dv .ee-promo-banner-main-dv {
+	margin: 0 0 2em;
+}
+.ee-promo-banner-plain-text-dv .ee-promo-banner-plain-text-h4 {
+	margin: 0 0 .5em;
+}
