@@ -509,36 +509,40 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * find_applicable_items_in_cart
+	 * get_redeemable_scope_promos
 	 * searches the cart for any items that the supplied promotion applies to.
 	 * can be overridden by specific promotion scope classes for greater performance or specificity
 	 *
 	 * @since   1.0.0
 	 *
 	 * @param EE_Promotion $promotion
-	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
-	 * @return EE_Line_Item[]
+	 * @return array
 	 */
-	public function find_applicable_items_in_cart( EE_Promotion $promotion, EE_Line_Item $total_line_item ) {
-		$applicable_items = array();
+	public function get_redeemable_scope_promos( EE_Promotion $promotion ) {
+		$redeemable_scope_promos = array();
+		// exceeded global use limit ?
+		if ( ! $promotion->global_uses_left() ) {
+			return $redeemable_scope_promos;
+		}
 		// retrieve promotion objects for this promotion type scope
 		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug )));
+//		d( $promotion_objects );
 		if ( ! empty( $promotion_objects )) {
 			foreach ( $promotion_objects as $promotion_object ) {
 				// can the promotion still be be redeemed fro this scope object?
 				if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
-					$applicable_items[] = $promotion_object->OBJ_ID();
+					$redeemable_scope_promos[ $this->slug ][] = $promotion_object->OBJ_ID();
 				}
 			}
 		}
-		return $this->get_object_line_items_for_transaction( $total_line_item, $applicable_items );
+		return $redeemable_scope_promos;
 	}
 
 
 
 	/**
-	 * find_applicable_items_in_cart
-	 * searches the cart for any items that this promotion applies to
+	 * get_object_line_items_for_transaction
+	 * searches the database for any line items that this promotion applies to
 	 *
 	 * @since   1.0.0
 	 *
@@ -550,6 +554,7 @@ abstract class EE_Promotion_Scope {
 	protected function get_object_line_items_for_transaction( EE_Line_Item $total_line_item, $OBJ_IDs = array(), $OBJ_type = '' ) {
 		/** @type EEM_Line_Item $EEM_Line_Item */
 		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
+		$EEM_Line_Item->show_next_x_db_queries();
 		return $EEM_Line_Item->get_object_line_items_for_transaction(
 			$total_line_item->TXN_ID(),
 			empty( $OBJ_type ) ? $this->slug : $OBJ_type,
@@ -560,7 +565,33 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * find_applicable_items_in_cart
+	 * get_object_line_items_from_cart
+	 * searches the cart for any items that this promotion applies to
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
+	 * @param string $OBJ_type
+	 * @param array $redeemable_scope_promos
+	 * @return EE_Line_Item[]
+	 */
+	public function get_object_line_items_from_cart( EE_Line_Item $total_line_item, $redeemable_scope_promos = array(), $OBJ_type = '' ) {
+		EE_Registry::instance()->load_helper( 'Line_Item' );
+		$applicable_items = array();
+		$OBJ_type = empty( $OBJ_type ) ? $this->slug : $OBJ_type;
+		$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
+		if ( is_array( $object_type_line_items )) {
+			foreach ( $object_type_line_items as $object_type_line_item ) {
+				$applicable_items[] = $object_type_line_item;
+			}
+		}
+		return $applicable_items;
+	}
+
+
+
+	/**
+	 * get_redeemable_scope_promos
 	 * searches the cart for any items that this promotion applies to
 	 *
 	 * @since   1.0.0
@@ -606,7 +637,7 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * find_applicable_items_in_cart
+	 * get_redeemable_scope_promos
 	 *
 	 * @param EE_Promotion $promotion
 	 * @param int          $OBJ_ID
