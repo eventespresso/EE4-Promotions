@@ -242,7 +242,10 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 
-
+	/**
+	 * _promotion_legend_items
+	 * @return array
+	 */
 	protected function _promotion_legend_items() {
 		$scope_legend = array();
 		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
@@ -735,11 +738,28 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 */
 	protected function _settings_page( $template ) {
 		EE_Registry::instance()->load_helper( 'Form_Fields' );
-		$this->_template_args['promotions_config'] = EE_Config::instance()->get_config( 'addons', 'EED_Espresso_Promotions', 'EE_Promotions_Config' );
+		EED_Promotions::instance()->set_config();
+		$this->_template_args['config'] = EE_Registry::instance()->CFG->addons->promotions;
+
 		add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
+
 		$this->_template_args['yes_no_values'] = array(
 			EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
 			EE_Question_Option::new_instance( array( 'QSO_value' => 1, 'QSO_desc' => __('Yes', 'event_espresso')))
+		);
+
+		$this->_template_args['banner_template'] = array(
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'promo-banner-ribbon.template.php', 'QSO_desc' => __('Ribbon Banner', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'promo-banner-plain-text.template.php', 'QSO_desc' => __('Plain Text', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => '', 'QSO_desc' => __('Do Not Display Promotions', 'event_espresso')))
+		);
+
+		$this->_template_args['ribbon_banner_color'] = array(
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'lite-blue', 'QSO_desc' => __('lite-blue', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'blue', 'QSO_desc' => __('blue', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'green', 'QSO_desc' => __('green', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'pink', 'QSO_desc' => __('pink', 'event_espresso'))),
+			EE_Question_Option::new_instance( array( 'QSO_value' => 'red', 'QSO_desc' => __('red', 'event_espresso')))
 		);
 
 		$this->_template_args['return_action'] = $this->_req_action;
@@ -757,12 +777,17 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 	protected function _update_settings(){
+
 		EE_Registry::instance()->load_helper( 'Class_Tools' );
-		if(isset($_POST['reset_promotions']) && $_POST['reset_promotions'] == '1'){
+
+		if ( isset( $_POST['reset_promotions'] ) && $_POST['reset_promotions'] == '1' ){
 			$config = new EE_Promotions_Config();
 			$count = 1;
-		}else{
-			$config = EE_Config::instance()->get_config( 'addons', 'EED_Espresso_Promotions', 'EE_Promotions_Config' );
+		} else {
+//			if ( isset( $this->_req_data['promotions']['banner_template'] ) && ! empty( $this->_req_data['promotions']['banner_template'] )) {
+//				$this->_req_data['promotions']['banner_template'] = 'promo-banner-' . $this->_req_data['promotions']['banner_template'] . '.template.php';
+//			}
+			$config =  EE_Registry::instance()->CFG->addons->promotions;
 			$count=0;
 			//otherwise we assume you want to allow full html
 			foreach($this->_req_data['promotions'] as $top_level_key => $top_level_value){
@@ -781,32 +806,19 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				}
 			}
 		}
-		EE_Config::instance()->update_config( 'addons', 'EED_Espresso_Promotions', $config );
+		EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $config );
 		$this->_redirect_after_action( $count, 'Settings', 'updated', array('action' => $this->_req_data['return_action']));
 	}
 
-	/**
-	 * resets the promotions data and redirects to where they came from
-	 */
-//	protected function _reset_settings(){
-//		EE_Config::instance()->addons['promotions'] = new EE_Promotions_Config();
-//		EE_Config::instance()->update_espresso_config();
-//		$this->_redirect_after_action(1, 'Settings', 'reset', array('action' => $this->_req_data['return_action']));
-//	}
+
+
 	private function _sanitize_config_input( $top_level_key, $second_level_key, $value ){
 		$sanitization_methods = array(
 			'display'=>array(
 				'enable_promotions'=>'bool',
-//				'promotions_height'=>'int',
-//				'enable_promotions_filters'=>'bool',
-//				'enable_category_legend'=>'bool',
-//				'use_pickers'=>'bool',
-//				'event_background'=>'plaintext',
-//				'event_text_color'=>'plaintext',
-//				'enable_cat_classes'=>'bool',
-//				'disable_categories'=>'bool',
-//				'show_attendee_limit'=>'bool',
-			)
+			),
+			'banner_template'=>'plaintext',
+			'ribbon_banner_color'=>'plaintext',
 		);
 		$sanitization_method = NULL;
 		if(isset($sanitization_methods[$top_level_key]) &&
