@@ -227,3 +227,70 @@ General Styles
 .ee-promo-banner-plain-text-dv .ee-promo-banner-plain-text-h4 {
 	margin: 0 0 .5em;
 }
+
+/* UPCOMING PROMOTIONS */
+
+#ee-upcoming-promotions-dv{
+	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	column-count: 2;
+	-moz-column-gap: 20px;
+	-webkit-column-gap: 20px;
+	column-gap: 20px;
+}
+@media only screen and (max-width : 600px) {
+	#ee-upcoming-promotions-dv{
+		-moz-column-count: 1;
+		-webkit-column-count: 1;
+		column-count: 1;
+		-moz-column-gap: 0;
+		-webkit-column-gap: 0;
+		column-gap: 0;
+	}
+}
+.ee-upcoming-promotions-container-dv {
+	display: inline-block;
+	padding: 0;
+	margin: 0 0 20px;
+	width: 100%;
+}
+.ee-promo-upcoming-promotions-main-dv {
+	padding: 1em 1.5em .5em;
+	background: #EEEEEE;
+	margin:.5em 0;
+}
+.ee-upcoming-promotions-container-dv .ee-upcoming-promotions-h5,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-text-pg,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-additional-details-pg {
+	margin: 0 0 .5em;
+	-ms-word-wrap: break-word;
+	word-wrap: break-word;
+}
+
+.ee-promo-upcoming-promotions-main-dv.lite-blue {
+	background-color:#00B1CA;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.blue {
+	background-color:#005B9E;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.green {
+	background-color:#70CC50;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.pink {
+	background-color:#E44064;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.red {
+	background-color:#B4113F;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.lite-blue .currency-code,
+.ee-promo-upcoming-promotions-main-dv.blue .currency-code,
+.ee-promo-upcoming-promotions-main-dv.green .currency-code,
+.ee-promo-upcoming-promotions-main-dv.pink .currency-code,
+.ee-promo-upcoming-promotions-main-dv.red .currency-code {
+	color: #FFFFFF;
+}
