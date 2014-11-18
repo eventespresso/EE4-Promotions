@@ -785,7 +785,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			EE_Question_Option::new_instance( array( 'QSO_value' => 'red', 'QSO_desc' => __('red', 'event_espresso')))
 		);
 
-		$this->_template_args = add_filter( 'FHEE__Promotions_Admin_Page___settings_page___template_args', $this->_template_args );
+		$this->_template_args = apply_filters( 'FHEE__Promotions_Admin_Page___settings_page___template_args', $this->_template_args );
 
 		$this->_template_args['return_action'] = $this->_req_action;
 		$this->_template_args['reset_url'] = EE_Admin_Page::add_query_args_and_nonce( array('action'=> 'reset_settings','return_action'=>$this->_req_action), EE_PROMOTIONS_ADMIN_URL );
