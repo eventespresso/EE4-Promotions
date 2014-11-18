@@ -41,7 +41,7 @@ Class  EE_Promotions extends EE_Addon {
 				'config_name'			=> 'promotions',
 				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
-				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Promotions.shortcode.php' ),
+				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php' ),
 				'widget_paths' 		=> array( EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php' ),
 				'autoloader_paths' => array(
 					'EE_Promotions' 						=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
