@@ -260,7 +260,7 @@ class EED_Promotions extends EED_Module {
 //			d( $this->_config );
 			if ( ! empty( $banner_text )  && ! empty( $this->_config->banner_template )) {
 				EEH_Template::locate_template(
-					EE_PROMOTIONS_PATH . 'templates' . DS . $this->_config->banner_template,
+					apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . $this->_config->banner_template ),
 					array(
 						'EVT_ID' => $event->ID(),
 						'banner_header' => apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_header', __( 'Current Promotions', 'event_espresso' )),
@@ -270,7 +270,6 @@ class EED_Promotions extends EED_Module {
 					TRUE,
 					FALSE
 				);
-
 			}
 		}
 	}
