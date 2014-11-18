@@ -242,14 +242,11 @@ class EED_Promotions extends EED_Module {
 			/** @type EEM_Promotion $EEM_Promotion */
 			$EEM_Promotion = EE_Registry::instance()->load_model( 'Promotion' );
 			EE_Registry::instance()->load_helper( 'Template' );
-//			$EEM_Promotion->show_next_x_db_queries();
 			$active_promotions = $EEM_Promotion->get_all_active_codeless_promotions();
-//			printr( $active_promotions, '$active_promotions  <br /><span style="font-size:10px;font-weight:normal;">' . __FILE__ . '<br />line no: ' . __LINE__ . '</span>', 'auto' );
 			foreach ( $active_promotions as $promotion ) {
 				if ( $promotion instanceof EE_Promotion ) {
 					// get all promotion objects that can still be redeemed
 					$redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos( $promotion );
-//					d( $redeemable_scope_promos );
 					foreach ( $redeemable_scope_promos as $scope => $promo_obj_IDs ) {
 						if ( $scope == 'Event' && in_array( $event->ID(), $promo_obj_IDs ) ) {
 							$banner_text[] = $promotion->description();
@@ -257,7 +254,6 @@ class EED_Promotions extends EED_Module {
 					}
 				}
 			}
-//			d( $this->_config );
 			if ( ! empty( $banner_text )  && ! empty( $this->_config->banner_template )) {
 				EEH_Template::locate_template(
 					apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . $this->_config->banner_template ),
@@ -307,12 +303,9 @@ class EED_Promotions extends EED_Module {
 		$active_promotions = $EEM_Promotion->get_all_active_codeless_promotions();
 		foreach ( $active_promotions as $promotion ) {
 			if ( $promotion instanceof EE_Promotion ) {
-//				echo '<h5 style="color:#2EA2CC;">$promotion : <span style="color:#E76700">' . $promotion->name() . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//				 d( $promotion );
 				// determine if the promotion can be applied to an item in the current cart
 				$applicable_items = $this->get_applicable_items( $promotion, $cart );
 				if ( ! empty( $applicable_items )) {
-//					 d( $applicable_items );
 					// add line item
 					if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
 						$cart->recalculate_all_cart_totals();
@@ -391,10 +384,6 @@ class EED_Promotions extends EED_Module {
 				)
 			)
 		);
-
-//		$promo_code = $this->_submit_promo_code( 'HNH_e15f1e61qp1hy1d2ko1d2o1x9' );
-//		d( $promo_code );
-
 		return $before_payment_options;
 	}
 
@@ -439,7 +428,6 @@ class EED_Promotions extends EED_Module {
 					$EE_Cart->save_cart( FALSE );
 					$return_data = $this->_get_payment_info( $EE_Cart );
 					$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
-//					printr( $return_data, '$return_data  <br /><span style="font-size:10px;font-weight:normal;">' . __FILE__ . '<br />line no: ' . __LINE__ . '</span>', 'auto' );
 					EED_Single_Page_Checkout::update_checkout();
 				} else {
 					EE_Error::add_attention( $this->_config->label->singular . ' ' . $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
@@ -500,7 +488,6 @@ class EED_Promotions extends EED_Module {
 		if ( $promotion instanceof EE_Promotion ) {
 			// get all promotion objects that can still be redeemed
 			$redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos( $promotion );
-//			d( $redeemable_scope_promos );
 			// then find line items in the cart that match the above
 			$applicable_items = $promotion->scope_obj()->get_object_line_items_from_cart( $cart->get_grand_total(), $redeemable_scope_promos );
 		}
@@ -516,7 +503,6 @@ class EED_Promotions extends EED_Module {
 				__FILE__, __FUNCTION__, __LINE__
 			);
 		}
-//		d( $applicable_items );
 		return $applicable_items;
 	}
 
@@ -539,7 +525,6 @@ class EED_Promotions extends EED_Module {
 			foreach ( $applicable_items as $applicable_item ) {
 				if ( $this->verify_no_existing_promotion_line_items( $applicable_item, $promotion )) {
 					$promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item( $applicable_item, $promotion, $promotion->name() );
-//					d( $promotion_line_item );
 					if ( $promotion_line_item instanceof EE_Line_Item ) {
 						$success = $this->add_promotion_line_item( $applicable_item, $promotion_line_item, $promotion ) ? TRUE : $success;
 					}
