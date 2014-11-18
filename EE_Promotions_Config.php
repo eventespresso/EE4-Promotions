@@ -50,7 +50,6 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return EE_Promotions_Config
 	 */
 	public function __construct() {
-		echo '<h2 style="color:#E76700;">new EE_Promotions_Config()<br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h2>';
 		$this->scopes = $this->_get_scopes();
 		$this->label = new stdClass();
 		$this->label->singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__label_singular', __( 'Promotion Code', 'event_espresso' ));
