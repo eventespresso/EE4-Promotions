@@ -46,6 +46,17 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
+	 * The primary key name for this scope's model
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $_model_pk_name;
+
+
+
+
+	/**
 	 * This is a cache of all the EE_Base_Class model objects related to this scope that have
 	 * been retrieved from the db and are in use.  The are indexed by the model object ID().
 	 *
@@ -79,6 +90,7 @@ abstract class EE_Promotion_Scope {
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
+		$this->set_model_pk_name( $this->_model()->get_primary_key_field()->get_name() );
 
 		//set (and filter ) the per_page default.
 		$this->_per_page = apply_filters( 'FHEE__EE_Promotion_Scope___get_applies_to_items_paging__perpage_default', 10, $this->slug );
@@ -218,6 +230,24 @@ abstract class EE_Promotion_Scope {
 	 * @return string
 	 */
 	abstract public function get_promotion_line_item_type();
+
+
+
+	/**
+	 * @return string
+	 */
+	public function model_pk_name() {
+		return $this->_model_pk_name;
+	}
+
+
+
+	/**
+	 * @param string $model_pk_name
+	 */
+	public function set_model_pk_name( $model_pk_name ) {
+		$this->_model_pk_name = $model_pk_name;
+	}
 
 
 
@@ -380,6 +410,23 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
+	 * This returns an array of EE_Base_Class items for the scope.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array   $query_args
+	 * @return  EE_Base_Class[]
+	 * @access protected
+	 */
+	public function get_items( $query_args = array() ) {
+		return $this->_model()->get_all( $query_args );
+	}
+
+
+
+
+
+	/**
 	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
 	 *
 	 * @since 1.0.0
@@ -529,9 +576,11 @@ abstract class EE_Promotion_Scope {
 //		d( $promotion_objects );
 		if ( ! empty( $promotion_objects )) {
 			foreach ( $promotion_objects as $promotion_object ) {
-				// can the promotion still be be redeemed fro this scope object?
-				if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
-					$redeemable_scope_promos[ $this->slug ][] = $promotion_object->OBJ_ID();
+				if ( $promotion_object instanceof EE_Promotion_Object ) {
+					// can the promotion still be be redeemed fro this scope object?
+					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+						$redeemable_scope_promos[ $this->slug ][] = $promotion_object->OBJ_ID();
+					}
 				}
 			}
 		}
@@ -541,7 +590,7 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * get_object_line_items_for_transaction
+	 * get_redeemable_scope_promos
 	 * searches the database for any line items that this promotion applies to
 	 *
 	 * @since   1.0.0
