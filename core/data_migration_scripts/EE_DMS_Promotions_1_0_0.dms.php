@@ -19,11 +19,22 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 		parent::__construct();
 	}
 
+
+
+	/**
+	 * Returns whether or not this data migration script can operate on the given version of the database.
+	 *
+	 * @param array $versions
+	 * @return boolean
+	 */
 	public function can_migrate_from_version($versions) {
-		if(isset($versions['Promotions']) && version_compare('1.0.0',$versions['Promotions'])){
-			return false;
+		$can_migrate = FALSE;
+		// first compare versions
+		if ( isset( $versions['Promotions'] ) && version_compare( '1.0.0', $versions['Promotions'], '>' ) ){
+			// now check that old table even exists
+			$can_migrate = $this->_old_table_exists( 'events_discount_codes' );
 		}
-		return true;
+		return $can_migrate;
 	}
 
 	public function schema_changes_after_migration() {
