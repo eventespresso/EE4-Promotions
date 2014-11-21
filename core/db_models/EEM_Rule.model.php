@@ -26,23 +26,8 @@ require_once ( EE_MODELS . 'EEM_Base.model.php' );
 class EEM_Rule extends EEM_Soft_Delete_Base {
 
   	// private instance of the Attendee object
-	private static $_instance = NULL;
+	protected static $_instance = NULL;
 
-	/**
-	 *		This function is a singleton method used to instantiate the EEM_Attendee object
-	 *
-	 *		@access public
-	 *		@return EEM_Rule
-	 */
-	public static function instance(){
-
-		// check if instance of EEM_Rule already exists
-		if ( ! self::$_instance instanceof EEM_Rule ) {
-			// instantiate Espresso_model
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
 
 	protected function __construct(){
 		$this->singular_item = __('Rule','event_espresso');

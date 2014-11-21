@@ -16,26 +16,7 @@ class EEM_Promotion_Object extends EEM_Base {
 	/**
 	 * @var EEM_Promotion_Object
 	 */
-	private static $_instance = NULL;
-
-
-
-	/**
-	 *		This function is a singleton method used to instantiate the EEM_Promotion_Object object
-	 *
-	 *		@access public
-	 *		@return EEM_Promotion_Object
-	 */
-	public static function instance(){
-
-		// check if instance of EEM_Attendee already exists
-		if ( ! self::$_instance instanceof EEM_Promotion_Object ) {
-			// instantiate Espresso_model
-			self::$_instance = new self();
-		}
-		return self::$_instance;
-	}
-
+	protected static $_instance = NULL;
 
 
 	/**
