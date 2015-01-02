@@ -660,27 +660,26 @@ abstract class EE_Promotion_Scope {
 		if ( ! $promotion instanceof EE_Promotion ) {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
-
 		// generate promotion line_item
-		return EE_Line_Item::new_instance(
+		$line_item = EE_Line_Item::new_instance(
 			array(
 				'LIN_code' 			=> 'promotion',
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
 				'LIN_name' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
 				'LIN_desc' 			=> $promotion->description(),
-				'LIN_unit_price' 	=> 0,
-				'LIN_percent' 		=> $promotion->amount(),
+				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
+				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> FALSE,
 				'LIN_order' 			=> 0, 		// set in add_item()
 				'LIN_total' 			=> $promotion->calculated_amount_on_value( $parent_line_item->total() ),
-				'LIN_quantity' 	=> NULL,
+				'LIN_quantity' 	=> 1,
 				'LIN_parent' 		=> $parent_line_item->ID(), 		// Parent ID (this item goes towards that Line Item's total)
 				'LIN_type'			=> $this->get_promotion_line_item_type(),
 				'OBJ_ID' 				=> $promotion->ID(), 		// ID of Item purchased
 				'OBJ_type'			=> 'Promotion' 	// Model Name this Line Item is for
 			)
 		);
-
+		return $line_item;
 	}
 
 
