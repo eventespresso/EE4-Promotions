@@ -16,7 +16,7 @@ class EEM_Promotion_Object extends EEM_Base {
 	/**
 	 * @var EEM_Promotion_Object
 	 */
-	private static $_instance = NULL;
+	protected static $_instance = NULL;
 
 
 

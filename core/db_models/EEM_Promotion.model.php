@@ -12,7 +12,7 @@ require_once ( EE_MODELS . 'EEM_Base.model.php' );
 class EEM_Promotion extends EEM_Soft_Delete_Base {
 
   	// private instance of the Attendee object
-	private static $_instance = NULL;
+	protected static $_instance = NULL;
 
 
 

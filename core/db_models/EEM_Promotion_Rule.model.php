@@ -12,7 +12,7 @@ require_once ( EE_MODELS . 'EEM_Base.model.php' );
 class EEM_Promotion_Rule extends EEM_Base {
 
   	// private instance of the Attendee object
-	private static $_instance = NULL;
+	protected static $_instance = NULL;
 
 	/**
 	 *		This function is a singleton method used to instantiate the EEM_Attendee object
