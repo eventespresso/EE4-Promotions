@@ -1,4 +1,6 @@
 <?php if ( ! defined('EVENT_ESPRESSO_VERSION')) exit('No direct script access allowed');
+require_once ( EE_MODELS . 'EEM_Base.model.php' );
+
 /**
  * Event Espresso
  *
@@ -21,8 +23,6 @@
  *
  * ------------------------------------------------------------------------
  */
-require_once ( EE_MODELS . 'EEM_Base.model.php' );
-
 class EEM_Rule extends EEM_Soft_Delete_Base {
 
   	// private instance of the Attendee object
@@ -31,19 +31,25 @@ class EEM_Rule extends EEM_Soft_Delete_Base {
 	/**
 	 *		This function is a singleton method used to instantiate the EEM_Attendee object
 	 *
-	 *		@access public
-	 *		@return EEM_Rule
+	 * 	@access public
+	 * 	@param string $timezone
+	 * 	@return EEM_Rule
 	 */
-	public static function instance(){
+	public static function instance( $timezone = NULL ){
 
 		// check if instance of EEM_Rule already exists
 		if ( ! self::$_instance instanceof EEM_Rule ) {
 			// instantiate Espresso_model
-			self::$_instance = new self();
+			self::$_instance = new self( $timezone );
 		}
 		return self::$_instance;
 	}
 
+
+
+	/**
+	 * 	@return EEM_Rule
+	 */
 	protected function __construct(){
 		$this->singular_item = __('Rule','event_espresso');
 		$this->plural_item = __('Rules','event_espresso');
