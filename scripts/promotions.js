@@ -78,11 +78,12 @@ jQuery(document).ready(function($) {
 			PROMO.form_input = $('#ee-promotion-code-input');
 			PROMO.form_submit = $('#ee-promotion-code-submit');
 			var submit_width = PROMO.form_submit.outerWidth();
+			var submit_height = PROMO.form_submit.outerHeight();
 			var half_label_width = PROMO.form_label.outerWidth() / 2;
 			if ( half_label_width > submit_width ) {
-				var label_height = PROMO.form_label.outerHeight();
-				PROMO.form_input.css({ 'width' : ( PROMO.container.outerWidth() - PROMO.form_submit.outerWidth() ), 'top' : label_height });
-				PROMO.form_submit.css({ 'top' : label_height });
+				//var font_size = parseInt( submit_height ) - 32;  , 'font-size' : font_size + 'px'
+				PROMO.form_input.css({ 'width' : ( PROMO.container.outerWidth() - PROMO.form_submit.outerWidth() ), 'top' : submit_height, 'height' : submit_height });
+				PROMO.form_submit.css({ 'top' : submit_height });
 			}
 		},
 
