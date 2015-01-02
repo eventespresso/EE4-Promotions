@@ -23,15 +23,15 @@ class EEM_Promotion_Object extends EEM_Base {
 	/**
 	 *		This function is a singleton method used to instantiate the EEM_Promotion_Object object
 	 *
-	 *		@access public
-	 *		@return EEM_Promotion_Object
+	 *	@access public
+	 * @param string $timezone
+	 *	@return EEM_Promotion_Object
 	 */
-	public static function instance(){
-
+	public static function instance( $timezone = NULL ){
 		// check if instance of EEM_Attendee already exists
 		if ( ! self::$_instance instanceof EEM_Promotion_Object ) {
 			// instantiate Espresso_model
-			self::$_instance = new self();
+			self::$_instance = new self( $timezone );
 		}
 		return self::$_instance;
 	}
