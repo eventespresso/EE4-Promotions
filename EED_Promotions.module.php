@@ -424,7 +424,7 @@ class EED_Promotions extends EED_Module {
 			if ( ! empty( $applicable_items )) {
 				// add line item
 				if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
-					$EE_Cart->recalculate_all_cart_totals();
+					$EE_Cart->get_grand_total()->recalculate_total_including_taxes();
 					$EE_Cart->save_cart( FALSE );
 					$return_data = $this->_get_payment_info( $EE_Cart );
 					$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
