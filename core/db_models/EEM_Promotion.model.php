@@ -17,25 +17,6 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 
 	/**
-	 *        This function is a singleton method used to instantiate the EEM_Attendee object
-	 *
-	 * @access public
-	 * @param string $timezone
-	 * @return \EEM_Promotion
-	 */
-	public static function instance( $timezone = NULL ){
-
-		// check if instance of EEM_Promotion already exists
-		if ( ! self::$_instance instanceof EEM_Promotion ) {
-			// instantiate Espresso_model
-			self::$_instance = new self( $timezone );
-		}
-		return self::$_instance;
-	}
-
-
-
-	/**
 	 * @return EEM_Promotion
 	 */
 	protected function __construct(){
