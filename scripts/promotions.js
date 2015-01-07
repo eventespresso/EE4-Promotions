@@ -78,12 +78,15 @@ jQuery(document).ready(function($) {
 			PROMO.form_input = $('#ee-promotion-code-input');
 			PROMO.form_submit = $('#ee-promotion-code-submit');
 			var submit_width = PROMO.form_submit.outerWidth();
-			var submit_height = PROMO.form_submit.outerHeight();
 			var half_label_width = PROMO.form_label.outerWidth() / 2;
-			if ( half_label_width > submit_width ) {
-				//var font_size = parseInt( submit_height ) - 32;  , 'font-size' : font_size + 'px'
-				PROMO.form_input.css({ 'width' : ( PROMO.container.outerWidth() - PROMO.form_submit.outerWidth() ), 'top' : submit_height, 'height' : submit_height });
-				PROMO.form_submit.css({ 'top' : submit_height });
+			if ( half_label_width > submit_width && half_label_width > 100 ) {
+				var label_height = PROMO.form_label.outerHeight();
+				PROMO.form_input.addClass('ee-promo-combo-input').css({
+					'width' : ( PROMO.container.outerWidth() - submit_width ),
+					'top' : label_height,
+					'height' : PROMO.form_submit.outerHeight()
+				});
+				PROMO.form_submit.addClass('ee-promo-combo-submit').css({ 'top' : label_height });
 			}
 		},
 
@@ -130,7 +133,7 @@ jQuery(document).ready(function($) {
 		 * @param  {object} response
 		 */
 		update_payment_info_table : function( response ) {
-			SPCO.console_log( 'payment_info', response.return_data.payment_info, true );
+			//SPCO.console_log( 'payment_info', response.return_data.payment_info, true );
 			$('#spco-payment-info-table' ).find('tbody').html( response.return_data.payment_info );
 			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
 		},
@@ -149,7 +152,7 @@ jQuery(document).ready(function($) {
 			PROMO.form_data.ee_front_ajax = 1;
 			PROMO.form_data.EESID = eei18n.EESID;
 
-			SPCO.console_log_object( 'PROMO.form_data', PROMO.form_data, 0 );
+			//SPCO.console_log_object( 'PROMO.form_data', PROMO.form_data, 0 );
 			// send AJAX
 			$.ajax({
 				type: "POST",
@@ -177,7 +180,7 @@ jQuery(document).ready(function($) {
 		process_response : function( response ) {
 			if ( typeof response !== 'undefined' && typeof response !== null ) {
 
-				SPCO.console_log_object( 'PROMO.response', response, 0 );
+				//SPCO.console_log_object( 'PROMO.response', response, 0 );
 
 				if ( typeof response.errors !== 'undefined' ) {
 					// no response...
