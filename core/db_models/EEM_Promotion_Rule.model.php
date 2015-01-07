@@ -14,24 +14,6 @@ class EEM_Promotion_Rule extends EEM_Base {
   	// private instance of the Attendee object
 	protected static $_instance = NULL;
 
-	/**
-	 *		This function is a singleton method used to instantiate the EEM_Attendee object
-	 *
-	 *	@access public
-	 * @param string $timezone
-	 *	@return EEM_Promotion_Rule
-	 */
-	public static function instance( $timezone = NULL ){
-
-		// check if instance of EEM_Attendee already exists
-		if ( self::$_instance === NULL ) {
-			// instantiate Espresso_model
-			self::$_instance = new self( $timezone );
-		}
-		// EEM_Attendee object
-		return self::$_instance;
-	}
-
 
 
 	/**
