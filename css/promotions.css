@@ -23,20 +23,26 @@ General Styles
 	}
 	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input,
 	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
-		position : absolute;
 		box-sizing: border-box;
-		display: inline-block;
 		vertical-align: middle;
-		margin: 0;
 	}
 	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input {
+		margin: 0 0 1em;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input,
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
+		position : absolute;
+		display: inline-block;
+		margin: 0;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input {
 		top: 24px;
 		left: 0;
 		border-bottom-right-radius: 0;
 		border-top-right-radius: 0;
 		border-right: 0;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
 		top: 24px;
 		right: 0;
 		border-bottom-left-radius: 0;
@@ -146,26 +152,26 @@ General Styles
 	left: -29px;
 }
 .ee-promo-banner-ribbon-arrow-top-dv {
-	top: 0px;
-	border-top: 0px solid transparent;
+	top: 0;
+	border-top: 0 solid transparent;
 	border-bottom: 25px solid transparent;
 }
 .ee-promo-banner-ribbon-arrow-bottom-dv {
 	top: 25px;
 	border-top: 25px solid transparent;
-	border-bottom:0px solid transparent;
+	border-bottom:0 solid transparent;
 }
 /*  RIGHT ARROWS  */
 .ee-promo-banner-ribbon-back-right-dv > .ee-promo-banner-ribbon-arrow-dv {
 	right: -29px;
 }.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv {
 	border-bottom: 25px solid transparent;
-	border-top: 0px solid transparent;
+	border-top: 0 solid transparent;
 	border-right: none!important;
  }
 .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv {
 	border-top: 25px solid transparent;
-	border-bottom: 0px solid transparent;
+	border-bottom: 0 solid transparent;
 	border-right: none!important;
 }
 
