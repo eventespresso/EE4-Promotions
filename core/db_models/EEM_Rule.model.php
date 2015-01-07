@@ -28,23 +28,6 @@ class EEM_Rule extends EEM_Soft_Delete_Base {
   	// private instance of the Attendee object
 	protected static $_instance = NULL;
 
-	/**
-	 *		This function is a singleton method used to instantiate the EEM_Attendee object
-	 *
-	 * 	@access public
-	 * 	@param string $timezone
-	 * 	@return EEM_Rule
-	 */
-	public static function instance( $timezone = NULL ){
-
-		// check if instance of EEM_Rule already exists
-		if ( ! self::$_instance instanceof EEM_Rule ) {
-			// instantiate Espresso_model
-			self::$_instance = new self( $timezone );
-		}
-		return self::$_instance;
-	}
-
 
 
 	/**
