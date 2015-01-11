@@ -51,7 +51,7 @@ Class  EE_Promotions extends EE_Addon {
 					'Promotions_Admin_List_Table' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
 				),
 				'pue_options'			=> array(
-					'pue_plugin_slug' 		=> 'eea-espresso-promotions',
+					'pue_plugin_slug' 		=> 'eea-promotions',
 					'checkPeriod' 				=> '24',
 					'use_wp_update' 		=> FALSE
 				)
