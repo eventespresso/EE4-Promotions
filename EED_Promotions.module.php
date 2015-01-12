@@ -308,7 +308,7 @@ class EED_Promotions extends EED_Module {
 				if ( ! empty( $applicable_items )) {
 					// add line item
 					if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
-						$cart->recalculate_all_cart_totals();
+						$cart->get_grand_total()->recalculate_total_including_taxes();
 						$cart->save_cart( FALSE );
 					}
 				}
@@ -415,18 +415,20 @@ class EED_Promotions extends EED_Module {
 	private function _submit_promo_code() {
 		$return_data = array();
 		// get the EE_Cart object being used for the current transaction
-		/** @type EE_Cart $EE_Cart */
-		$EE_Cart = EE_Registry::instance()->SSN->cart();
+		/** @type EE_Cart $cart */
+		$cart = EE_Registry::instance()->SSN->cart();
 		$promotion = $this->get_promotion_details_from_request();
 		if ( $promotion ) {
 			// determine if the promotion can be applied to an item in the current cart
-			$applicable_items = $this->get_applicable_items( $promotion, $EE_Cart, FALSE );
+			$applicable_items = $this->get_applicable_items( $promotion, $cart, FALSE );
 			if ( ! empty( $applicable_items )) {
 				// add line item
 				if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
-					$EE_Cart->get_grand_total()->recalculate_total_including_taxes();
-					$EE_Cart->save_cart( FALSE );
-					$return_data = $this->_get_payment_info( $EE_Cart );
+					// ensure cart totals have been recalculated and saved
+					$cart->get_grand_total()->recalculate_total_including_taxes();
+					$cart->get_grand_total()->save();
+					$cart->save_cart( FALSE );
+					$return_data = $this->_get_payment_info( $cart );
 					$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
 					EED_Single_Page_Checkout::update_checkout();
 				} else {
@@ -598,14 +600,14 @@ class EED_Promotions extends EED_Module {
 	 *    _get_payment_info
 	 *
 	 * @access    public
-	 * @param EE_Cart $EE_Cart
+	 * @param EE_Cart $cart
 	 * @return    array
 	 */
-	public function _get_payment_info( EE_Cart $EE_Cart ) {
+	public function _get_payment_info( EE_Cart $cart ) {
 		// autoload Line_Item_Display classes
 		EEH_Autoloader::register_line_item_display_autoloaders();
 		$Line_Item_Display = new EE_Line_Item_Display( 'spco' );
-		return array( 'payment_info' => $Line_Item_Display->display_line_item( $EE_Cart->get_grand_total() ));
+		return array( 'payment_info' => $Line_Item_Display->display_line_item( $cart->get_grand_total() ));
 	}
 
 
