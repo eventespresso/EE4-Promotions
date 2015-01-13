@@ -417,6 +417,8 @@ class EED_Promotions extends EED_Module {
 		// get the EE_Cart object being used for the current transaction
 		/** @type EE_Cart $cart */
 		$cart = EE_Registry::instance()->SSN->cart();
+		// and make sure the model cache is
+		$cart = $cart->get_grand_total()->get_model()->refresh_entity_map_with( $cart->get_grand_total()->ID(), $cart->get_grand_total() );
 		$promotion = $this->get_promotion_details_from_request();
 		if ( $promotion ) {
 			// determine if the promotion can be applied to an item in the current cart
