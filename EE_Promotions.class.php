@@ -43,36 +43,30 @@ Class  EE_Promotions extends EE_Addon {
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
 				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php' ),
 				'widget_paths' 		=> array( EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php' ),
+				// register autoloaders
 				'autoloader_paths' => array(
-					'EE_Promotions' 						=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
-					'EE_Promotions_Config' 			=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
-					'Promotions_Admin_Page' 		=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
-					'Promotions_Admin_Page_Init' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
-					'Promotions_Admin_List_Table' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
+					'EE_Promotions' 							=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
+					'EE_Promotions_Config' 				=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
+					'Promotions_Admin_Page' 			=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
+					'Promotions_Admin_Page_Init' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
+					'Promotions_Admin_List_Table' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
+				),
+				'autoloader_folders' => array(
+					'Promotion_Scopes_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api'
 				),
 				'pue_options'			=> array(
 					'pue_plugin_slug' 		=> 'eea-promotions',
 					'checkPeriod' 				=> '24',
 					'use_wp_update' 		=> FALSE
-				)
+				),
+				// EE_Register_Model
+				'model_paths'	=> array( EE_PROMOTIONS_CORE . 'db_models' ),
+				'class_paths'	=> array( EE_PROMOTIONS_CORE . 'db_classes' ),
+				// EE_Register_Model_Extensions
+				'model_extension_paths'	=> array( EE_PROMOTIONS_CORE . 'db_model_extensions' . DS ),
+				'class_extension_paths'		=> array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS )
 			)
 		);
-		EE_Register_Model::register(
-			'Promotions',
-			array(
-				'model_paths'=>array(EE_PROMOTIONS_CORE . 'db_models'),
-				'class_paths'=>array(EE_PROMOTIONS_CORE . 'db_classes')
-			)
-		);
-		EE_Register_Model_Extensions::register(
-			'Promotions',
-			array(
-				'model_extension_paths'=>array( EE_PROMOTIONS_CORE . 'db_model_extensions' . DS ),
-				'class_extension_paths'=>array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS )
-			)
-		);
-		//setup EEI_Plugin_API implementation for promotion scopes for other plugins to register a promotion scope.
-		EEH_Autoloader::register_autoloaders_for_each_file_in_folder( EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api' );
 		//register promotion specific statuses
 		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( 'EE_Promotions', 'promotion_stati' ), 10 );
 	}
