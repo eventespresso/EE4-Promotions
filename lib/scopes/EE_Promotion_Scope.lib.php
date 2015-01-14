@@ -563,9 +563,10 @@ abstract class EE_Promotion_Scope {
 	 * @since   1.0.0
 	 *
 	 * @param EE_Promotion $promotion
+	 * @param bool         $IDs_only  - whether to return array of EE_Promotion_Object IDs or the actual EE_Promotion_Object objects
 	 * @return array
 	 */
-	public function get_redeemable_scope_promos( EE_Promotion $promotion ) {
+	public function get_redeemable_scope_promos( EE_Promotion $promotion, $IDs_only = TRUE ) {
 		$redeemable_scope_promos = array();
 		// exceeded global use limit ?
 		if ( ! $promotion->global_uses_left() ) {
@@ -579,7 +580,7 @@ abstract class EE_Promotion_Scope {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
 					// can the promotion still be be redeemed fro this scope object?
 					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
-						$redeemable_scope_promos[ $this->slug ][] = $promotion_object->OBJ_ID();
+						$redeemable_scope_promos[ $this->slug ][] = $IDs_only ? $promotion_object->OBJ_ID() : $promotion_object;
 					}
 				}
 			}
