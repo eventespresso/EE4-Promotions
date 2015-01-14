@@ -664,7 +664,7 @@ abstract class EE_Promotion_Scope {
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
-				'LIN_code' 			=> 'promotion',
+				'LIN_code' 			=> 'promotion-' . $promotion->ID(),
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
 				'LIN_name' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
 				'LIN_desc' 			=> $promotion->description(),
@@ -699,6 +699,7 @@ abstract class EE_Promotion_Scope {
 		$promotion_object = $EEM_Promotion_Object->get_one( array( array( 'PRO_ID' => $promotion->ID(), 'OBJ_ID' => $OBJ_ID )));
 		if ( $promotion_object instanceof EE_Promotion_Object ) {
 			$promotion_object->increment_used();
+			$promotion_object->save();
 			return TRUE;
 		}
 		throw new EE_Error( __( 'A valid EE_Promotion_Object object could not be found.', 'event_espresso' ));
