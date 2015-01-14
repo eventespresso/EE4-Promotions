@@ -8,4 +8,4 @@
  */
 
 // Bootstrap EE
-require EEPRO_PLUGIN_DIR . 'espresso_promotions.php';
+require EEPRO_PLUGIN_DIR . 'eea-promotions.php';
