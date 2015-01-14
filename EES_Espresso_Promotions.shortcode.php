@@ -112,7 +112,7 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
 						'promo_amount'	=> $promotion->pretty_amount(),
 						'promo_dates' 		=> $promotion->promotion_date_range(),
-						'promo_scopes'		=> $promotion->get_promo_applies_to_array( $scope_objects )
+						'promo_scopes'		=> $promotion->get_promo_applies_to_link_array( $scope_objects )
 					)
 				);
 			}
