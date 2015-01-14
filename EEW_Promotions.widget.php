@@ -61,7 +61,7 @@ class EEW_Promotions extends WP_Widget {
 
 		// Set up some default widget settings.
 		$defaults = array(
-			'title' => 'Promotions'
+			'title' => __( 'Current Promotions', 'event_espresso' )
 		);
 
 		$instance = wp_parse_args((array) $instance, $defaults);
@@ -131,7 +131,7 @@ class EEW_Promotions extends WP_Widget {
 		if ( isset( $post->post_content )) {
 			 // check the post content for the short code
 			 if ( strpos( $post->post_content, '[ESPRESSO_PROMOTIONS') === FALSE ) {
-				 EED_Espresso_Promotions::$shortcode_active = TRUE;
+				 EED_Promotions::$shortcode_active = TRUE;
 				// Before widget (defined by themes).
 				echo $args['before_widget'];
 				// Title of widget (before and after defined by themes).
@@ -140,10 +140,10 @@ class EEW_Promotions extends WP_Widget {
 					echo $args['before_title'] . $title . $args['after_title'];
 				}
 				// load scripts
-				EE_Promotions::instance()->enqueue_scripts();
+				 EED_Promotions::instance()->enqueue_scripts();
 				// settings
 				$attributes = array();
-				echo EE_Promotions::instance()->display_promotions( $attributes );
+				echo EED_Promotions::instance()->display_promotions( $attributes );
 				// After widget (defined by themes).
 				echo $args['after_widget'];
 			}
