@@ -102,71 +102,23 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 				} else {
 					$promo_bg_color = '';
 				}
-
+				$scope_objects = $promotion->get_objects_promo_applies_to();
 				$html .= EEH_Template::locate_template(
 					apply_filters( 'FHEE__EED_Promotions__process_shortcode__upcoming_promotions', EE_PROMOTIONS_PATH . 'templates' . DS . 'upcoming-promotions-grid.template.php' ),
 					array(
-						'PRO_ID' => $promotion->ID(),
-						'promo_bg_color'	=> 	apply_filters( 'FHEE__EED_Promotions__process_shortcode__promo_bg_color', $promo_bg_color ),
-						'promo_header' 	=> 	$promotion->name(),
-						'promo_desc' 		=>	$promotion->description() != '' ? $promotion->description() . '<br />' : '',
-						'promo_amount'	=>	$promotion->pretty_amount(),
-						'promo_scope' 		=>	$promotion->scope_obj()->label->plural,
-						'promo_dates' 		=>	$this->promotion_date_range( $promotion ),
-						'promo_applies'	=>	$this->_get_objects_promo_applies_to( $promotion )
+						'PRO_ID' 					=> $promotion->ID(),
+						'promo_bg_color'	=> apply_filters( 'FHEE__EED_Promotions__process_shortcode__promo_bg_color', $promo_bg_color ),
+						'promo_header' 		=> $promotion->name(),
+						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
+						'promo_amount'	=> $promotion->pretty_amount(),
+						'promo_dates' 		=> $promotion->promotion_date_range(),
+						'promo_scopes'		=> $promotion->get_promo_applies_to_array( $scope_objects )
 					)
 				);
 			}
 		}
 		$html .= '</div>';
 		return $html;
-	}
-
-
-
-	/**
-	 * _get_objects_promo_applies_to
-	 * returns an array of promotion objects that the promotion applies to
-	 *
-	 * @param EE_Promotion $promotion
-	 * @return EE_Promotion[]
-	 */
-	protected function _get_objects_promo_applies_to( EE_Promotion $promotion ) {
-		$redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos( $promotion );
-		$scope_items = array();
-		foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
-			$scope_items = $promotion->scope_obj()->get_items(
-				array(
-					array( $promotion->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs ))
-				)
-			);
-		}
-		$promo_applies = array();
-		foreach ( $scope_items as $scope_item ) {
-			$promo_applies[] = $scope_item->name();
-		}
-		return $promo_applies;
-	}
-
-
-
-	/**
-	 * promotion_date_range
-	 * returns the first and last chronologically ordered dates for a promotion (if different)
-	 *
-	 * @param EE_Promotion $promotion
-	 * @return string
-	 */
-	public function promotion_date_range( EE_Promotion $promotion ) {
-		EE_Registry::instance()->load_helper( 'DTT_Helper' );
-		$promo_start = EEH_DTT_Helper::process_start_date( $promotion->start() );
-		$promo_end = EEH_DTT_Helper::process_end_date( $promotion->end() );
-		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day...
-		if ( EEH_DTT_Helper::dates_represent_one_24_hour_day( $promotion->start(), $promotion->end() )) {
-			return $promo_start;
-		} else {
-			return $promo_start . __( ' - ', 'event_espresso' ) . $promo_end;
-		}
 	}
 
 
