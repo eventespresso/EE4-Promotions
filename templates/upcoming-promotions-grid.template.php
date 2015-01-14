@@ -11,16 +11,18 @@ if ( ! defined('EVENT_ESPRESSO_VERSION')) { exit('No direct script access allowe
 			<p class="ee-promo-upcoming-promotions-main-text-pg">
 				<?php echo $promo_desc; ?>
 			</p>
-	<?php endif; ?>
+			<?php endif; ?>
 			<p class="ee-promo-upcoming-promotions-additional-details-pg">
 				<span class="smaller-text"><?php _e( 'Discount Amount: ', 'event_espresso' ); ?></span><?php echo $promo_amount; ?><br />
-				<span class="smaller-text"><?php printf( __( 'Applies to the following %1$s:', 'event_espresso' ), $promo_scope ); ?></span><br />
 			</p>
+			<?php foreach ( $promo_scopes as $promo_scope => $objects ) : ?>
+				<b class="smaller-text"><?php printf( __( 'Applies to the following %1$s(s):', 'event_espresso' ), $promo_scope ); ?></b><br />
 			<ul class="ee-promo-upcoming-promotions-applies-to-ul small-text">
-				<?php foreach ( $promo_applies as $applies_to_name ) : ?>
+				<?php foreach ( $objects as $applies_to_name ) : ?>
 					<li class="ee-promo-upcoming-promotions-applies-to-li"><?php echo $applies_to_name;?></li>
 				<?php endforeach;?>
 			</ul>
+			<?php endforeach;?>
 		</div>
 	</div>
 
