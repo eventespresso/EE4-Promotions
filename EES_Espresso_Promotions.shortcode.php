@@ -76,6 +76,7 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 		$attributes = array_merge(
 			// defaults
 			array(
+				'start_date' 	=> gmdate( 'Y-m-d H:i:s', ( time() - ( 1 * DAY_IN_SECONDS ))),
 				'end_date' 	=> gmdate( 'Y-m-d H:i:s', ( time() + ( apply_filters( 'FHEE__EES_Espresso_Promotions__process_shortcode__upcoming_promotions_number_of_days', 60 ) * DAY_IN_SECONDS ))),
 			),
 			(array)$attributes
@@ -84,7 +85,7 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 			array(
 				'PRO_start' 	=> array( '>=', $attributes['start_date'] ),
 				'PRO_end' 	=> array( '<=', $attributes['end_date'] ),
-				'PRO_code' 	=> isset( $attributes['codes'] ) ?  array( 'IN', $attributes['codes'] ) : ''
+				'PRO_code' => isset( $attributes['codes'] ) ?  array( 'IN', $attributes['codes'] ) : ''
 			)
 		);
 		/** @type EEM_Promotion $EEM_Promotion */
