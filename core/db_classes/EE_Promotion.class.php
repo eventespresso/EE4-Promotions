@@ -458,6 +458,26 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
+	 * promotion_date_range
+	 * returns the first and last chronologically ordered dates for a promotion (if different)
+	 *
+	 * @return string
+	 */
+	public function promotion_date_range() {
+		EE_Registry::instance()->load_helper( 'DTT_Helper' );
+		$promo_start = EEH_DTT_Helper::process_start_date( $this->start() );
+		$promo_end = EEH_DTT_Helper::process_end_date( $this->end() );
+		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day...
+		if ( EEH_DTT_Helper::dates_represent_one_24_hour_day( $this->start(), $this->end() )) {
+			return $promo_start;
+		} else {
+			return $promo_start . __( ' - ', 'event_espresso' ) . $promo_end;
+		}
+	}
+
+
+
+	/**
 	 * Gets the number of times this promotion has been used in its particular scope.
 	 *
 	 * @since 1.0.0
@@ -749,5 +769,50 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function promotion_objects( $query_args = array() ) {
 		return $this->get_many_related( 'Promotion_Object', $query_args );
 	}
+
+
+
+	/**
+	 * get_objects_promo_applies_to
+	 * returns an array of promotion objects that the promotion applies to
+	 *
+	 * @return array
+	 */
+	public function get_objects_promo_applies_to() {
+		$redeemable_scope_promos = $this->scope_obj()->get_redeemable_scope_promos( $this );
+		$scope_objects = array();
+		foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
+			$new_scope_objects[ $scope ] = $this->scope_obj()->get_items(
+				array( array( $this->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs )))
+			);
+			if ( reset( $new_scope_objects[ $scope ] ) instanceof EE_Base_Class ) {
+				$scope_objects = array_merge( $scope_objects, $new_scope_objects );
+			}
+		}
+		return $scope_objects;
+	}
+
+
+
+	/**
+	 * get_promo_applies_to_array
+	 * given an array of promotion objects that the promotion applies to
+	 * will return an array of item names indexed by scope then ID
+	 *
+	 * @param array $scope_objects
+	 * @return array
+	 */
+	public function get_promo_applies_to_array( $scope_objects = array() ) {
+		$promo_applies = array();
+		foreach ( $scope_objects as $scope =>$objects ) {
+			foreach ( $objects as $object ) {
+				if ( $object instanceof EE_Base_Class ) {
+					$promo_applies[ $scope ][ $object->ID() ] = $object->name();
+				}
+			}
+		}
+		return $promo_applies;
+	}
+
 
 }
