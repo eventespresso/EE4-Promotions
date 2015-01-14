@@ -254,7 +254,7 @@ class EED_Promotions extends EED_Module {
 						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
 						'promo_amount'	=> $promotion->pretty_amount(),
 						'promo_dates' 		=> $promotion->promotion_date_range(),
-						'promo_scopes'		=> $promotion->get_promo_applies_to_array( $scope_objects )
+						'promo_scopes'		=> $promotion->get_promo_applies_to_link_array( $scope_objects )
 					),
 					TRUE,
 					FALSE
@@ -652,6 +652,7 @@ class EED_Promotions extends EED_Module {
 		// add it to the cart
 		if ( EEH_Line_Item::add_item( $parent_line_item, $promotion_line_item )) {
 			if ( $promotion->scope_obj()->increment_promotion_scope_uses( $promotion, $parent_line_item->OBJ_ID() )) {
+				$promotion_line_item->save();
 				return TRUE;
 			} else {
 				// todo: throw error and revert adding promotion line_item
