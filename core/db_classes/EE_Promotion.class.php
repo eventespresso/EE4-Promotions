@@ -795,18 +795,20 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * get_promo_applies_to_array
+	 * get_promo_applies_to_link_array
 	 * given an array of promotion objects that the promotion applies to
-	 * will return an array of item names indexed by scope then ID
+	 * will return an array of linked item names indexed by scope then ID
 	 *
 	 * @param array $scope_objects
 	 * @return array
 	 */
-	public function get_promo_applies_to_array( $scope_objects = array() ) {
+	public function get_promo_applies_to_link_array( $scope_objects = array() ) {
 		$promo_applies = array();
 		foreach ( $scope_objects as $scope =>$objects ) {
 			foreach ( $objects as $object ) {
-				if ( $object instanceof EE_Base_Class ) {
+				if ( $object instanceof EE_CPT_Base ) {
+					$promo_applies[ $scope ][ $object->ID() ] = '<a href="' . $object->get_permalink() . '" title="' . $object->name() . '">' . $object->name() . '</a>' ;
+				} else if ( $object instanceof EE_Base_Class ) {
 					$promo_applies[ $scope ][ $object->ID() ] = $object->name();
 				}
 			}
