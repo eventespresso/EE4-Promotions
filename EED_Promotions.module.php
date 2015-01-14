@@ -211,6 +211,60 @@ class EED_Promotions extends EED_Module {
 
 
 
+	/********************************** DISPLAY PROMOTIONS  ***********************************/
+
+
+
+	/**
+	 *    display_promotions
+	 *
+	 * @access 	public
+	 * @param 	array $attributes
+	 * @return 	void
+	 */
+	public static function display_promotions( $attributes = array() ) {
+		EED_Promotions::instance()->set_config();
+		EED_Promotions::instance()->_display_promotions( $attributes );
+	}
+
+
+
+	/**
+	 * 	_display_event_promotions_banner
+	 *
+	 * @access 	private
+	 * @param 	array $attributes
+	 * @return 	string
+	 */
+	private function _display_promotions( $attributes = array() ) {
+		$html = '';
+		/** @type EEM_Promotion $EEM_Promotion */
+		$EEM_Promotion = EE_Registry::instance()->load_model( 'Promotion' );
+		EE_Registry::instance()->load_helper( 'Template' );
+		$active_promotions = $EEM_Promotion->get_all_active_codeless_promotions( $attributes );
+		foreach ( $active_promotions as $promotion ) {
+			if ( $promotion instanceof EE_Promotion ) {
+				$scope_objects = $promotion->get_objects_promo_applies_to();
+				$html .= EEH_Template::locate_template(
+					apply_filters( 'FHEE__EED_Promotions___display_promotions__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . 'upcoming-promotions-grid.template.php' ),
+					array(
+						'PRO_ID' 					=> $promotion->ID(),
+						'promo_bg_color' 	=> ! empty( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : 'lite-blue', 		// lite-blue 		blue 	pink 	green 		red
+						'promo_header' 		=> $promotion->name(),
+						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
+						'promo_amount'	=> $promotion->pretty_amount(),
+						'promo_dates' 		=> $promotion->promotion_date_range(),
+						'promo_scopes'		=> $promotion->get_promo_applies_to_array( $scope_objects )
+					),
+					TRUE,
+					FALSE
+				);
+			}
+		}
+	}
+
+
+
 	/********************************** DISPLAY PROMOTIONS BANNER ***********************************/
 
 
@@ -258,10 +312,10 @@ class EED_Promotions extends EED_Module {
 				EEH_Template::locate_template(
 					apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . $this->_config->banner_template ),
 					array(
-						'EVT_ID' => $event->ID(),
-						'banner_header' => apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_header', __( 'Current Promotions', 'event_espresso' )),
-						'banner_text' => implode( '<div class="ee-promo-separator-dv">+</div>', $banner_text ),
-						'ribbon_color' => ! empty( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : 'lite-blue' 		// lite-blue 		blue 		pink 	green 		red
+						'EVT_ID' 					=> $event->ID(),
+						'banner_header' 	=> apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_header', __( 'Current Promotions', 'event_espresso' )),
+						'banner_text' 			=> implode( '<div class="ee-promo-separator-dv">+</div>', $banner_text ),
+						'ribbon_color' 		=> ! empty( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : 'lite-blue' 		// lite-blue 		blue 		pink 	green 		red
 					),
 					TRUE,
 					FALSE
