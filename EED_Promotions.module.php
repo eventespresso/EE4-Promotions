@@ -417,26 +417,36 @@ class EED_Promotions extends EED_Module {
 		// get the EE_Cart object being used for the current transaction
 		/** @type EE_Cart $cart */
 		$cart = EE_Registry::instance()->SSN->cart();
-		// and make sure the model cache is
-		$cart = $cart->get_grand_total()->get_model()->refresh_entity_map_with( $cart->get_grand_total()->ID(), $cart->get_grand_total() );
-		$promotion = $this->get_promotion_details_from_request();
-		if ( $promotion ) {
-			// determine if the promotion can be applied to an item in the current cart
-			$applicable_items = $this->get_applicable_items( $promotion, $cart, FALSE );
-			if ( ! empty( $applicable_items )) {
-				// add line item
-				if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
-					// ensure cart totals have been recalculated and saved
-					$cart->get_grand_total()->recalculate_total_including_taxes();
-					$cart->get_grand_total()->save();
-					$cart->save_cart( FALSE );
-					$return_data = $this->_get_payment_info( $cart );
-					$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
-					EED_Single_Page_Checkout::update_checkout();
-				} else {
-					EE_Error::add_attention( $this->_config->label->singular . ' ' . $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
+		if ( $cart instanceof EE_Cart ) {
+			// and make sure the model cache is
+			$cart->get_grand_total()->get_model()->refresh_entity_map_with( $cart->get_grand_total()->ID(), $cart->get_grand_total() );
+			$promotion = $this->get_promotion_details_from_request();
+			if ( $promotion ) {
+				// determine if the promotion can be applied to an item in the current cart
+				$applicable_items = $this->get_applicable_items( $promotion, $cart, FALSE );
+				if ( ! empty( $applicable_items )) {
+					// add line item
+					if ( $this->generate_promotion_line_items( $promotion, $applicable_items )) {
+						// ensure cart totals have been recalculated and saved
+						$cart->get_grand_total()->recalculate_total_including_taxes();
+						$cart->get_grand_total()->save();
+						$cart->save_cart( FALSE );
+						$return_data = $this->_get_payment_info( $cart );
+						$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
+						EED_Single_Page_Checkout::update_checkout();
+					} else {
+						EE_Error::add_attention( $this->_config->label->singular . ' ' . $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
+					}
 				}
 			}
+		} else {
+			EE_Error::add_error(
+				sprintf(
+					__( 'We\'re sorry, but the %1$s could not be applied because the event queue could not be retrieved.', 'event_espresso' ),
+					strtolower( $this->_config->label->singular )
+				),
+				__FILE__, __FUNCTION__, __LINE__
+			);
 		}
 		$this->generate_JSON_response( $return_data );
 	}
