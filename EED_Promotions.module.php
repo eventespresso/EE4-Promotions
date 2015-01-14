@@ -53,7 +53,7 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'wp_enqueue_scripts', array( 'EED_Promotions', 'translate_js_strings' ), 1 );
 		 add_action( 'wp_enqueue_scripts', array( 'EED_Promotions', 'enqueue_scripts' ));
 		 add_action( 'AHEE__ticket_selector_chart__template__before_ticket_selector', array( 'EED_Promotions', 'display_event_promotions_banner' ), 10, 1 );
-		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__just_before_saving_cart_and_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
+		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
 	 }
 
@@ -652,7 +652,6 @@ class EED_Promotions extends EED_Module {
 		// add it to the cart
 		if ( EEH_Line_Item::add_item( $parent_line_item, $promotion_line_item )) {
 			if ( $promotion->scope_obj()->increment_promotion_scope_uses( $promotion, $parent_line_item->OBJ_ID() )) {
-				$promotion_line_item->save();
 				return TRUE;
 			} else {
 				// todo: throw error and revert adding promotion line_item
