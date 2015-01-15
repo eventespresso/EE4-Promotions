@@ -61,16 +61,16 @@ class EEW_Promotions extends WP_Widget {
 
 		// Set up some default widget settings.
 		$defaults = array(
-			'title' => 'Promotions'
+			'title' => __( 'Current Promotions', 'event_espresso' )
 		);
 
 		$instance = wp_parse_args((array) $instance, $defaults);
 
-		add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
-		$yes_no_values = array(
-			EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 1, 'QSO_desc' => __('Yes', 'event_espresso')))
-		);
+//		add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
+//		$yes_no_values = array(
+//			EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
+//			EE_Question_Option::new_instance( array( 'QSO_value' => 1, 'QSO_desc' => __('Yes', 'event_espresso')))
+//		);
 
 		?>
 
@@ -80,20 +80,20 @@ class EEW_Promotions extends WP_Widget {
 			</label>
 			<input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" width="20" value="<?php echo $instance['title']; ?>" />
 		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id('yes_or_no_question'); ?>">
-				<?php _e('Yes or No?', 'event_espresso'); ?>
-			</label>
-			<?php
-				echo EEH_Form_Fields::select(
-					 __('Yes or No?', 'event_espresso'),
-					$instance['yes_or_no_question'],
-					$yes_no_values,
-					$this->get_field_name('yes_or_no_question'),
-					$this->get_field_id('yes_or_no_question')
-				);
-			?>
-		</p>
+<!--		<p>-->
+<!--			<label for="--><?php //echo $this->get_field_id('yes_or_no_question'); ?><!--">-->
+<!--				--><?php //_e('Yes or No?', 'event_espresso'); ?>
+<!--			</label>-->
+<!--			--><?php
+//				echo EEH_Form_Fields::select(
+//					 __('Yes or No?', 'event_espresso'),
+//					$instance['yes_or_no_question'],
+//					$yes_no_values,
+//					$this->get_field_name('yes_or_no_question'),
+//					$this->get_field_id('yes_or_no_question')
+//				);
+//			?>
+<!--		</p>-->
 <?php
 	}
 
@@ -131,7 +131,7 @@ class EEW_Promotions extends WP_Widget {
 		if ( isset( $post->post_content )) {
 			 // check the post content for the short code
 			 if ( strpos( $post->post_content, '[ESPRESSO_PROMOTIONS') === FALSE ) {
-				 EED_Espresso_Promotions::$shortcode_active = TRUE;
+				 EED_Promotions::$shortcode_active = TRUE;
 				// Before widget (defined by themes).
 				echo $args['before_widget'];
 				// Title of widget (before and after defined by themes).
@@ -140,10 +140,10 @@ class EEW_Promotions extends WP_Widget {
 					echo $args['before_title'] . $title . $args['after_title'];
 				}
 				// load scripts
-				EE_Promotions::instance()->enqueue_scripts();
+				 EED_Promotions::instance()->enqueue_scripts();
 				// settings
 				$attributes = array();
-				echo EE_Promotions::instance()->display_promotions( $attributes );
+				echo EED_Promotions::instance()->display_promotions( $attributes );
 				// After widget (defined by themes).
 				echo $args['after_widget'];
 			}

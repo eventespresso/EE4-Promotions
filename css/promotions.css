@@ -7,6 +7,50 @@
 General Styles
 ---------------------------------------------------------------------------------------------------- */
 
+#ee-spco-payment_options-reg-step-form-before-payment-options {
+	position: relative;
+	margin: 1.5em 0 3em;
+}
+#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input-lbl h4 {
+	margin:0;
+}
+
+/* Media Query for screens larger than 480px
+---------------------------------------------------------------------------------------------------- */
+@media only screen and (min-width: 481px) {
+	#ee-spco-payment_options-reg-step-form-before-payment-options {
+		padding-bottom: 50px;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input,
+	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
+		box-sizing: border-box;
+		vertical-align: middle;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input {
+		margin: 0 0 1em;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input,
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
+		position : absolute;
+		display: inline-block;
+		margin: 0;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input {
+		top: 24px;
+		left: 0;
+		border-bottom-right-radius: 0;
+		border-top-right-radius: 0;
+		border-right: 0;
+	}
+	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
+		top: 24px;
+		right: 0;
+		border-bottom-left-radius: 0;
+		border-top-left-radius: 0;
+		border-left: 0;
+	}
+}
+
 
 /* Media Query for screens smaller then 768px (iPad portrait)
 ---------------------------------------------------------------------------------------------------- */
@@ -21,5 +65,238 @@ General Styles
 }
 
 @media only screen and (max-width: 480px) {
+	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
+		margin: 1em 0;
+	}
 }
 
+
+
+/* ribbon style */
+
+
+.ee-promo-banner-ribbon-dv {
+	width: 100%;
+	height: 90px;
+	margin: 2em auto 0 ;
+	position: relative;
+}
+
+.ee-promo-banner-ribbon-dv div {
+	box-sizing: border-box;
+}
+
+.ee-promo-banner-ribbon-dv > div {
+	height: 50px;
+}
+
+.ee-promo-banner-ribbon-main-dv {
+	position: relative;
+	display: block;
+	width:100%;
+	height: auto !important;
+	left: 40%;
+	top: 0;
+	padding: 5px;
+	margin-left: -40%;
+	z-index: 10;
+}
+
+.ee-promo-banner-ribbon-main-dv .ee-promo-banner-text-dv {
+	border: 1px dashed rgba(255, 255, 255, 0.5);
+	min-height: 40px;
+	height: auto !important;;
+	color: #FFF;
+	text-align: center;
+	vertical-align: middle;
+}
+
+/*  BACK RIBBONS  */
+.ee-promo-banner-ribbon-back-dv {
+	position: absolute;
+	width: 8%;
+	top: 12px;
+}
+.ee-promo-banner-ribbon-back-left-dv {
+	left: -5%;
+}
+.ee-promo-banner-ribbon-back-right-dv {
+	right: -5%;
+}
+
+/*  SKEWS  */
+.ee-promo-banner-ribbon-skew-dv {
+	position: absolute;
+	width: 3%;
+	top: 6px;
+	z-index: 5;
+}
+.ee-promo-banner-ribbon-skew-left-dv {
+	left: 0;
+	transform: skew( 00deg, 25deg );
+}
+.ee-promo-banner-ribbon-skew-right-dv {
+	right: 0;
+	transform: skew( 00deg, -25deg );
+}
+
+/*  ARROWS  */
+.ee-promo-banner-ribbon-arrow-dv {
+	position: absolute;
+	z-index: 2;
+	width: 0;
+	height: 25px !important;
+}
+ /*  LEFT ARROWS  */
+.ee-promo-banner-ribbon-back-left-dv > .ee-promo-banner-ribbon-arrow-dv {
+	left: -29px;
+}
+.ee-promo-banner-ribbon-arrow-top-dv {
+	top: 0;
+	border-top: 0 solid transparent;
+	border-bottom: 25px solid transparent;
+}
+.ee-promo-banner-ribbon-arrow-bottom-dv {
+	top: 25px;
+	border-top: 25px solid transparent;
+	border-bottom:0 solid transparent;
+}
+/*  RIGHT ARROWS  */
+.ee-promo-banner-ribbon-back-right-dv > .ee-promo-banner-ribbon-arrow-dv {
+	right: -29px;
+}.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv {
+	border-bottom: 25px solid transparent;
+	border-top: 0 solid transparent;
+	border-right: none!important;
+ }
+.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv {
+	border-top: 25px solid transparent;
+	border-bottom: 0 solid transparent;
+	border-right: none!important;
+}
+
+.ee-promo-separator-dv {
+	line-height:10px!important;
+}
+
+
+/* lite-blue */
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-main-dv { background : #00B1CA; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-dv { background: #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #0096AB; }
+.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #007484; }
+
+/* blue */
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-main-dv { background : #005B9E; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-dv { background: #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #004679; }
+.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #002F52; }
+
+/* green */
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-main-dv { background : #70CC50; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-dv { background: #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #5BA641; }
+.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-skew-dv { background: #457E31; }
+
+/* pink */
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-main-dv { background : #E44064; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-dv { background: #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #B83451; }
+.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-skew-dv { background: #932940; }
+
+/* red */
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-main-dv { background : #B4113F; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-dv { background: #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #880D30; }
+.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-skew-dv { background: #5E0921; }
+
+
+
+.ee-promo-banner-plain-text-dv .ee-promo-banner-main-dv {
+	margin: 0 0 2em;
+}
+.ee-promo-banner-plain-text-dv .ee-promo-banner-plain-text-h4 {
+	margin: 0 0 .5em;
+}
+
+/* UPCOMING PROMOTIONS */
+
+#ee-upcoming-promotions-dv{
+	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	column-count: 2;
+	-moz-column-gap: 20px;
+	-webkit-column-gap: 20px;
+	column-gap: 20px;
+}
+@media only screen and (max-width : 600px) {
+	#ee-upcoming-promotions-dv{
+		-moz-column-count: 1;
+		-webkit-column-count: 1;
+		column-count: 1;
+		-moz-column-gap: 0;
+		-webkit-column-gap: 0;
+		column-gap: 0;
+	}
+}
+.ee-upcoming-promotions-container-dv {
+	display: inline-block;
+	padding: 0;
+	margin: 0 0 20px;
+	width: 100%;
+}
+.ee-promo-upcoming-promotions-main-dv {
+	padding: 1em 1.5em .5em;
+	background: #EEEEEE;
+	margin:.5em 0;
+}
+.ee-upcoming-promotions-container-dv .ee-upcoming-promotions-h5,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-text-pg,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-additional-details-pg {
+	margin: 0 0 .5em;
+	-ms-word-wrap: break-word;
+	word-wrap: break-word;
+}
+
+.ee-promo-upcoming-promotions-main-dv.lite-blue {
+	background-color:#00B1CA;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.blue {
+	background-color:#005B9E;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.green {
+	background-color:#70CC50;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.pink {
+	background-color:#E44064;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.red {
+	background-color:#B4113F;
+	color: #FFFFFF;
+}
+.ee-promo-upcoming-promotions-main-dv.lite-blue .currency-code,
+.ee-promo-upcoming-promotions-main-dv.blue .currency-code,
+.ee-promo-upcoming-promotions-main-dv.green .currency-code,
+.ee-promo-upcoming-promotions-main-dv.pink .currency-code,
+.ee-promo-upcoming-promotions-main-dv.red .currency-code {
+	color: #FFFFFF;
+}
