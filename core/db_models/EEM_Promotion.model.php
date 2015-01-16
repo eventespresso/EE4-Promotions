@@ -91,17 +91,19 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 	 * @return EE_Promotion
 	 */
 	public function get_all_active_codeless_promotions( $query_params = array() ) {
+		//$this->show_next_x_db_queries();
 		return $this->get_all(
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_start' => array( '<', current_time( 'mysql' )),
-						'PRO_end' => array( '>', current_time( 'mysql' )),
-						'PRO_code' => NULL,
+						'PRO_start' 			=> array( '<=', current_time( 'mysql' )),
+						'PRO_end' 			=> array( '>=', current_time( 'mysql' )),
+						'PRO_code' 			=> NULL,
 						'PRO_deleted' 	=> 0
 					)
 				),
-				$query_params
+				// incoming $query_params array filtered to remove null values and empty strings
+				array_filter( (array)$query_params, 'EEM_Promotion::has_value' )
 			)
 		);
 	}
@@ -112,22 +114,34 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 	 * get_all_active_codeless_promotions
 	 * retrieves all promotions that are currently active based on the current time and do NOT utilize a code
 	 *
-	 * @param array  $additional_query_params
+	 * @param array  $query_params
 	 * @return EE_Promotion
 	 */
-	public function get_upcoming_codeless_promotions( $additional_query_params = array() ) {
-		$query_args = array_replace_recursive(
-			array(
+	public function get_upcoming_codeless_promotions( $query_params = array() ) {
+		return $this->get_all(
+			array_replace_recursive(
 				array(
-					'PRO_start' 			=> array( '>=', gmdate( 'Y-m-d 00:00:00', current_time( 'timestamp' ))),
-					'PRO_end' 			=> array( '<=', gmdate( 'Y-m-d H:i:s', ( time() + ( 30 * DAY_IN_SECONDS )))),
-					'PRO_code' 		=> NULL,
-					'PRO_deleted' 	=> 0
-				)
-			),
-			$additional_query_params
+					array(
+						'PRO_end' 			=> array( '<=', gmdate( 'Y-m-d 00:00:00', ( time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS )))),
+						'PRO_code' 			=> NULL,
+						'PRO_deleted' 	=> 0
+					)
+				),
+				// incoming $query_params array filtered to remove null values and empty strings
+				array_filter( (array)$query_params, 'EEM_Promotion::has_value' )
+			)
 		);
-		return $this->get_all( $query_args );
+	}
+
+
+
+	/**
+	 * not_null
+	 * @param $val
+	 * @return bool
+	 */
+	public static function has_value( $val ) {
+		return ! ( $val === NULL || $val === '' );
 	}
 
 
