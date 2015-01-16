@@ -354,8 +354,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'price_type_selector' => $this->_get_price_type_selector(),
 			'scope_selector' => $this->_get_promotion_scope_selector()
 			);
-		$form_template = EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotion_details_form.template.php';
-		EEH_Template::display_template( $form_template, $form_args );
+		EEH_Template::display_template( EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotion_details_form.template.php', $form_args );
 	}
 
 
@@ -415,7 +414,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$extra_params = $redeemed > 0 ? 'disabled="disabled"' : '';
 		$content = EEH_Form_Fields::select_input( $name, $values, $default, $extra_params );
 		if ( $redeemed > 0 ) {
-			$content .= '<input type="hidden" name="PRO_scope" value=' . $default . '">';
+			$content .= '<input type="hidden" name="PRO_scope" value="' . $default . '">';
 		}
 		return $content;
 	}
@@ -493,6 +492,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'PRO_ID' => $promotion->ID(),
 			'action' => 'edit'
 			);
+
 		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
 	}
 
