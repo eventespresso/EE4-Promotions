@@ -220,11 +220,11 @@ class EED_Promotions extends EED_Module {
 	 *
 	 * @access 	public
 	 * @param 	array $attributes
-	 * @return 	void
+	 * @return 	string
 	 */
 	public static function display_promotions( $attributes = array() ) {
 		EED_Promotions::instance()->set_config();
-		EED_Promotions::instance()->_display_promotions( $attributes );
+		return EED_Promotions::instance()->_display_promotions( $attributes );
 	}
 
 
@@ -255,12 +255,11 @@ class EED_Promotions extends EED_Module {
 						'promo_amount'	=> $promotion->pretty_amount(),
 						'promo_dates' 		=> $promotion->promotion_date_range(),
 						'promo_scopes'		=> $promotion->get_promo_applies_to_link_array( $scope_objects )
-					),
-					TRUE,
-					FALSE
+					)
 				);
 			}
 		}
+		return $html;
 	}
 
 
@@ -623,7 +622,7 @@ class EED_Promotions extends EED_Module {
 		if ( $existing_promotion_line_item instanceof EE_Line_Item ) {
 			EE_Error::add_attention(
 				sprintf(
-					__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' ),
+					__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' ),
 					$existing_promotion_line_item->name(),
 					$parent_line_item->desc(),
 					$parent_line_item->OBJ_type(),
