@@ -72,28 +72,10 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 	 * @return 	string
 	 */
 	public function process_shortcode( $attributes = array() ) {
-		// make sure $attributes is an array
-		$attributes = array_merge(
-			// defaults
-			array(
-				'start_date' 	=> gmdate( 'Y-m-d H:i:s', ( time() - ( 1 * DAY_IN_SECONDS ))),
-				'end_date' 	=> gmdate( 'Y-m-d H:i:s', ( time() + ( apply_filters( 'FHEE__EES_Espresso_Promotions__process_shortcode__upcoming_promotions_number_of_days', 60 ) * DAY_IN_SECONDS ))),
-			),
-			(array)$attributes
-		);
-		$query_args = array(
-			array(
-				'PRO_start' 	=> array( '>=', $attributes['start_date'] ),
-				'PRO_end' 	=> array( '<=', $attributes['end_date'] ),
-				'PRO_code' => isset( $attributes['codes'] ) ?  array( 'IN', $attributes['codes'] ) : ''
-			)
-		);
 		/** @type EEM_Promotion $EEM_Promotion */
 		$EEM_Promotion = EE_Registry::instance()->load_model( 'Promotion' );
 		EE_Registry::instance()->load_helper( 'Template' );
-//		$EEM_Promotion->show_next_x_db_queries();
-		$active_promotions = $EEM_Promotion->get_upcoming_codeless_promotions( $query_args );
-//		d( $active_promotions );
+		$active_promotions = $EEM_Promotion->get_upcoming_codeless_promotions( $attributes );
 		$html = '<div id="ee-upcoming-promotions-dv">';
 		foreach ( $active_promotions as $promotion ) {
 			if ( $promotion instanceof EE_Promotion ) {
@@ -121,7 +103,6 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 		$html .= '</div>';
 		return $html;
 	}
-
 
 }
 // End of file EES_Espresso_Promotions.shortcode.php
