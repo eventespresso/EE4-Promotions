@@ -779,14 +779,16 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return array
 	 */
 	public function get_objects_promo_applies_to() {
-		$redeemable_scope_promos = $this->scope_obj()->get_redeemable_scope_promos( $this );
 		$scope_objects = array();
-		foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
-			$new_scope_objects[ $scope ] = $this->scope_obj()->get_items(
-				array( array( $this->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs )))
-			);
-			if ( reset( $new_scope_objects[ $scope ] ) instanceof EE_Base_Class ) {
-				$scope_objects = array_merge( $scope_objects, $new_scope_objects );
+		if ( $this->scope_obj() instanceof EE_Promotion_Scope ) {
+			$redeemable_scope_promos = $this->scope_obj()->get_redeemable_scope_promos( $this );
+			foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
+				$new_scope_objects[ $scope ] = $this->scope_obj()->get_items(
+					array( array( $this->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs )))
+				);
+				if ( reset( $new_scope_objects[ $scope ] ) instanceof EE_Base_Class ) {
+					$scope_objects = array_merge( $scope_objects, $new_scope_objects );
+				}
 			}
 		}
 		return $scope_objects;
