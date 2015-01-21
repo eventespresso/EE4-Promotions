@@ -198,7 +198,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 		EE_Registry::$i18n_js_strings['confirm_reset'] = __( 'Are you sure you want to reset ALL your Event Espresso Promotions Information? This cannot be undone.', 'event_espresso' );
 		EE_Registry::$i18n_js_strings['codefieldEmptyError'] = __( 'eePromotionsHelper.generate_code requires a selector for the codefield param. None was provided.', 'event_espresso' );
-		EE_Registry::$i18n_js_strings['codefieldInvalidError'] = __( 'The codefield paramater sent to eePromotionsHelper.generate_code is invalid.  It must be a valid selector for the input field holding the generated coupon code.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings['codefieldInvalidError'] = __( 'The codefield parameter sent to eePromotionsHelper.generate_code is invalid.  It must be a valid selector for the input field holding the generated coupon code.', 'event_espresso' );
 		EE_Registry::$i18n_js_strings['toggledScopeItemMissingParam'] = __( 'eePromotionsHelper.scopeItemToggle requires the toggled checkbox dom element to be included as the argument.  Nothing was included.', 'event_espresso' );
 		wp_localize_script( 'espresso_promotions_admin', 'eei18n', EE_Registry::$i18n_js_strings );
 	}
@@ -336,8 +336,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$redirect = EEH_URL::add_query_args_and_nonce( array('action' => 'default'), $this->_admin_base_url );
 		$view = $new ? 'insert_promotion' : 'update_promotion';
 		$this->_set_add_edit_form_tags($view);
-		$delete_route = $this->_promotion->get('PRO_deleted') ? 'restore_promotion' : 'trash_promotion';
-		$this->_set_publish_post_box_vars( 'PRO_ID', $id, 'trash_promotion', $redirect);
+		$route = $this->_promotion->get('PRO_deleted') ? 'restore_promotion' : 'trash_promotion';
+		$this->_set_publish_post_box_vars( 'PRO_ID', $id, $route, $redirect );
 		$this->display_admin_page_with_sidebar();
 	}
 
@@ -597,9 +597,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'PRO_ID' => $PRO_ID
 				);
 			$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
-		} else {
-			return $success;
 		}
+		return $success;
 	}
 
 
@@ -614,31 +613,26 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _trash_or_restore_promotions( $trash = FALSE ) {
-		$success = TRUE;
-		$pro_ids = !empty( $this->_req_data['PRO_ID'] ) && is_array( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : array();
+		$success = 0;
+		$pro_ids = ! empty( $this->_req_data['PRO_ID'] ) && is_array( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : array();
 
-		if ( empty( $pro_ids ) ) {
-			$success = FALSE;
+		if ( ! empty( $pro_ids ) ) {
+			foreach ( $pro_ids as $pro_id ) {
+				if ( $this->_trash_or_restore_promotion( $trash, $pro_id, FALSE ) ) {
+					$success++;
+				} else {
+					$trash ? EE_Error::add_error( sprintf( __('Promotion (%s) did not get trashed.', 'event_espresso'), $pro_id ), __FILE__, __FUNCTION__, __LINE__ ) : EE_Error::add_error( sprintf( __('Promotion (%s) did not get restored.', 'event_espresso'), $pro_id ), __FILE__, __FUNCTION__, __LINE__ );
+				}
+			}
+		} else {
 			$trash ? EE_Error::add_error( __('Unable to trash promotions because none were selected.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__  ) : EE_Error::add_error( __('Unable to trash promotions because none were selected.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__  );
 		}
 
-		$has_success = 0;
-		foreach ( $pro_ids as $pro_id ) {
-			$success = $this->_trash_or_restore_promotion( $trash, $pro_id, FALSE );
-			if ( $success )
-			 	$has_success + 1;
-			else
-				$trash ? EE_Error::add_error( sprintf( __('Promotion (%s) did not get trashed.', 'event_espresso'), $pro_id ), __FILE__, __FUNCTION__, __LINE__ ) : EE_Error::add_error( sprintf( __('Promotion (%s) did not get restored.', 'event_espresso'), $pro_id ), __FILE__, __FUNCTION__, __LINE__ );
+		if ( $success > 0 ) {
+			$trash ? EE_Error::add_success( _n( '1 promotion was successfully trashed', '%s promotions were successfully trashed', $success, 'event_espresso' ) ) : EE_Error::add_success( _n( '1 promotion was successfully restored', '%s promotions were successfully restored', $success, 'event_espresso' ) );
 		}
 
-		if ( $has_success > 0 ) {
-			$trash ? EE_Error::add_success( _n( '1 promotion was successfully trashed', '%s promotions were successfully trashed', $has_success, 'event_espresso' ) ) : EE_Error::add_success( _n( '1 promotion was successfully restored', '%s promotions were successfully restored', $has_success, 'event_espresso' ) );
-		}
-
-		$query_args = array(
-			'action' => 'default'
-			);
-		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
+		$this->_redirect_after_action( NULL, '', '', array( 'action' => 'default' ), TRUE );
 	}
 
 
@@ -667,13 +661,15 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		if ( $success ) {
 			//first we need to determine if the given promotion has uses.  If it does it CANNOT be deleted.
 			$promotion = EEM_Promotion::instance()->get_one_by_ID( $PRO_ID );
-			if ( ! $promotion instanceof EE_Promotion ) {
-				$success = FALSE;
-				EE_Error::add_error( sprintf( __('There is no promotion in the db matching the id of %s.', 'event_espresso'), $PRO_ID ) );
-			} else {
+			if ( $promotion instanceof EE_Promotion ) {
 				if ( $promotion->redeemed() > 0 ) {
 					$success = FALSE;
-					EE_Error::add_error( sprintf( __('Unable to delete %s because it has been redeemed.  For archival and relational purposes this data must be retained in the db.', 'event_espresso'), $promotion->name() ) );
+					EE_Error::add_error(
+						sprintf(
+							__('Unable to delete %s because it has been redeemed.  For archival and relational purposes this data must be retained in the db.', 'event_espresso'),
+							$promotion->name()
+						)
+					);
 				} else {
 					//first delete permanently the related prices
 					$promotion->delete_related_permanently( 'Price' );
@@ -683,24 +679,25 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					//now delete the promotion permanently
 					$success = $promotion->delete_permanently();
 				}
+				if ( $success ) {
+					EE_Error::add_success( sprintf( __('Promotion %s has been permanently deleted.', 'event_espresso'), $promotion->name() ) );
+				} else {
+					EE_Error::add_error( sprintf( __('Unable to permanently delete the %s promotion.', 'event_espresso'), $promotion->name() ), __FILE__, __FUNCTION__, __LINE__ );
+				}
+			} else {
+				$success = FALSE;
+				EE_Error::add_error( sprintf( __('There is no promotion in the db matching the id of %s.', 'event_espresso'), $PRO_ID ) );
 			}
 		}
 
-		if ( $success )
-			EE_Error::add_success( sprintf( __('Promotion %s has been permanently deleted.', 'event_espresso'), $promotion->name() ) );
-		else
-			EE_Error::add_error( sprintf( __('Unable to permanently delete the %s promotion.', 'event_espresso'), $promotion->name() ), __FILE__, __FUNCTION__, __LINE__ );
-
 		if ( $redirect ) {
 			$query_args = array(
-				'action' => !empty( $this->_req_data['update_promotion_nonce'] ) ? 'edit' : 'default',
+				'action' => ! empty( $this->_req_data['update_promotion_nonce'] ) ? 'edit' : 'default',
 				'PRO_ID' => $PRO_ID
 				);
 			$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
-		} else {
-			return $success;
 		}
-
+		return $success;
 	}
 
 
@@ -714,30 +711,23 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _delete_promotions(){
-		$success = TRUE;
-		$pro_ids = !empty( $this->_req_data['PRO_ID'] ) && is_array( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : array();
-
-		if ( empty( $pro_ids ) ) {
+		$success = 0;
+		$pro_ids = ! empty( $this->_req_data['PRO_ID'] ) && is_array( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : array();
+		if ( ! empty( $pro_ids ) ) {
+			foreach ( $pro_ids as $pro_id ) {
+				if ( $this->_delete_promotion( $pro_id, FALSE ) ) {
+					$success++;
+				}
+			}
+		} else {
 			$success = FALSE;
-			EE_Error::add_error( __('Unable to delete permanently any promotions because none were selected.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__  );
+			EE_Error::add_error( __('Unable to permanently delete any promotions because none were selected.', 'event_espresso'), __FILE__, __FUNCTION__, __LINE__  );
 		}
 
-		$has_success = 0;
-		foreach ( $pro_ids as $pro_id ) {
-			$success = $this->_delete_promotion( $pro_id, FALSE );
-			if ( $success )
-			 	$has_success + 1;
-			 //if no success the error message has already been generated.
+		if ( $success > 0 ) {
+			EE_Error::add_success( _n( '1 promotion was successfully deleted.', '%s promotions were successfully deleted.', $success, 'event_espresso' ) );
 		}
-
-		if ( $has_success > 0 ) {
-			EE_Error::add_success( _n( '1 promotion was successfully deleted.', '%s promotions were successfully deleted.', $has_success, 'event_espresso' ) );
-		}
-
-		$query_args = array(
-			'action' => 'default'
-			);
-		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
+		$this->_redirect_after_action( NULL, '', '', array( 'action' => 'default' ), TRUE );
 	}
 
 
