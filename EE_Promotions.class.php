@@ -29,7 +29,7 @@ Class  EE_Promotions extends EE_Addon {
 	public static function register_addon() {
 		// register addon via Plugin API
 		EE_Register_Addon::register(
-			'Promotions',
+		'Promotions',
 			array(
 				'version' 					=> EE_PROMOTIONS_VERSION,
 				'min_core_version' => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
@@ -52,7 +52,8 @@ Class  EE_Promotions extends EE_Addon {
 					'Promotions_Admin_List_Table' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
 				),
 				'autoloader_folders' => array(
-					'Promotion_Scopes_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api'
+					'Promotion_Scopes_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api',
+					'Promotion_Scopes' 						=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes'
 				),
 				'pue_options'			=> array(
 					'pue_plugin_slug' 		=> 'eea-promotions',
