@@ -593,6 +593,10 @@ abstract class EE_Promotion_Scope {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
 					// can the promotion still be be redeemed fro this scope object?
 					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+						// make sure array exists for holding redeemable scope promos
+						if ( ! isset( $redeemable_scope_promos[ $this->slug ] )) {
+							$redeemable_scope_promos[ $this->slug ] = array();
+						}
 						$redeemable_scope_promos[ $this->slug ][] = $IDs_only ? $promotion_object->OBJ_ID() : $promotion_object;
 					}
 				}
@@ -629,7 +633,7 @@ abstract class EE_Promotion_Scope {
 
 	/**
 	 * get_object_line_items_from_cart
-	 * searches the cart for any items that this promotion applies to
+	 * searches the line items for any objects that this promotion applies to
 	 *
 	 * @since   1.0.0
 	 *
@@ -642,10 +646,13 @@ abstract class EE_Promotion_Scope {
 		EE_Registry::instance()->load_helper( 'Line_Item' );
 		$applicable_items = array();
 		$OBJ_type = empty( $OBJ_type ) ? $this->slug : $OBJ_type;
-		$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
-		if ( is_array( $object_type_line_items )) {
-			foreach ( $object_type_line_items as $object_type_line_item ) {
-				$applicable_items[] = $object_type_line_item;
+		// check that redeemable scope promos for the requested type exist
+		if ( isset( $redeemable_scope_promos[ $OBJ_type ] )) {
+			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
+			if ( is_array( $object_type_line_items )) {
+				foreach ( $object_type_line_items as $object_type_line_item ) {
+					$applicable_items[] = $object_type_line_item;
+				}
 			}
 		}
 		return $applicable_items;
