@@ -372,13 +372,17 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * Get the scope object for the scope on this promotion.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @return EE_Promotion_Scope
+	 * @return \EE_Promotion_Scope
+	 * @throws \EE_Error
 	 */
 	public function scope_obj() {
 		$scope = $this->scope();
 		$scope = empty( $scope ) ? 'Event' : $scope;
-		return EE_Registry::instance()->CFG->addons->promotions->scopes[$scope];
+		$scope_obj = EE_Registry::instance()->CFG->addons->promotions->scopes[$scope];
+		if ( ! $scope_obj instanceof EE_Promotion_Scope ) {
+			throw new EE_Error( __( 'The EE_Promotion_%1$s_Scope class was not found.', 'event_espresso' ));
+		}
+		return $scope_obj;
 	}
 
 
@@ -399,14 +403,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function applied_to_name( $link = FALSE ) {
 		$pro_objects = $this->promotion_objects();
 		$obj = 0;
-		$obj_ids = array();
 		if ( !empty( $pro_objects ) ) {
 			$obj = count( $pro_objects ) > 1 ? $pro_objects : array_shift($pro_objects);
 		}
 
-		$applied_obj = ! empty( $obj ) && $obj instanceof EE_Promotion_Object ? $obj->get_first_related( $this->scope() ) : $obj;
+		$applied_obj = $obj instanceof EE_Promotion_Object ? $obj->get_first_related( $this->scope() ) : $obj;
 
 		if ( is_array( $applied_obj )  ) {
+			$obj_ids = array();
 			foreach( $pro_objects as $pro_object ) {
 				$obj_ids[] = $pro_object->OBJ_ID();
 			}
@@ -779,14 +783,16 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @return array
 	 */
 	public function get_objects_promo_applies_to() {
-		$redeemable_scope_promos = $this->scope_obj()->get_redeemable_scope_promos( $this );
 		$scope_objects = array();
-		foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
-			$new_scope_objects[ $scope ] = $this->scope_obj()->get_items(
-				array( array( $this->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs )))
-			);
-			if ( reset( $new_scope_objects[ $scope ] ) instanceof EE_Base_Class ) {
-				$scope_objects = array_merge( $scope_objects, $new_scope_objects );
+		if ( $this->scope_obj() instanceof EE_Promotion_Scope ) {
+			$redeemable_scope_promos = $this->scope_obj()->get_redeemable_scope_promos( $this );
+			foreach( $redeemable_scope_promos as $scope => $scope_object_IDs ) {
+				$new_scope_objects[ $scope ] = $this->scope_obj()->get_items(
+					array( array( $this->scope_obj()->model_pk_name() => array( 'IN', $scope_object_IDs )))
+				);
+				if ( reset( $new_scope_objects[ $scope ] ) instanceof EE_Base_Class ) {
+					$scope_objects = array_merge( $scope_objects, $new_scope_objects );
+				}
 			}
 		}
 		return $scope_objects;

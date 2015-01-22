@@ -87,19 +87,33 @@ abstract class EE_Promotion_Scope {
 	 * @return \EE_Promotion_Scope
 	 */
 	public function __construct() {
+		$this->_init();
+	}
+
+
+
+	/**
+	 * _init
+	 * Setup the basic structure of the scope class.
+	 *
+	 * @since 1.0.0
+	 */
+	protected function _init() {
+		static $initialized = false;
+		if ( $initialized ) {
+			return;
+		}
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
 		$this->set_model_pk_name( $this->_model()->get_primary_key_field()->get_name() );
-
 		//set (and filter ) the per_page default.
 		$this->_per_page = apply_filters( 'FHEE__EE_Promotion_Scope___get_applies_to_items_paging__perpage_default', 10, $this->slug );
-
 		//common ajax for admin
 		add_action('wp_ajax_promotion_scope_items', array( $this, 'ajax_get_applies_to_items_to_select'), 10 );
-
 		//hook into promotion details insert/update method
 		add_action( 'AHEE__Promotions_Admin_Page___insert_update_promotion__after', array( $this, 'handle_promotion_update' ), 10, 2 );
+		$initialized = true;
 	}
 
 
@@ -364,7 +378,6 @@ abstract class EE_Promotion_Scope {
 	 * query_args.
 	 *
 	 * @since    1.0.0
-	 * @internal param array $query_args array of query args to filter the count by.
 	 * @return int  count of items.
 	 */
 	protected function _get_total_items() {
@@ -507,7 +520,7 @@ abstract class EE_Promotion_Scope {
 				$promo_obj = EEM_Promotion_Object::instance()->get_one( array( array( 'PRO_ID' => $PRO_ID, 'OBJ_ID' => $id ) ) );
 				$disabled = $promo_obj instanceof EE_Promotion_Object && $promo_obj->used() > 0 ? ' disabled="disabled"' : '';
 			}
-			$checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['.$id.']" name="PRO_applied_to_selected['.$id.']" value="' . $id . '"'. $checked . $disabled . '>';
+			$checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['.$id.']" name="PRO_applied_to_selected['.$id.']" value="' . $id . '" '. $checked . $disabled . '>';
 			$checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['.$id.']">' . $this->name($obj) . '</label>';
 		}
 		$checkboxes .= '</ul>';
@@ -580,6 +593,10 @@ abstract class EE_Promotion_Scope {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
 					// can the promotion still be be redeemed fro this scope object?
 					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+						// make sure array exists for holding redeemable scope promos
+						if ( ! isset( $redeemable_scope_promos[ $this->slug ] )) {
+							$redeemable_scope_promos[ $this->slug ] = array();
+						}
 						$redeemable_scope_promos[ $this->slug ][] = $IDs_only ? $promotion_object->OBJ_ID() : $promotion_object;
 					}
 				}
@@ -616,7 +633,7 @@ abstract class EE_Promotion_Scope {
 
 	/**
 	 * get_object_line_items_from_cart
-	 * searches the cart for any items that this promotion applies to
+	 * searches the line items for any objects that this promotion applies to
 	 *
 	 * @since   1.0.0
 	 *
@@ -629,10 +646,13 @@ abstract class EE_Promotion_Scope {
 		EE_Registry::instance()->load_helper( 'Line_Item' );
 		$applicable_items = array();
 		$OBJ_type = empty( $OBJ_type ) ? $this->slug : $OBJ_type;
-		$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
-		if ( is_array( $object_type_line_items )) {
-			foreach ( $object_type_line_items as $object_type_line_item ) {
-				$applicable_items[] = $object_type_line_item;
+		// check that redeemable scope promos for the requested type exist
+		if ( isset( $redeemable_scope_promos[ $OBJ_type ] )) {
+			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
+			if ( is_array( $object_type_line_items )) {
+				foreach ( $object_type_line_items as $object_type_line_item ) {
+					$applicable_items[] = $object_type_line_item;
+				}
 			}
 		}
 		return $applicable_items;
@@ -703,6 +723,15 @@ abstract class EE_Promotion_Scope {
 			return TRUE;
 		}
 		throw new EE_Error( __( 'A valid EE_Promotion_Object object could not be found.', 'event_espresso' ));
+	}
+
+
+
+	/**
+	 * __wakeup
+	 */
+	public function __wakeup() {
+		$this->_init();
 	}
 
 
