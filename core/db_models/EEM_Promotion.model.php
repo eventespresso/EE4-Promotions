@@ -96,10 +96,18 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_start' 			=> array( '<=', current_time( 'mysql' )),
-						'PRO_end' 			=> array( '>=', current_time( 'mysql' )),
-						'PRO_code' 			=> NULL,
-						'PRO_deleted' 	=> 0
+						'PRO_code' 		=> '',
+						'PRO_deleted' 	=> 0,
+						'OR'=> array(
+							'AND'=> array(
+								'PRO_start' 	=> array( '<=', current_time( 'mysql' )),
+								'PRO_end' 	=> array( '>=', current_time( 'mysql' ))
+							),
+							'AND*'=> array(
+								'PRO_start*' 	=> array( 'IS NULL' ),
+								'PRO_end*' 		=> array( 'IS NULL' )
+							)
+						)
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
@@ -123,7 +131,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				array(
 					array(
 						'PRO_end' 			=> array( '<=', gmdate( 'Y-m-d 00:00:00', ( time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS )))),
-						'PRO_code' 			=> NULL,
+						'PRO_code' 		=> NULL,
 						'PRO_deleted' 	=> 0
 					)
 				),
