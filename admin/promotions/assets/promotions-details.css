@@ -93,7 +93,19 @@
 }
 
 .ee-promotions-applies-to-paging {
-	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.ee-promotions-applies-to-paging .tablenav .tablenav-pages a {
+	font-size: 14px;
+	padding: 0 7px 2px;
+}
+.ee-promotions-applies-to-paging .tablenav .tablenav-pages .current-page {
+	font-size: 12px;
+	padding: 1px 2px;
+}
+.ee-promotions-applies-to-paging .tablenav .tablenav-pages {
+	font-size: 12px;
+	line-height: 24px;
 }
 
 .ee-sort-container .dashicons:before {
