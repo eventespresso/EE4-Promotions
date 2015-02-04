@@ -187,7 +187,6 @@ jQuery(document).ready(function($){
 					resp = $.parseJSON(resp);
 					//let's replace the current items in the selected items window.
 					$('.ee-promotions-applies-to-items-container', '.ee-promotions-applies-to-selector').html(resp.items_content);
-
 					//update the current page
 					$('.ee-promotions-applies-to-paging', '#promotions-applied-to-mbox').html(resp.items_paging);
 				}
@@ -297,7 +296,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for applying filters to the selected items.
 	 */
-	$('#post-body').on('click', '#ee-apply-promotion-filter', function(e) {
+	$('#ee-apply-promotion-filter').on('click', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		eePromotionsHelper.getScopeSelectionItems();
@@ -308,7 +307,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for display only selected items filter.
 	 */
-	$('#post-body').on('click', '.ee-display-selected-only-trigger', function(e) {
+	$('#promotions-applied-to-mbox').on('click', '.ee-display-selected-only-trigger', function(e) {
 		e.stopPropagation();
 		eePromotionsHelper.getScopeSelectionItems();
 	});
@@ -318,7 +317,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for sorts
 	 */
-	$('#post-body').on('click', '.ee-sort-trigger', function(e) {
+	$('#promotions-applied-to-mbox').on('click', '.ee-sort-trigger', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		eePromotionsHelper.toggleSort().getScopeSelectionItems();
@@ -328,7 +327,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for paging!
 	 */
-	$('#post-body').on('click', '.pagination-links>a', function(e) {
+	$('#promotions-applied-to-mbox').on('click', '.pagination-links>a', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		var data = parseUri( $(this).attr('href') );
@@ -340,7 +339,7 @@ jQuery(document).ready(function($){
 	/**
 	 * capture enter keypress in paging input
 	 */
-	$('#post-body').on('keypress', '.current-page', function(e) {
+	$('#promotions-applied-to-mbox').on('keypress', '.current-page', function(e) {
 		if ( e.which == 13 ) {
 			e.preventDefault();
 			e.stopPropagation();
