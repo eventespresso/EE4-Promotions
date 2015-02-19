@@ -29,7 +29,7 @@ Class  EE_Promotions extends EE_Addon {
 	public static function register_addon() {
 		// register addon via Plugin API
 		EE_Register_Addon::register(
-			'Promotions',
+		'Promotions',
 			array(
 				'version' 					=> EE_PROMOTIONS_VERSION,
 				'min_core_version' => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
@@ -47,12 +47,14 @@ Class  EE_Promotions extends EE_Addon {
 				'autoloader_paths' => array(
 					'EE_Promotions' 							=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
 					'EE_Promotions_Config' 				=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
-					'Promotions_Admin_Page' 			=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
 					'Promotions_Admin_Page_Init' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
-					'Promotions_Admin_List_Table' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php'
+					'Promotions_Admin_Page' 			=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
+					'Promotions_Admin_List_Table' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php',
+					'EE_Promotion_Scope' 					=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes' . DS . 'EE_Promotion_Scope.lib.php'
 				),
 				'autoloader_folders' => array(
-					'Promotion_Scopes_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api'
+					'Promotions_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api',
+					'Promotion_Scopes' 			=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes'
 				),
 				'pue_options'			=> array(
 					'pue_plugin_slug' 		=> 'eea-promotions',

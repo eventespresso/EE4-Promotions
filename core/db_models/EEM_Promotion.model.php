@@ -36,7 +36,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				'PRO_start'       		=> new EE_Datetime_Field( 'PRO_start', __( "Start Date/Time", "event_espresso" ), TRUE, NULL ),
 				'PRO_end'         		=> new EE_Datetime_Field( 'PRO_end', __( "End Date/Time", "event_espresso" ), TRUE, NULL ),
 				'PRO_code'        		=> new EE_Plain_Text_Field( 'PRO_code', __( "Code", "event_espresso" ), TRUE, '' ),
-				'PRO_uses'        		=> new EE_Integer_Field( 'PRO_uses', __( "Times this can be used in a given scope", "event_espresso" ), FALSE, 1 ),
+				'PRO_uses'        		=> new EE_Integer_Field( 'PRO_uses', __( "Times this can be used in a given scope", "event_espresso" ), FALSE, EE_INF_IN_DB ),
 				'PRO_global'      		=> new EE_Boolean_Field( 'PRO_global', __( "Usable Globally?", "event_espresso" ), FALSE, FALSE ),
 				'PRO_global_uses' 	=> new EE_Integer_Field( 'PRO_global_uses', __( "Times it can be used in all scopes", "event_espresso" ), FALSE, EE_INF_IN_DB ),
 				'PRO_exclusive'   	=> new EE_Boolean_Field( 'PRO_exclusive', __( "Exclusive? (ie, can't be used with other promotions)", "event_espresso" ), FALSE, FALSE ),
@@ -96,10 +96,18 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_start' 			=> array( '<=', current_time( 'mysql' )),
-						'PRO_end' 			=> array( '>=', current_time( 'mysql' )),
-						'PRO_code' 			=> NULL,
-						'PRO_deleted' 	=> 0
+						'PRO_code' 		=> '',
+						'PRO_deleted' 	=> 0,
+						'OR'=> array(
+							'AND'=> array(
+								'PRO_start' 	=> array( '<=', current_time( 'mysql' )),
+								'PRO_end' 	=> array( '>=', current_time( 'mysql' ))
+							),
+							'AND*'=> array(
+								'PRO_start*' 	=> array( 'IS NULL' ),
+								'PRO_end*' 		=> array( 'IS NULL' )
+							)
+						)
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
@@ -123,7 +131,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				array(
 					array(
 						'PRO_end' 			=> array( '<=', gmdate( 'Y-m-d 00:00:00', ( time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS )))),
-						'PRO_code' 			=> NULL,
+						'PRO_code' 		=> NULL,
 						'PRO_deleted' 	=> 0
 					)
 				),

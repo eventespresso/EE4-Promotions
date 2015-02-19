@@ -1,14 +1,7 @@
-<?php
+<?php if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
 /**
- * This file contains the definition of the Promotions Config
+ * EE_Promotions_Config
  *
- * @since 1.0.0
- * @package EE Promotions
- * @subpackage config
- */
-if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allowed'); }
-
-/**
  * Class defining the Promotions Config object stored on EE_Registry::instance->CFG
  *
  * @since 1.0.0
@@ -34,10 +27,12 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @var stdClass
 	 */
 	public $label;
+
 	/**
 	 * @var string
 	 */
 	public $banner_template;
+
 	/**
 	 * @var string
 	 */
@@ -64,45 +59,29 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 */
 	private function _get_scopes() {
 		$scopes = array();
-		//first we require the promotion scope parent.
-		require_once( EE_PROMOTIONS_PATH . 'lib/scopes/EE_Promotion_Scope.lib.php');
 		$scopes_to_register = apply_filters( 'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register', glob( EE_PROMOTIONS_PATH.'lib/scopes/*.lib.php' ) );
 		foreach ( $scopes_to_register as $scope ) {
 			$class_name = EEH_File::get_classname_from_filepath_with_standard_filename( $scope );
-			//if parent let's skip - it's already been required.
-			if ( $class_name == 'EE_Promotion_Scope' )
+			// if parent let's skip - it's already been required.
+			if ( $class_name == 'EE_Promotion_Scope' ) {
 				continue;
-			require_once $scope;
-
-			if ( class_exists( $class_name ) )
-				$reflector = new ReflectionClass( $class_name );
-				$sp = $reflector->newInstance();
-				$scopes[ $sp->slug ] = $sp;
+			}
+			$loaded = require_once( $scope );
+			// avoid instantiating classes twice by checking whether file has already been loaded
+			// ( first load returns (int)1, subsequent loads return (bool)true )
+			if ( $loaded === 1 ) {
+				if ( class_exists( $class_name ) ) {
+					$reflector = new ReflectionClass( $class_name );
+					$sp = $reflector->newInstance();
+					$scopes[ $sp->slug ] = $sp;
+				}
+			}
 		}
 		return $scopes;
 	}
 
 
 
-	public function __wakeup() {
-		$this->scopes = $this->_get_scopes();
-	}
-
-
-
-//	/**
-//	 * Use to designate what properties get serialized with object.
-//	 *
-//	 * @since 1.0.0
-//	 * @return array   Values represent properties to serialize
-//	 */
-//	public function __sleep() {
-//		return array();
-//	}
-
 }
-
-
-
 // End of file EE_Promotions_Config.php
 // Location: /wp-content/plugins/espresso-promotions/EE_Promotions_Config.php
