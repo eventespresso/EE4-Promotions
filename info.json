@@ -12,5 +12,7 @@
 	],
 	"github" : true,
 	"awsbucket" : "",
-	"awsregion" : ""
+	"awsregion" : "",
+	"srcBuildFolderName" : "eea-promotions",
+	"textDomain" : "event_espresso"
 }
