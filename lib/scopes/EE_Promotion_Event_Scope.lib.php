@@ -318,7 +318,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		}
 		$cat_filter = '<label for="EVT_CAT_ID" class="ee-promotions-filter-lbl">' . __('event categories', 'event_espresso') . '</label>';
 		$cat_filter .= EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values, $default);
-		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 1 );
+		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 2 );
 
 		//start date
 		$existing_start_date = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d h:i a' , current_time('timestamp') );
