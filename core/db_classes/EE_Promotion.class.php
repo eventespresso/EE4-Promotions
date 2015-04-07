@@ -539,14 +539,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 		$start = $this->get_raw('PRO_start');
 		$end = $this->get_raw('PRO_end');
-		$now = current_time('timestamp');
-//		echo '<h5 style="color:#2EA2CC;">$start : <span style="color:#E76700">' . $start . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$end : <span style="color:#E76700">' . $end . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$now : <span style="color:#E76700">' . $now . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$start < $now : <span style="color:#E76700">' . ( $start < $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $start ) && empty( $end ) : <span style="color:#E76700">' . ( empty( $start ) && empty( $end ) ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $start ) && $end > $now : <span style="color:#E76700">' . ( empty( $start ) && $end > $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $end ) && $start < $now : <span style="color:#E76700">' . ( empty( $end ) && $start < $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
+		$now = time();
+
 		//active (which means that the promotion is currently able to be used)
 		if ( ( $start < $now && ( ! empty( $end ) && $end > $now ) ) || ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
 			return self::active;

@@ -24,13 +24,13 @@ class EE_Promotion_Test_tests extends EE_UnitTestCase {
 	public function test_status() {
 
 		$promotions_to_test = array(
-			'upcoming_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => current_time('timestamp') + 86400 ) ),
-			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => current_time('timestamp') + 86400, 'PRO_end' => current_time('timestamp') + 96000 ) ),
-			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => current_time('timestamp') - 86400 ) ),
-			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => current_time('timestamp') - 86400, 'PRO_end' => current_time('timestamp') + 96000 ) ),
-			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => current_time('timestamp') - 86400, 'PRO_end' => current_time('timestamp') + -56000 ) ),
-			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => current_time('timestamp') + 96000 ) ),
-			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => current_time('timestamp') - 96000 ) )
+			'upcoming_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400 ) ),
+			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400, 'PRO_end' => time() + 96000 ) ),
+			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400 ) ),
+			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + 96000 ) ),
+			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + -56000 ) ),
+			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() + 96000 ) ),
+			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() - 96000 ) )
 			);
 
 		foreach ( $promotions_to_test as $expected_test =>  $promotion ) {
