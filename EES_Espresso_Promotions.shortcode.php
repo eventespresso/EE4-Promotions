@@ -75,7 +75,7 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 		/** @type EEM_Promotion $EEM_Promotion */
 		$EEM_Promotion = EE_Registry::instance()->load_model( 'Promotion' );
 		EE_Registry::instance()->load_helper( 'Template' );
-		$active_promotions = $EEM_Promotion->get_upcoming_codeless_promotions( $attributes );
+		$active_promotions = $EEM_Promotion->get_active_and_upcoming_codeless_promotions_in_range( $attributes );
 		$html = '<div id="ee-upcoming-promotions-dv">';
 		foreach ( $active_promotions as $promotion ) {
 			if ( $promotion instanceof EE_Promotion ) {
