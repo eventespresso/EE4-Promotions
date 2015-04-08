@@ -64,11 +64,15 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param array $props_n_values array of fields and values to set on the object
+	 * @param string $timezone  incoming timezone (if not set the timezone set for the website will be
+	 *                          		used.)
+	 * @param array $date_formats  incoming date_formats in an array where the first value is the
+	 *                             		    date_format and the second value is the time format
 	 * @return EE_Promotion
 	 */
-	public static function new_instance( $props_n_values = array() ) {
+	public static function new_instance( $props_n_values = array(), $timezone = null, $date_formats = array() ) {
 		$has_object = parent::_check_for_object( $props_n_values, __CLASS__ );
-		return $has_object ? $has_object : new self( $props_n_values );
+		return $has_object ? $has_object : new self( $props_n_values, false, $timezone, $date_formats );
 	}
 
 	/**
@@ -79,8 +83,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @param array $props_n_values
 	 * @return EE_Promotion
 	 */
-	public static function new_instance_from_db ( $props_n_values = array() ) {
-		return new self( $props_n_values, TRUE );
+	public static function new_instance_from_db ( $props_n_values = array(), $timezone = null ) {
+		return new self( $props_n_values, true, $timezone );
 	}
 
 
