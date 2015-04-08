@@ -51,4 +51,32 @@ class EE_Promotion_Test_tests extends EE_Promotions_UnitTestCase {
 		}
 
 	}
+
+
+
+
+	/**
+	 * @since 1.0.0
+	 */
+	public function test_promotion_date_range() {
+		$full_day_promo = EE_Promotion::new_instance( array(
+			'PRO_start' => '2015-12-24 00:00:00',
+			'PRO_end' => '2015-12-25 00:00:00'
+			), 'America/Toronto', array( 'Y-m-d',  'H:i:s' ) );
+		$multiple_day_promo = EE_Promotion::new_instance( array(
+			'PRO_start' => '2015-12-24 00:00:00',
+			'PRO_end' => '2015-12-26 00:00:00'
+			), 'America/Toronto', array( 'Y-m-d',  'H:i:s' ) );
+		$null_start_promo = EE_Promotion::new_instance( array(
+			'PRO_end' => '2015-12-25 00:00:00'
+			), 'America/Toronto', array( 'Y-m-d',  'H:i:s' ) );
+		$null_end_promo = EE_Promotion::new_instance( array(
+			'PRO_start' => '2015-12-24 00:00:00',
+			), 'America/Toronto', array( 'Y-m-d',  'H:i:s' ) );
+
+		$this->assertEquals( '2015-12-24', $full_day_promo->promotion_date_range() );
+		$this->assertEquals( '2015-12-24 00:00:00 - 2015-12-26 00:00:00', $multiple_day_promo->promotion_date_range() );
+		$this->assertEquals( 'Ends: 2015-12-25 00:00:00', $null_start_promo->promotion_date_range() );
+		$this->assertEquals( 'Starts: 2015-12-24 00:00:00', $null_end_promo->promotion_date_range() );
+	}
 }
