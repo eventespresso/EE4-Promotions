@@ -85,33 +85,42 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 	/**
 	 * get_all_active_codeless_promotions
-	 * retrieves all promotions that are currently active based on the current time and do NOT utilize a code
+	 * retrieves all promotions that are currently active based on the current time and do
+	 * NOT utilize a code
 	 *
 	 * @param array  $query_params
-	 * @return EE_Promotion
+	 * @return EE_Promotion[]
 	 */
 	public function get_all_active_codeless_promotions( $query_params = array() ) {
-		//$this->show_next_x_db_queries();
+
 		return $this->get_all(
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_code' 		=> '',
+						'PRO_code' => null,
 						'PRO_deleted' 	=> 0,
 						'OR'=> array(
 							'AND'=> array(
-								'PRO_start' 	=> array( '<=', current_time( 'mysql' )),
-								'PRO_end' 	=> array( '>=', current_time( 'mysql' ))
+								'PRO_start' 	=> array( '<=', $this->current_time_for_query( 'PRO_start' )),
+								'PRO_end' 	=> array( '>=', $this->current_time_for_query( 'PRO_end' ))
 							),
 							'AND*'=> array(
 								'PRO_start*' 	=> array( 'IS NULL' ),
 								'PRO_end*' 		=> array( 'IS NULL' )
-							)
+							),
+							'AND**' => array(
+								'PRO_start**' 	=> array( '<=', $this->current_time_for_query( 'PRO_start' )),
+								'PRO_end**' => array( 'IS NULL' )
+								),
+							'AND***' => array(
+								'PRO_start***' 	=> array( 'IS NULL' ),
+								'PRO_end***' => array( '>=', $this->current_time_for_query( 'PRO_end' ))
+								),
 						)
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
-				array_filter( (array)$query_params, 'EEM_Promotion::has_value' )
+				array_filter( (array) $query_params, 'EEM_Promotion::has_value' )
 			)
 		);
 	}
@@ -119,24 +128,58 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 
 	/**
-	 * get_all_active_codeless_promotions
-	 * retrieves all promotions that are currently active based on the current time and do NOT utilize a code
+	 * get_upcoming_codeless_promotions
+	 * retrieves all promotions that are not active yet but are upcoming within so many days (
+	 * 60 by default ) and that do not have a code.
 	 *
 	 * @param array  $query_params
-	 * @return EE_Promotion
+	 * @return EE_Promotion[]
 	 */
 	public function get_upcoming_codeless_promotions( $query_params = array() ) {
+		$PRO_end = date( 'Y-m-d 00:00:00', time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS ) );
 		return $this->get_all(
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_end' 			=> array( '<=', gmdate( 'Y-m-d 00:00:00', ( time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS )))),
-						'PRO_code' 		=> NULL,
+						'PRO_start'  => array( '>=', $this->current_time_for_query( 'PRO_start' ) ),
+						'PRO_code' => null,
 						'PRO_deleted' 	=> 0
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
-				array_filter( (array)$query_params, 'EEM_Promotion::has_value' )
+				array_filter( (array) $query_params, 'EEM_Promotion::has_value' )
+			)
+		);
+	}
+
+
+
+
+
+	/**
+	 * Get all active and upcoming promotions that fall within the given range and that do not
+	 * have a code.
+	 * Default range is within 60 days from now.
+	 * Note: this query does NOT return any promotions with no end date.
+	 *
+	 * @param array $query_params any additional query params (or you can replace the
+	 *                            		      defaults as well)
+	 *
+	 * @return EE_Promotion[]
+	 */
+	public function get_active_and_upcoming_codeless_promotions_in_range( $query_params = array() ) {
+		$PRO_end = date( 'Y-m-d 00:00:00', time() + ( apply_filters( 'FHEE__EEM_Promotion__get_active_and_upcoming_codeless_promotions_in_range__number_of_days', 60 ) * DAY_IN_SECONDS ) );
+		return $this->get_all(
+			array_replace_recursive(
+				array(
+					array(
+						'PRO_end'  => array( 'BETWEEN', array( $this->current_time_for_query( 'PRO_end' ), $this->convert_datetime_for_query( 'PRO_end', $PRO_end, 'Y-m-d H:i:s' ) ) ),
+						'PRO_code' => null,
+						'PRO_deleted' 	=> 0
+					)
+				),
+				// incoming $query_params array filtered to remove null values and empty strings
+				array_filter( (array) $query_params, 'EEM_Promotion::has_value' )
 			)
 		);
 	}
