@@ -15,7 +15,7 @@
  * @package 		EE4 Promotions
  * @subpackage 	tests
  */
-class EE_Promotion_Test_tests extends EE_UnitTestCase {
+class EE_Promotion_Test_tests extends EE_Promotions_UnitTestCase {
 
 
 	/**
@@ -23,18 +23,7 @@ class EE_Promotion_Test_tests extends EE_UnitTestCase {
 	 */
 	public function test_status() {
 
-		$promotions_to_test = array(
-			'upcoming_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400 ) ),
-			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400, 'PRO_end' => time() + 96000 ) ),
-			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400 ) ),
-			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + 96000 ) ),
-			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + -56000 ) ),
-			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() + 96000 ) ),
-			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() - 96000 ) )
-			);
-
-		foreach ( $promotions_to_test as $expected_test =>  $promotion ) {
-			$promotion->save();
+		foreach ( $this->_demo_promotions() as  $expected_test =>  $promotion ) {
 
 			switch ( $expected_test ) {
 				case 'upcoming_start_no_end' :
