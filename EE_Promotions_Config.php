@@ -45,6 +45,20 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return EE_Promotions_Config
 	 */
 	public function __construct() {
+		add_action( 'AHEE__EE_Config___load_core_config__end', array( $this, 'init' ));
+	}
+
+
+
+	/**
+	 * 	init
+	 * @return void
+	 */
+	public function init() {
+		static $initialized = false;
+		if ( $initialized ) {
+			return;
+		}
 		$this->scopes = $this->_get_scopes();
 		$this->label = new stdClass();
 		$this->label->singular = apply_filters( 'FHEE__EE_Promotions_Config____construct__label_singular', __( 'Promotion Code', 'event_espresso' ));
@@ -58,6 +72,7 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return array
 	 */
 	private function _get_scopes() {
+
 		$scopes = array();
 		$scopes_to_register = apply_filters( 'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register', glob( EE_PROMOTIONS_PATH.'lib/scopes/*.lib.php' ) );
 		foreach ( $scopes_to_register as $scope ) {
@@ -78,6 +93,15 @@ class EE_Promotions_Config extends EE_Config_Base {
 			}
 		}
 		return $scopes;
+	}
+
+
+
+	/**
+	 * __wakeup
+	 */
+	public function __wakeup() {
+		$this->init();
 	}
 
 
