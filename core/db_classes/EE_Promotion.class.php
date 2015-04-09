@@ -378,9 +378,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function scope_obj() {
 		$scope = $this->scope();
 		$scope = empty( $scope ) ? 'Event' : $scope;
-		$scope_obj = EE_Registry::instance()->CFG->addons->promotions->scopes[$scope];
+		if ( !  EE_Registry::instance()->CFG->addons->promotions instanceof EE_Promotions_Config ) {
+			EE_Config::instance()->get_config( 'addons', 'promotions', 'EE_Promotions_Config' );
+		}
+		$scope_obj = isset( EE_Registry::instance()->CFG->addons->promotions->scopes[$scope] ) ? EE_Registry::instance()->CFG->addons->promotions->scopes[ $scope ] : null;
 		if ( ! $scope_obj instanceof EE_Promotion_Scope ) {
-			throw new EE_Error( __( 'The EE_Promotion_%1$s_Scope class was not found.', 'event_espresso' ));
+			//EEH_Debug_Tools::printr( $scope_obj, '$scope_obj', __FILE__, __LINE__ );
+			//die();
+			throw new EE_Error( sprintf( __( 'The EE_Promotion_%1$s_Scope class was not found.', 'event_espresso' ), $scope ));
 		}
 		return $scope_obj;
 	}
