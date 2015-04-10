@@ -467,6 +467,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		if ( !empty( $promotion_values['PRO_ID'] ) ) {
 			//PRE-EXISTING promotion so let's update the values
 			foreach ( $promotion_values as $field => $value ) {
+				$promotion->set_date_format( 'Y-m-d' );
+				$promotion->set_time_format( 'g:i a' );
 				$promotion->set( $field, $value );
 			}
 		} else {
