@@ -58,6 +58,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					PRO_default TINYINT(1) NOT NULL DEFAULT 0 ,
 					PRO_order TINYINT UNSIGNED NOT NULL DEFAULT 40 ,
 					PRO_deleted TINYINT(1) NOT NULL DEFAULT 0,
+					PRO_wp_user BIGINT UNSIGNED NOT NULL DEFAULT 1,
 					PRIMARY KEY  (PRO_ID) ,
 					KEY PRC_ID (PRC_ID)";
 		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
@@ -79,6 +80,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					RUL_ID INT UNSIGNED NOT NULL ,
 					PRR_order TINYINT UNSIGNED NOT NULL DEFAULT 1,
 					PRR_add_rule_comparison ENUM('AND','OR') NULL DEFAULT 'AND',
+					PRR_wp_user BIGINT UNSIGNED NOT NULL DEFAULT 1,
 					PRIMARY KEY  (PRR_ID) ,
 					KEY PRO_ID (PRO_ID),
 					KEY RUL_ID (RUL_ID) ";

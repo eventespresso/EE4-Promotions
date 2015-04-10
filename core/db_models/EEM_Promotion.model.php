@@ -45,6 +45,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				'PRO_default'     		=> new EE_Boolean_Field( 'PRO_default', __( "Usable by default on all new items within promotion's scope", "event_espresso" ), FALSE, FALSE ),
 				'PRO_order'       		=> new EE_Integer_Field( 'PRO_order', __( "Order", "event_espresso" ), FALSE, 0 ),
 				'PRO_deleted'     	=> new EE_Trashed_Flag_Field( 'PRO_deleted', __( "Deleted", 'event_espresso' ), FALSE, FALSE ),
+				'PRO_wp_user'		=> new EE_WP_User_Field( 'PRO_wp_user', __( 'Promotion Creator', 'event_espresso' ), false ),
 			)
 		);
 

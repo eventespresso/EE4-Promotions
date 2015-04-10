@@ -33,7 +33,8 @@ class EEM_Promotion_Rule extends EEM_Base {
 				'RUL_ID'=>new EE_Foreign_Key_Int_Field('RUL_ID', __("Rule ID", "event_espresso"), true, null, 'Rule'),
 				'PRR_order'=>new EE_Integer_Field('PRR_order', __("Order of this Rule in applying to the Promotion", "event_espresso"), false,0),
 				'PRR_add_rule_comparison'=>new EE_Enum_Text_Field('PRR_add_rule_comparison', __("Comparison Operator", "event_espresso"), false, 'AND',
-						array('AND'=>  __("And", "event_espresso"),'OR'=>  __("Or", "event_espresso")))
+						array('AND'=>  __("And", "event_espresso"),'OR'=>  __("Or", "event_espresso"))),
+				'PRR_wp_user'		=> new EE_WP_User_Field( 'PRO_wp_user', __( 'Promotion Rule Creator', 'event_espresso' ), false ),
 			));
 		$this->_model_relations = array(
 			'Promotion'=>new EE_Belongs_To_Relation(),
