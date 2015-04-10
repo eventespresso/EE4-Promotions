@@ -64,11 +64,15 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param array $props_n_values array of fields and values to set on the object
+	 * @param string $timezone  incoming timezone (if not set the timezone set for the website will be
+	 *                          		used.)
+	 * @param array $date_formats  incoming date_formats in an array where the first value is the
+	 *                             		    date_format and the second value is the time format
 	 * @return EE_Promotion
 	 */
-	public static function new_instance( $props_n_values = array() ) {
+	public static function new_instance( $props_n_values = array(), $timezone = null, $date_formats = array() ) {
 		$has_object = parent::_check_for_object( $props_n_values, __CLASS__ );
-		return $has_object ? $has_object : new self( $props_n_values );
+		return $has_object ? $has_object : new self( $props_n_values, false, $timezone, $date_formats );
 	}
 
 	/**
@@ -79,8 +83,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @param array $props_n_values
 	 * @return EE_Promotion
 	 */
-	public static function new_instance_from_db ( $props_n_values = array() ) {
-		return new self( $props_n_values, TRUE );
+	public static function new_instance_from_db ( $props_n_values = array(), $timezone = null ) {
+		return new self( $props_n_values, true, $timezone );
 	}
 
 
@@ -378,9 +382,14 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function scope_obj() {
 		$scope = $this->scope();
 		$scope = empty( $scope ) ? 'Event' : $scope;
-		$scope_obj = EE_Registry::instance()->CFG->addons->promotions->scopes[$scope];
+		if ( !  EE_Registry::instance()->CFG->addons->promotions instanceof EE_Promotions_Config ) {
+			EE_Config::instance()->get_config( 'addons', 'promotions', 'EE_Promotions_Config' );
+		}
+		$scope_obj = isset( EE_Registry::instance()->CFG->addons->promotions->scopes[$scope] ) ? EE_Registry::instance()->CFG->addons->promotions->scopes[ $scope ] : null;
 		if ( ! $scope_obj instanceof EE_Promotion_Scope ) {
-			throw new EE_Error( __( 'The EE_Promotion_%1$s_Scope class was not found.', 'event_espresso' ));
+			//EEH_Debug_Tools::printr( $scope_obj, '$scope_obj', __FILE__, __LINE__ );
+			//die();
+			throw new EE_Error( sprintf( __( 'The EE_Promotion_%1$s_Scope class was not found.', 'event_espresso' ), $scope ));
 		}
 		return $scope_obj;
 	}
@@ -469,13 +478,25 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function promotion_date_range() {
 		EE_Registry::instance()->load_helper( 'DTT_Helper' );
-		$promo_start = EEH_DTT_Helper::process_start_date( $this->start() );
-		$promo_end = EEH_DTT_Helper::process_end_date( $this->end() );
-		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day...
-		if ( EEH_DTT_Helper::dates_represent_one_24_hour_day( $this->start(), $this->end() )) {
-			return $promo_start;
+		$start_date = $this->get_raw_date( 'PRO_start' );
+		$end_date = $this->get_raw_date( 'PRO_end' );
+		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day
+		// (this also verifies that $dates are DateTime objects)
+		if ( EEH_DTT_Helper::dates_represent_one_24_hour_date( $start_date, $end_date ) ) {
+
+			return $start_date->format( 'H:i:s' ) == '00:00:00' ? $this->get_i18n_datetime( 'PRO_start', $this->_dt_frmt ) : $this->get_i18n_datetime( 'PRO_start' );
+
+		} else if ( ! $start_date instanceof DateTime ) {
+
+			return sprintf( _x( 'Ends: %s', 'Value is the end date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_end' ) );
+
+		} else if ( ! $end_date instanceof DateTime ) {
+
+			return sprintf( _x( 'Starts: %s', 'Value is the start date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ) );
+
 		} else {
-			return $promo_start . __( ' - ', 'event_espresso' ) . $promo_end;
+
+			return sprintf( _x( '%s - %s', 'First value is start date and second value is end date in a date range.', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ), $this->get_i18n_datetime( 'PRO_end' ) );
 		}
 	}
 
@@ -540,15 +561,9 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		$start = $this->get_raw('PRO_start');
 		$end = $this->get_raw('PRO_end');
 		$now = time();
-//		echo '<h5 style="color:#2EA2CC;">$start : <span style="color:#E76700">' . $start . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$end : <span style="color:#E76700">' . $end . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$now : <span style="color:#E76700">' . $now . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">$start < $now : <span style="color:#E76700">' . ( $start < $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $start ) && empty( $end ) : <span style="color:#E76700">' . ( empty( $start ) && empty( $end ) ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $start ) && $end > $now : <span style="color:#E76700">' . ( empty( $start ) && $end > $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
-//		echo '<h5 style="color:#2EA2CC;">empty( $end ) && $start < $now : <span style="color:#E76700">' . ( empty( $end ) && $start < $now ) . '</span><br/><span style="font-size:9px;font-weight:normal;color:#666">' . __FILE__ . '</span>    <b style="font-size:10px;color:#333">  ' . __LINE__ . ' </b></h5>';
+
 		//active (which means that the promotion is currently able to be used)
-		if ( ( $start < $now ) || ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
+		if ( ( $start < $now && ( ! empty( $end ) && $end > $now ) ) || ( empty( $start ) && empty( $end ) ) || ( empty( $start ) && $end > $now ) || ( empty( $end ) && $start < $now ) ) {
 			return self::active;
 		//upcoming
 		} else if ( $start > $now  ) {

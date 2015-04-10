@@ -87,18 +87,18 @@ abstract class EE_Promotion_Scope {
 	 * @return \EE_Promotion_Scope
 	 */
 	public function __construct() {
-		$this->_init();
+		$this->init();
 	}
 
 
 
 	/**
-	 * _init
+	 * init
 	 * Setup the basic structure of the scope class.
 	 *
 	 * @since 1.0.0
 	 */
-	protected function _init() {
+	public function init() {
 		static $initialized = false;
 		if ( $initialized ) {
 			return;
@@ -731,7 +731,7 @@ abstract class EE_Promotion_Scope {
 	 * __wakeup
 	 */
 	public function __wakeup() {
-		$this->_init();
+		$this->init();
 	}
 
 

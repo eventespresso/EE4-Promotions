@@ -35,17 +35,16 @@ Class  EE_Promotions extends EE_Addon {
 				'min_core_version' => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
 				'main_file_path' 		=> EE_PROMOTIONS_PLUGIN_FILE,
 				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
-				'admin_callback'		=> 'additional_admin_hooks',
 				'plugin_slug' 			=> 'espresso_promotions',
 				'config_class' 			=> 'EE_Promotions_Config',
 				'config_name'			=> 'promotions',
+				'plugins_page_row'=> EE_Promotions::plugins_page_row(),
 				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
 				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php' ),
 				'widget_paths' 		=> array( EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php' ),
 				// register autoloaders
 				'autoloader_paths' => array(
-					'EE_Promotions' 							=> EE_PROMOTIONS_PATH . 'EE_Promotions.class.php',
 					'EE_Promotions_Config' 				=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
 					'Promotions_Admin_Page_Init' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
 					'Promotions_Admin_Page' 			=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
@@ -54,7 +53,6 @@ Class  EE_Promotions extends EE_Addon {
 				),
 				'autoloader_folders' => array(
 					'Promotions_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api',
-					'Promotion_Scopes' 			=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes'
 				),
 				'pue_options'			=> array(
 					'pue_plugin_slug' 		=> 'eea-promotions',
@@ -75,36 +73,19 @@ Class  EE_Promotions extends EE_Addon {
 
 
 
-	/**
-	 * 	additional_admin_hooks
-	 *
-	 *  @access 	public
-	 *  @return 	void
-	 */
-	public function additional_admin_hooks() {
-		// is admin and not in M-Mode ?
-		if ( is_admin() && ! EE_Maintenance_Mode::instance()->level() ) {
-			add_filter( 'plugin_action_links', array( $this, 'plugin_actions' ), 10, 2 );
-		}
-	}
-
 
 
 	/**
-	 * plugin_actions
+	 * plugins_page_row
 	 *
-	 * Add a settings link to the Plugins page, so people can go straight from the plugin page to the settings page.
-	 * @param $links
-	 * @param $file
-	 * @return array
+	 * HTML to appear within a new table row on the WP Plugins page, below the promotions plugin row
+	 *
+	 * @return string
 	 */
-	public function plugin_actions( $links, $file ) {
-		if ( $file == EE_PROMOTIONS_BASENAME ) {
-			// before other links
-			array_unshift( $links, '<a href="admin.php?page=espresso_promotions">' . __('Settings') . '</a>' );
-		}
-		return $links;
+	public static function plugins_page_row() {
+		return '<h3>Promotions Addon Upsell Info</h3><p>To edit me, open up ' . __FILE__ . ' and find the ' . __FUNCTION__ . '() method</p>';
 	}
+
 
 
 

@@ -272,13 +272,13 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		EE_Registry::instance()->load_helper('DTT_Helper');
 		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 1 );
 		//check for any existing dtt queries
-		$DTT_EVT_start = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d 00:00:00', current_time('timestamp'));
-		$DTT_EVT_end = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : EEH_DTT_Helper::calc_date( current_time('timestamp'), 'months', $month_increment, '+', 'mysql' );
+		$DTT_EVT_start = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d 12:00 \a\m' );
+		$DTT_EVT_end = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( 'Y-m-d 11:59 \p\m', EEH_DTT_Helper::calc_date( time(), 'months', $month_increment, '+' ) );
 
 		$_where = array(
-			'status' => 'publish',
-			'Datetime.DTT_EVT_end' => array( '<', $DTT_EVT_end ),
-			'Datetime.DTT_EVT_start' => array( '>', $DTT_EVT_start )
+			'status' => array( 'NOT IN', array( EEM_Event::cancelled, 'trash' ) ),
+			'Datetime.DTT_EVT_end' => array( '<', EEM_Datetime::instance()->convert_datetime_for_query( 'DTT_EVT_end', $DTT_EVT_end, 'Y-m-d g:i a' ) ),
+			'Datetime.DTT_EVT_start' => array( '>', EEM_datetime::instance()->convert_datetime_for_query( 'DTT_EVT_start', $DTT_EVT_start, 'Y-m-d g:i a'  ) )
 		);
 
 		//category filters?
@@ -318,7 +318,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		}
 		$cat_filter = '<label for="EVT_CAT_ID" class="ee-promotions-filter-lbl">' . __('event categories', 'event_espresso') . '</label>';
 		$cat_filter .= EEH_Form_Fields::select_input( 'EVT_CAT_ID', $cat_values, $default);
-		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 1 );
+		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 2 );
 
 		//start date
 		$existing_start_date = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d h:i a' , current_time('timestamp') );
