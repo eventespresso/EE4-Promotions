@@ -293,7 +293,14 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		$orderby= ! empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'ASC';
 
-		return array( '0' => $_where, 'order_by' => array( 'EVT_name' => $orderby ) );
+		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_name' => $orderby ) );
+
+		//apply caps
+		if ( ! EE_Registry::instance()->CAP->current_user_can( 'ee_read_others_events', 'get_events_for_promotions' ) ) {
+			$query_params = EEM_Event::instance()->alter_query_params_to_only_include_mine( $query_params );
+		}
+
+		return $query_params;
 	}
 
 
