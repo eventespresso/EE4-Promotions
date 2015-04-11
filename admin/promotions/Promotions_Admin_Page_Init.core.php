@@ -74,7 +74,7 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init  {
 			'parent_slug' => 'espresso_events',
 			'menu_slug' => PROMOTIONS_PG_SLUG,
 			'menu_label' => PROMOTIONS_LABEL,
-			'capability' => 'administrator',
+			'capability' => 'ee_read_promotions',
 			'admin_init_page' => $this
 			));
 	}
