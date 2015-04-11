@@ -64,7 +64,55 @@ Class  EE_Promotions extends EE_Addon {
 				'class_paths'	=> array( EE_PROMOTIONS_CORE . 'db_classes' ),
 				// EE_Register_Model_Extensions
 				'model_extension_paths'	=> array( EE_PROMOTIONS_CORE . 'db_model_extensions' . DS ),
-				'class_extension_paths'		=> array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS )
+				'class_extension_paths'		=> array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS ),
+				'capabilities' => array(
+					'administrator' => array(
+						'ee_read_promotion',
+						'ee_read_promotions',
+						'ee_read_others_promotions',
+						'ee_edit_promotion',
+						'ee_edit_promotions',
+						'ee_edit_others_promotions',
+						'ee_delete_promotion',
+						'ee_delete_promotions',
+						'ee_delete_others_promotions',
+						'ee_read_promotion_rule',
+						'ee_read_promotion_rules',
+						'ee_read_others_promotions_rules',
+						'ee_edit_promotion_rule',
+						'ee_edit_promotions_rules',
+						'ee_edit_others_promotions_rules',
+						'ee_delete_promotion_rule',
+						'ee_delete_promotions_rules',
+						'ee_delete_others_promotions_rules'
+						)
+					),
+				'capability_maps' => array(
+					0 => array( 'EE_Meta_Capability_Map_Read' => array(
+						'ee_read_promotion',
+						array( 'Promotion', '', 'ee_read_others_promotions', '' )
+						) ),
+					1 => array( 'EE_Meta_Capability_Map_Edit' => array(
+						'ee_edit_promotion',
+						array( 'Promotion', '', 'ee_edit_others_promotions', '' )
+						) ),
+					2 => array( 'EE_Meta_Capability_Map_Delete' => array(
+						'ee_delete_promotion',
+						array( 'Promotion', '', 'ee_delete_others_promotions', '' )
+						) ),
+					3 => array( 'EE_Meta_Capability_Map_Read' => array(
+						'ee_read_promotion_rule',
+						array( 'Rule', '', 'ee_read_others_promotion_rules', '' )
+						) ),
+					4 => array( 'EE_Meta_Capability_Map_Edit' => array(
+						'ee_edit_promotion_rule',
+						array( 'Rule', '', 'ee_edit_others_promotion_rules', '' )
+						) ),
+					5 => array( 'EE_Meta_Capability_Map_Delete' => array(
+						'ee_delete_promotion_rule',
+						array( 'Rule', '', 'ee_delete_others_promotion_rules', '' )
+						) )
+					)
 			)
 		);
 		//register promotion specific statuses
