@@ -163,7 +163,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable ee-icon-size-20"></div></a>';
 			}
 
-			if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotion', 'espresso_promotions_delete_promotion', $item->ID() ) ) {
+			if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotion', 'espresso_promotions_delete_promotion', $item->ID() ) ) {
 				$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable ee-icon-size-16"></div></a>';
 			}
 		} else {
