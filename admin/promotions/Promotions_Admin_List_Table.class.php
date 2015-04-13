@@ -73,7 +73,9 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	protected function _add_view_counts() {
 		$this->_views['all']['count'] = $this->_all_data_count;
-		$this->_views['trash']['count'] = $this->_trashed_count();
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotions', 'espresso_promotions_delete_promotions' ) ) {
+			$this->_views['trash']['count'] = $this->_trashed_count();
+		}
 	}
 
 
@@ -96,7 +98,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	public function column_name( EE_Promotion $item ) {
 		$edit_link = EEH_URL::add_query_args_and_nonce( array( 'action' => 'edit', 'PRO_ID' => $item->ID() ), EE_PROMOTIONS_ADMIN_URL );
-		echo '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '">' . $item->name() . '</a>';
+		echo EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotion', 'espresso_promotions_edit_promotion', $item->ID() ) ? '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '">' . $item->name() . '</a>' : $item->name();
 	}
 
 
@@ -157,15 +159,22 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				);
 			$edit_link = EEH_URL::add_query_args_and_nonce( $edit_query_args, EE_PROMOTIONS_ADMIN_URL );
 			$dupe_link = EEH_URL::add_query_args_and_nonce( $dupe_query_args, EE_PROMOTIONS_ADMIN_URL );
-			$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable ee-icon-size-20"></div></a>';
-			$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable ee-icon-size-16"></div></a>';
+			if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotion', 'espresso_promotions_edit_promotion', $item->ID() ) ) {
+				$actionlinks[] = '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '"><div class="dashicons dashicons-edit clickable ee-icon-size-20"></div></a>';
+			}
+
+			if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotion', 'espresso_promotions_delete_promotion', $item->ID() ) ) {
+				$actionlinks[] = '<a href="' . $dupe_link. '" title="' . __('Duplicate Promotion', 'event_espresso') . '"><div class="ee-icon ee-icon-clone clickable ee-icon-size-16"></div></a>';
+			}
 		} else {
 			$restore_query_args = array(
 				'action' => 'restore_promotion',
 				'PRO_ID' => $item->ID()
 			);
 			$restore_link = EEH_URL::add_query_args_and_nonce( $restore_query_args, EE_PROMOTIONS_ADMIN_URL );
-			$actionlinks[] = '<a href="' . $restore_link. '" title="' . __('Restore Promotion', 'event_espresso') . '"><div class="dashicons dashicons-backup ee-icon-size-18"></div></a>';
+			if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotion', 'espresso_promotions_delete_promotion', $item->ID() ) ) {
+				$actionlinks[] = '<a href="' . $restore_link. '" title="' . __('Restore Promotion', 'event_espresso') . '"><div class="dashicons dashicons-backup ee-icon-size-18"></div></a>';
+			}
 		}
 
 		$trash_query_args = array(
@@ -175,7 +184,9 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$trash_link = EEH_URL::add_query_args_and_nonce( $trash_query_args, EE_PROMOTIONS_ADMIN_URL );
 		$trash_text = $this->_view == 'trash' ? __('Delete Promotion permanently', 'event_espresso') : __('Trash Promotion', 'event_espresso');
 		$trash_class = $this->_view == 'trash' ? ' red-icon' : '';
-		$actionlinks[] = $this->_view == 'trash' && $item->redeemed() > 0 ? '' : '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable ee-icon-size-18' . $trash_class . '"></div></a>';
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotion', 'espresso_promotions_delete_promotion', $item->ID() ) ) {
+			$actionlinks[] = $this->_view == 'trash' && $item->redeemed() > 0 ? '' : '<a href="' . $trash_link . '" title="' . $trash_text . '"><div class="dashicons dashicons-trash clickable ee-icon-size-18' . $trash_class . '"></div></a>';
+		}
 
 		$content = '<div style="width:100%;">' . "\n\t";
 		$content .= implode( "\n\t", $actionlinks );
@@ -232,10 +243,17 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 		$offset = ( $current_page - 1 ) * $per_page;
 		$limit = array( $offset, $per_page );
 
+		$query_args = array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort );
+
+		//possibly modify for caps
+		if ( ! EE_Registry::instance()->CAP->current_user_can( 'ee_read_others_promotions', 'get_others_promotions' ) ) {
+			$query_args = EEM_Promotion::instance()->alter_query_params_to_only_include_mine( $query_args );
+		}
+
 		if ( $trash ) {
-			$promotions = $count ? EEM_Promotion::instance()->count_deleted(array( $_where ) ) : EEM_Promotion::instance()->get_all_deleted( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+			$promotions = $count ? EEM_Promotion::instance()->count_deleted(array( $_where ) ) : EEM_Promotion::instance()->get_all_deleted( $query_args );
 		} else {
-			$promotions = $count ? EEM_Promotion::instance()->count(array( $_where ) ) : EEM_Promotion::instance()->get_all( array( $_where,  'limit' => $limit, 'order_by' => $orderby, 'order' => $sort ) );
+			$promotions = $count ? EEM_Promotion::instance()->count(array( $_where ) ) : EEM_Promotion::instance()->get_all( $query_args );
 		}
 		return $promotions;
 	}
