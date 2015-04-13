@@ -76,7 +76,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				),
 			'create_new' => array(
 				'func' => '_promotion_details',
-				'capability' => 'ee_read_promotions',
+				'capability' => 'ee_edit_promotions',
 				'args' => array(TRUE)
 				),
 			'edit' => array(
