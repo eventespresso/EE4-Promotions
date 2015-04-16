@@ -478,8 +478,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function promotion_date_range() {
 		EE_Registry::instance()->load_helper( 'DTT_Helper' );
-		$start_date = $this->get_raw_date( 'PRO_start' );
-		$end_date = $this->get_raw_date( 'PRO_end' );
+		$start_date = $this->get_DateTime_object( 'PRO_start' );
+		$end_date = $this->get_DateTime_object( 'PRO_end' );
 		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day
 		// (this also verifies that $dates are DateTime objects)
 		if ( EEH_DTT_Helper::dates_represent_one_24_hour_date( $start_date, $end_date ) ) {
