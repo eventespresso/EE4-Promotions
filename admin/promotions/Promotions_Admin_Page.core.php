@@ -508,9 +508,13 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$price->save();
 
 		//next handle the promotions
-		$promotion = empty( $promotion_values['PRO_ID'] ) ? EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' )  ) : EEM_Promotion::instance()->get_one_by_ID( $promotion_values['PRO_ID'] );
+		if ( empty( $promotion_values[ 'PRO_ID' ] )) {
+			$promotion = EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' ));
+		} else {
+			$promotion =  EEM_Promotion::instance()->get_one_by_ID( $promotion_values[ 'PRO_ID' ] );
+		}
 
-		if ( !empty( $promotion_values['PRO_ID'] ) ) {
+		if ( ! empty( $promotion_values['PRO_ID'] ) ) {
 			//PRE-EXISTING promotion so let's update the values
 			foreach ( $promotion_values as $field => $value ) {
 				$promotion->set_date_format( 'Y-m-d' );
