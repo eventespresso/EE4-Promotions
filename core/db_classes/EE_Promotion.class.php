@@ -483,19 +483,12 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day
 		// (this also verifies that $dates are DateTime objects)
 		if ( EEH_DTT_Helper::dates_represent_one_24_hour_date( $start_date, $end_date ) ) {
-
-			return $start_date->format( 'H:i:s' ) == '00:00:00' ? $this->get_i18n_datetime( 'PRO_start', $this->_dt_frmt ) : $this->get_i18n_datetime( 'PRO_start' );
-
+			return $start_date->format( EE_Datetime_Field::mysql_time_format ) == '00:00:00' ? $this->get_i18n_datetime( 'PRO_start', $this->_dt_frmt ) : $this->get_i18n_datetime( 'PRO_start' );
 		} else if ( ! $start_date instanceof DateTime ) {
-
 			return sprintf( _x( 'Ends: %s', 'Value is the end date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_end' ) );
-
 		} else if ( ! $end_date instanceof DateTime ) {
-
 			return sprintf( _x( 'Starts: %s', 'Value is the start date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ) );
-
 		} else {
-
 			return sprintf( _x( '%s - %s', 'First value is start date and second value is end date in a date range.', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ), $this->get_i18n_datetime( 'PRO_end' ) );
 		}
 	}
