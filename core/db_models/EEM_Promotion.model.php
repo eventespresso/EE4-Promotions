@@ -137,7 +137,15 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 	 * @return EE_Promotion[]
 	 */
 	public function get_upcoming_codeless_promotions( $query_params = array() ) {
-		$PRO_end = date( 'Y-m-d 00:00:00', time() + ( apply_filters( 'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days', 60 ) * DAY_IN_SECONDS ) );
+		$PRO_end = date(
+			'Y-m-d 00:00:00',
+			time() + (
+				apply_filters(
+					'FHEE__EEM_Promotion__get_upcoming_codeless_promotions__number_of_days',
+					60
+				) * DAY_IN_SECONDS
+			)
+		);
 		return $this->get_all(
 			array_replace_recursive(
 				array(
@@ -169,12 +177,25 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 	 * @return EE_Promotion[]
 	 */
 	public function get_active_and_upcoming_codeless_promotions_in_range( $query_params = array() ) {
-		$PRO_end = date( 'Y-m-d 00:00:00', time() + ( apply_filters( 'FHEE__EEM_Promotion__get_active_and_upcoming_codeless_promotions_in_range__number_of_days', 60 ) * DAY_IN_SECONDS ) );
+		$PRO_end = date(
+			'Y-m-d 00:00:00',
+			time() + (
+				apply_filters(
+					'FHEE__EEM_Promotion__get_active_and_upcoming_codeless_promotions_in_range__number_of_days',
+					60
+				) * DAY_IN_SECONDS
+			)
+		);
 		return $this->get_all(
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_end'  => array( 'BETWEEN', array( $this->current_time_for_query( 'PRO_end' ), $this->convert_datetime_for_query( 'PRO_end', $PRO_end, 'Y-m-d H:i:s' ) ) ),
+						'PRO_end'  => array(
+							'BETWEEN', array(
+								$this->current_time_for_query( 'PRO_end' ),
+								$this->convert_datetime_for_query( 'PRO_end', $PRO_end, 'Y-m-d H:i:s' )
+							)
+						),
 						'PRO_code' => null,
 						'PRO_deleted' 	=> 0
 					)
