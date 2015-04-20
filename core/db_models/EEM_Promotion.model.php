@@ -150,7 +150,10 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_start'  => array( '>=', $this->current_time_for_query( 'PRO_start' ) ),
+						'AND' => array(
+							'PRO_start'  => array( '>=', $this->current_time_for_query( 'PRO_start' ) ),
+							'PRO_end' => array( '<=', $this->convert_datetime_for_query( 'PRO_end', $PRO_end, 'Y-m-d H:i:s' ) ),
+						),
 						'PRO_code' => null,
 						'PRO_deleted' 	=> 0
 					)
