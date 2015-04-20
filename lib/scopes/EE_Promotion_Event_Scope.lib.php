@@ -316,7 +316,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		//categories
 		$categories = get_terms( 'espresso_event_categories', array( 'hide_empty' => FALSE, 'fields' => 'id=>name' ) );
 		$cat_values[] = array( 'text' => __('Include all categories', 'event_espresso'), 'id' => 0 );
-		$default = ! empty( $_REQUEST['EVT_CAT_ID'] ) ? $_REQUEST['EVT_CAT_ID'] : '';
+		$default = ! empty( $_REQUEST['EVT_CAT_ID'] ) ? absint( $_REQUEST['EVT_CAT_ID'] ) : '';
 		foreach( $categories as $id => $name ) {
 			$cat_values[] = array(
 				'text' => $name,
@@ -328,17 +328,17 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$month_increment = apply_filters( 'FHEE__EE_Promotion_Event_Scope__get_query_args__month_increment', 2 );
 
 		//start date
-		$existing_start_date = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? $_REQUEST['EVT_start_date_filter'] : date( 'Y-m-d h:i a' , current_time('timestamp') );
+		$existing_start_date = ! empty( $_REQUEST['EVT_start_date_filter'] ) ? date( 'Y-m-d h:i a', strtotime( $_REQUEST['EVT_start_date_filter'] ) ) : date( 'Y-m-d h:i a' , current_time('timestamp') );
 		$start_date_filter = '<label for="EVT_start_date_filter" class="ee-promotions-filter-lbl">' . __('start date', 'event_espresso') . '</label>';
 		$start_date_filter .= '<input data-context="start" data-container="scope" data-next-field="#EVT_end_date_filter" type="text" id="EVT_start_date_filter" name="EVT_start_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_start_date . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//end date
-		$existing_end_date = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? $_REQUEST['EVT_end_date_filter'] : date( 'Y-m-d h:i a' , EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
+		$existing_end_date = ! empty( $_REQUEST['EVT_end_date_filter'] ) ? date( 'Y-m-d h:i a', strtotime($_REQUEST['EVT_end_date_filter'] ) ) : date( 'Y-m-d h:i a' , EEH_DTT_Helper::calc_date(current_time('timestamp'), 'months', $month_increment ) );
 		$end_date_filter = '<label for="EVT_end_date_filter" class="ee-promotions-filter-lbl">' . __('end date', 'event_espresso') . '</label>';
 		$end_date_filter .= '<input data-context="end" data-container="scope" data-next-field="#EVT_title_filter" type="text" id="EVT_end_date_filter" name="EVT_end_date_filter" class="promotions-date-filter ee-text-inp ee-datepicker" value="' . $existing_end_date . '"><span class="dashicons dashicons-calendar"></span>';
 
 		//event name
-		$existing_name = ! empty( $_REQUEST['EVT_title_filter'] ) ? $_REQUEST['EVT_title_filter'] : '';
+		$existing_name = ! empty( $_REQUEST['EVT_title_filter'] ) ? sanitize_title_for_query( $_REQUEST['EVT_title_filter'] ) : '';
 		$event_title_filter = '<label for="EVT_title_filter" class="ee-promotions-filter-lbl">' . __('event title', 'event_espresso') . '</label>';
 		$event_title_filter .= '<input type="text" id="EVT_title_filter" name="EVT_title_filter" class="promotions-general-filter ee-text-inp" value="' . $existing_name . '" placeholder="' . __('Event Title Filter', 'event_espresso') . '">';
 
