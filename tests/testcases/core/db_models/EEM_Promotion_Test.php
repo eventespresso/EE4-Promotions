@@ -15,7 +15,7 @@
  * @package 		EE4 Promotions
  * @subpackage 	tests
  */
-class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
+class EEM_Promotion_Test extends EE_Promotions_UnitTestCase {
 
 
 
