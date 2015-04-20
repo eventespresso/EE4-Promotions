@@ -84,7 +84,10 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 	}
 
 
-	public function column_cb( EE_Promotion $item ) {
+	public function column_cb( $item ) {
+		if ( ! $item instanceof EE_Promotion ) {
+			return '';
+		}
 		$checkbox = sprintf( '<input type="checkbox" name="PRO_ID[]" value="%s" />', $item->ID() );
 		echo $item->redeemed() > 0 && $this->_view == 'trash' ?  '<span class="ee-lock-icon"></span>' .  $checkbox : $checkbox;
 	}
