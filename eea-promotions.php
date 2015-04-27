@@ -2,7 +2,7 @@
 /*
   Plugin Name: Event Espresso - Promotions (EE 4.7+)
   Plugin URI: http://www.eventespresso.com
-  Description: Help promote your Events with Event Espresso Promotions by offering discounts to increase registrations and get more cheap skate people out to your events!
+  Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.7 or higher.
   Version: 1.0.0.rc.047
   Author: Event Espresso
   Author URI: http://www.eventespresso.com
