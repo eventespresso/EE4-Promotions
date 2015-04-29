@@ -32,6 +32,7 @@ dependencies:
     - mv $plugin_loc $plugin_dir;
     #pull in event-espresso-core master branch
     - git clone git@github.com:eventespresso/event-espresso-core.git $event_espresso_core_dir;
+    - git fetch
     - git checkout FET-3456-spco-promotions
     # set up database
     - mysql -e 'CREATE DATABASE wordpress_test;' -uroot;
