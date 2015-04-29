@@ -493,7 +493,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 		} else if ( $start_date instanceof DateTime && $end_date instanceof DateTime ) {
 			return sprintf( _x( '%s - %s', 'First value is start date and second value is end date in a date range.', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ), $this->get_i18n_datetime( 'PRO_end' ) );
 		} else {
-			return __( 'Ongoing promotion', 'event_espresso' );
+			return __( 'Ongoing Promotion', 'event_espresso' );
 		}
 	}
 
