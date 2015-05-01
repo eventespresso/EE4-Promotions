@@ -89,6 +89,8 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 	 * retrieves all promotions that are currently active based on the current time and do
 	 * NOT utilize a code
 	 *
+	 * Note this DOES include promotions that have no dates set.
+	 *
 	 * @param array  $query_params
 	 * @return EE_Promotion[]
 	 */
