@@ -37,7 +37,7 @@
  * ------------------------------------------------------------------------
  */
 
-define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.7.0.rc.000' );
+define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.7.0.beta.000' );
 define( 'EE_PROMOTIONS_VERSION', '1.0.0.rc.055' );
 define( 'EE_PROMOTIONS_PLUGIN_FILE', __FILE__ );
 
