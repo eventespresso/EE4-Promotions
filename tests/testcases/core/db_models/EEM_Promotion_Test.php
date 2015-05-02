@@ -15,7 +15,7 @@
  * @package 		EE4 Promotions
  * @subpackage 	tests
  */
-class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
+class EEM_Promotion_Test extends EE_Promotions_UnitTestCase {
 
 
 
@@ -25,10 +25,8 @@ class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
 	 */
 	public function test_get_promotion_details_via_code() {
 		$promotions = $this->_demo_promotions();
-
 		$expected_promotion = reset( $promotions );
 		$actual_promotion = EEM_Promotion::instance()->get_promotion_details_via_code( 'test_code_for_promotions' );
-
 		$this->assertEquals( $expected_promotion->name(), $actual_promotion->name() );
 	}
 
@@ -39,10 +37,8 @@ class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
 	 * @since 1.0.0
 	 */
 	public function test_get_all_active_codeless_promotions() {
-		$promotions = $this->_demo_promotions();
-
+		$this->_demo_promotions();
 		$active_codeless_promos = EEM_Promotion::instance()->get_all_active_codeless_promotions();
-
 		$this->assertEquals( 3, count( $active_codeless_promos ) );
 	}
 
@@ -53,10 +49,8 @@ class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
 	 *
 	 */
 	public function test_get_upcoming_codeless_promotions() {
-		$promotions = $this->_demo_promotions();
-
+		$this->_demo_promotions();
 		$upcoming_codeless_promos = EEM_Promotion::instance()->get_upcoming_codeless_promotions();
-
 		$this->assertEquals( 1, count( $upcoming_codeless_promos ) );
 	}
 
@@ -68,10 +62,11 @@ class EEM_Promotion_test extends EE_Promotions_UnitTestCase {
 	 *
 	 */
 	public function test_get_active_and_upcoming_codeless_promotions_in_range() {
-		$promotions = $this->_demo_promotions();
-
+		$this->_demo_promotions();
 		$upcoming_codeless_promos = EEM_Promotion::instance()->get_active_and_upcoming_codeless_promotions_in_range();
-
 		$this->assertEquals( 3, count( $upcoming_codeless_promos ) );
 	}
+
+
+
 }

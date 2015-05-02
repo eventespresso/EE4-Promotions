@@ -68,60 +68,90 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	protected function _set_page_routes() {
+		$pro_id = ! empty( $this->_req_data['PRO_ID'] ) && ! is_array( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0;
 		$this->_page_routes = array(
-			'default' => '_list_table',
+			'default' => array(
+				'func' => '_list_table',
+				'capability' => 'ee_read_promotions'
+				),
 			'create_new' => array(
 				'func' => '_promotion_details',
+				'capability' => 'ee_edit_promotions',
 				'args' => array(TRUE)
 				),
-			'edit' => '_promotion_details',
+			'edit' => array(
+				'func' => '_promotion_details',
+				'capability' => 'ee_edit_promotion',
+				'obj_id' => $pro_id
+				),
 			'update_promotion' => array(
 				'func' => '_insert_update_promotions',
+				'capability' => 'ee_edit_promotion',
+				'obj_id' => $pro_id,
 				'noheader' => TRUE
 				),
 			'insert_promotion' => array(
 				'func' => '_insert_update_promotions',
+				'capability' => 'ee_edit_promotions',
 				'noheader' => TRUE,
 				'args' => array( TRUE )
 				),
 			'duplicate' => array(
 				'func' => '_duplicate_promotion',
+				'capability' => 'ee_edit_promotion',
+				'obj_id' => $pro_id,
 				'noheader' => TRUE
 				),
 			'trash_promotion' => array(
 				'func' => '_trash_or_restore_promotion',
+				'capability' => 'ee_delete_promotion',
+				'obj_id' => $pro_id,
 				'args' => array( TRUE ),
 				'noheader' => TRUE
 				),
 			'trash_promotions' => array(
 				'func' => '_trash_or_restore_promotions',
+				'capability' => 'ee_delete_promotions',
 				'args' => array( TRUE ),
 				'noheader' => TRUE
 				),
 			'restore_promotion' => array(
 				'func' => '_trash_or_restore_promotion',
+				'capability' => 'ee_delete_promotion',
+				'obj_id' => $pro_id,
 				'args' => array( FALSE ),
 				'noheader' => TRUE
 				),
 			'restore_promotions' => array(
 				'func' => '_trash_or_restore_promotions',
+				'capability' => 'ee_delete_promotions',
 				'args' => array( FALSE ),
 				'noheader' => TRUE
 				),
 			'delete_promotions' => array(
 				'func' => '_delete_promotions',
+				'capability' => 'ee_delete_promotions',
 				'noheader' => TRUE
 				),
 			'delete_promotion' => array(
 				'func' => '_delete_promotion',
+				'capability' => 'ee_delete_promotion',
+				'obj_id' => $pro_id,
 				'noheader' => TRUE
 				),
-			'basic_settings' => '_basic_settings',
+			'basic_settings' => array(
+				'func' => '_basic_settings',
+				'capability' => 'manage_options',
+				),
 			'update_settings' => array(
 				'func' => '_update_settings',
+				'capability' => 'manage_options',
 				'noheader' => TRUE
 			),
-			'usage' => '_usage'
+			'usage' => array(
+				'func' => '_usage',
+				'capability' => 'ee_read_promotions'
+				)
 		);
 	}
 
@@ -220,9 +250,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'slug' => 'all',
 				'label' => __('All', 'event_espresso'),
 				'count' => 0,
-				'bulk_action' => array(
-					'trash_promotions' => __('Move to Trash', 'event_espresso')
-					)
+				'bulk_action' => array()
 				),
 			'trash' => array(
 				'slug' => 'trash',
@@ -234,6 +262,22 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					)
 				)/**/
 		);
+
+
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_delete_promotions', 'espresso_promotions_delete_promotions' ) ) {
+			$this->_views['trash'] = array(
+				'slug' => 'trash',
+				'label' => __('Trashed', 'event_espresso'),
+				'count' => 0,
+				'bulk_action' => array(
+					'restore_promotions' => __('Restore from Trash', 'event_espresso'),
+					'delete_promotions' => __('Delete', 'event_espresso')
+					)
+				);
+			$this->_views['all']['bulk_action'] = array(
+					'trash_promotions' => __('Move to Trash', 'event_espresso')
+					);
+		}
 	}
 
 
@@ -244,7 +288,9 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @access protected
 	 */
 	protected function _list_table() {
-		$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'esspresso_promotions_create_new_promotion' ) ) {
+			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+		}
 		$this->_template_args['after_list_table'] = $this->_display_legend( $this->_promotion_legend_items() );
 		$this->display_admin_list_table_page_with_no_sidebar();
 	}
@@ -462,9 +508,13 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$price->save();
 
 		//next handle the promotions
-		$promotion = empty( $promotion_values['PRO_ID'] ) ? EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' )  ) : EEM_Promotion::instance()->get_one_by_ID( $promotion_values['PRO_ID'] );
+		if ( empty( $promotion_values[ 'PRO_ID' ] )) {
+			$promotion = EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' ));
+		} else {
+			$promotion =  EEM_Promotion::instance()->get_one_by_ID( $promotion_values[ 'PRO_ID' ] );
+		}
 
-		if ( !empty( $promotion_values['PRO_ID'] ) ) {
+		if ( ! empty( $promotion_values['PRO_ID'] ) ) {
 			//PRE-EXISTING promotion so let's update the values
 			foreach ( $promotion_values as $field => $value ) {
 				$promotion->set_date_format( 'Y-m-d' );

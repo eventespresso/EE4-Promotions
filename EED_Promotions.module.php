@@ -300,7 +300,7 @@ class EED_Promotions extends EED_Module {
 					// get all promotion objects that can still be redeemed
 					$redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos( $promotion );
 					foreach ( $redeemable_scope_promos as $scope => $promo_obj_IDs ) {
-						if ( $scope == 'Event' && in_array( $event->ID(), $promo_obj_IDs ) ) {
+						if ( $scope == 'Event' && in_array( $event->ID(), $promo_obj_IDs ) && $promotion->description() != '' ) {
 							$banner_text[] = $promotion->description();
 						}
 					}

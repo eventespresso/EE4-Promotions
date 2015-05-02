@@ -64,10 +64,10 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param array $props_n_values array of fields and values to set on the object
-	 * @param string $timezone  incoming timezone (if not set the timezone set for the website will be
-	 *                          		used.)
-	 * @param array $date_formats  incoming date_formats in an array where the first value is the
-	 *                             		    date_format and the second value is the time format
+	 * @param string $timezone  	incoming timezone
+	 * 													if not set the timezone set for the website will be used.
+	 * @param array $date_formats  	incoming date_formats in an array where the first value is the
+	 * 														date_format and the second value is the time format
 	 * @return EE_Promotion
 	 */
 	public static function new_instance( $props_n_values = array(), $timezone = null, $date_formats = array() ) {
@@ -81,6 +81,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 * @since 1.0.0
 	 *
 	 * @param array $props_n_values
+	 * @param string $timezone 	incoming timezone
+	 *													if not set the timezone set for the website will be used.
 	 * @return EE_Promotion
 	 */
 	public static function new_instance_from_db ( $props_n_values = array(), $timezone = null ) {
@@ -478,25 +480,20 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function promotion_date_range() {
 		EE_Registry::instance()->load_helper( 'DTT_Helper' );
-		$start_date = $this->get_raw_date( 'PRO_start' );
-		$end_date = $this->get_raw_date( 'PRO_end' );
+		$start_date = $this->get_DateTime_object( 'PRO_start' );
+		$end_date = $this->get_DateTime_object( 'PRO_end' );
 		// if the promo starts at midnight on one day, and the promo ends at midnight on the very next day
 		// (this also verifies that $dates are DateTime objects)
 		if ( EEH_DTT_Helper::dates_represent_one_24_hour_date( $start_date, $end_date ) ) {
-
-			return $start_date->format( 'H:i:s' ) == '00:00:00' ? $this->get_i18n_datetime( 'PRO_start', $this->_dt_frmt ) : $this->get_i18n_datetime( 'PRO_start' );
-
-		} else if ( ! $start_date instanceof DateTime ) {
-
+			return $start_date->format( EE_Datetime_Field::mysql_time_format ) == '00:00:00' ? $this->get_i18n_datetime( 'PRO_start', $this->_dt_frmt ) : $this->get_i18n_datetime( 'PRO_start' );
+		} else if ( ! $start_date instanceof DateTime && $end_date instanceof DateTime ) {
 			return sprintf( _x( 'Ends: %s', 'Value is the end date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_end' ) );
-
-		} else if ( ! $end_date instanceof DateTime ) {
-
+		} else if ( $start_date instanceof DateTime && ! $end_date instanceof DateTime ) {
 			return sprintf( _x( 'Starts: %s', 'Value is the start date for a promotion', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ) );
-
-		} else {
-
+		} else if ( $start_date instanceof DateTime && $end_date instanceof DateTime ) {
 			return sprintf( _x( '%s - %s', 'First value is start date and second value is end date in a date range.', 'event_espresso' ), $this->get_i18n_datetime( 'PRO_start' ), $this->get_i18n_datetime( 'PRO_end' ) );
+		} else {
+			return __( 'Ongoing Promotion', 'event_espresso' );
 		}
 	}
 

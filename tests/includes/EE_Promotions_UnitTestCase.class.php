@@ -34,7 +34,9 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 		$base_price_amount = '10';
 
 		//create the price type for flat price discount and for percent based discount.
+		/** @type EE_Price_Type $percent_price_type */
 		$percent_price_type = $this->factory->price_type->create( array( 'PBT_ID' => EEM_Price_Type::base_type_discount, 'PRT_is_percent' => true ) );
+		/** @type EE_Price_Type $flat_price_type */
 		$flat_price_type = $this->factory->price_type->create( array( 'PBT_ID' => EEM_Price_Type::base_type_discount, 'PRT_is_percent' => false ) );
 
 		//the first three promos will be percent promos, the last four will be flat price promos
@@ -50,6 +52,7 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 				'PRC_name' => sprintf( $base_promo_name, $count ),
 				'PRC_desc' => sprintf( $base_promo_description, $count )
 				));
+			/** @type EE_Promotion $promotion */
 			$promotion->_add_relation_to( $price, 'Price' );
 			$promotion->save();
 			$count++;

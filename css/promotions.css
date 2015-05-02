@@ -7,42 +7,44 @@
 General Styles
 ---------------------------------------------------------------------------------------------------- */
 
-#ee-spco-payment_options-reg-step-form-before-payment-options {
+#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options {
+	box-sizing: content-box !important;
 	position: relative;
 	margin: 1.5em 0 3em;
 }
-#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input-lbl h4 {
+#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input-lbl h4 {
 	margin:0;
 }
 
 /* Media Query for screens larger than 480px
 ---------------------------------------------------------------------------------------------------- */
 @media only screen and (min-width: 481px) {
-	#ee-spco-payment_options-reg-step-form-before-payment-options {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options {
 		padding-bottom: 50px;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input,
-	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input,
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-submit {
 		box-sizing: border-box;
 		vertical-align: middle;
+		min-height: 32px;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-input {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input {
 		margin: 0 0 1em;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input,
-	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-input,
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-submit {
 		position : absolute;
 		display: inline-block;
 		margin: 0;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-input {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-input {
 		top: 24px;
 		left: 0;
 		border-bottom-right-radius: 0;
 		border-top-right-radius: 0;
 		border-right: 0;
 	}
-	#ee-spco-payment_options-reg-step-form-before-payment-options .ee-promo-combo-submit {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-submit {
 		top: 24px;
 		right: 0;
 		border-bottom-left-radius: 0;
@@ -65,7 +67,7 @@ General Styles
 }
 
 @media only screen and (max-width: 480px) {
-	#ee-spco-payment_options-reg-step-form-before-payment-options #ee-promotion-code-submit {
+	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-submit {
 		margin: 1em 0;
 	}
 }

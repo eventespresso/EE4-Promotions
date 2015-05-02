@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
 		 * @function initialize
 		 */
 		initialize : function() {
-			var container = $('#ee-spco-payment_options-reg-step-form-before-payment-options');
+			var container = $('#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options');
 			if ( container.length ) {
 				PROMO.container = container;
 				PROMO.adjust_input_and_submit_button_css();
@@ -80,13 +80,13 @@ jQuery(document).ready(function($) {
 			var submit_width = PROMO.form_submit.outerWidth();
 			var half_label_width = PROMO.form_label.outerWidth() / 2;
 			if ( half_label_width > submit_width && half_label_width > 100 ) {
-				var label_height = PROMO.form_label.outerHeight();
+				var form_label = PROMO.form_label.position();
 				PROMO.form_input.addClass('ee-promo-combo-input').css({
 					'width' : ( PROMO.container.outerWidth() - submit_width ),
-					'top' : label_height,
+					'top' : form_label.top,
 					'height' : PROMO.form_submit.outerHeight()
 				});
-				PROMO.form_submit.addClass('ee-promo-combo-submit').css({ 'top' : label_height });
+				PROMO.form_submit.addClass('ee-promo-combo-submit').css({ 'top' : form_label.top });
 			}
 		},
 
