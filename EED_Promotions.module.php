@@ -165,7 +165,8 @@ class EED_Promotions extends EED_Module {
 		return
 			! is_admin()
 			&& (
-				apply_filters( 'FHEE__EED_Events_Archive__template_include__events_list_active', false )
+				is_singular( 'espresso_events' )
+				|| is_post_type_archive( 'espresso_events' )
 				||  apply_filters( 'EED_Single_Page_Checkout__SPCO_active', FALSE )
 				|| EED_Promotions::$shortcode_active
 			)
