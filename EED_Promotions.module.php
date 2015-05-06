@@ -55,6 +55,8 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'AHEE__ticket_selector_chart__template__before_ticket_selector', array( 'EED_Promotions', 'display_event_promotions_banner' ), 10, 1 );
 		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
+		 // adjust SPCO totals
+		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
 	 }
 
 	 /**
@@ -71,7 +73,9 @@ class EED_Promotions extends EED_Module {
 		 // submit_promo_code
 		 add_action( 'wp_ajax_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
 		 add_action( 'wp_ajax_nopriv_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
-		// TXN admin
+		 // adjust SPCO totals
+		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
+		 // TXN admin
 		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
 		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
 	 }
@@ -161,11 +165,11 @@ class EED_Promotions extends EED_Module {
 		return
 			! is_admin()
 			&& (
-				apply_filters( 'FHEE__EED_Events_Archive__template_include__events_list_active', FALSE )
+				apply_filters( 'FHEE__EED_Events_Archive__template_include__events_list_active', false )
 				||  apply_filters( 'EED_Single_Page_Checkout__SPCO_active', FALSE )
 				|| EED_Promotions::$shortcode_active
 			)
-				? TRUE : FALSE;
+			? TRUE : FALSE;
 	}
 
 
@@ -648,7 +652,7 @@ class EED_Promotions extends EED_Module {
 	public function add_promotion_line_item( EE_Line_Item $parent_line_item, EE_Line_Item $promotion_line_item, EE_Promotion $promotion ) {
 		EE_Registry::instance()->load_helper( 'Line_Item' );
 		// add it to the cart
-		if ( EEH_Line_Item::add_item( $parent_line_item, $promotion_line_item )) {
+		if ( $parent_line_item->add_child_line_item( $promotion_line_item ) ) {
 			if ( $promotion->scope_obj()->increment_promotion_scope_uses( $promotion, $parent_line_item->OBJ_ID() )) {
 				return TRUE;
 			} else {
@@ -718,6 +722,25 @@ class EED_Promotions extends EED_Module {
 		exit();
 	}
 
+
+
+	/**
+	 *    adjust_SPCO_billable_total
+	 *
+	 *   allows promotions to adjust SPCO's billable total as calculated in EE_SPCO_Line_Item_Display_Strategy
+	 *
+	 * @access    public
+	 * @param float $billable_total
+	 * @param \EE_Line_Item $line_item
+	 * @return float
+	 */
+	public static function adjust_SPCO_billable_total( $billable_total = 0.00, EE_Line_Item $line_item ) {
+		// is this a promotion ?
+		if ( $line_item->OBJ_type() == 'Promotion' ) {
+			$billable_total += $line_item->total();
+		}
+		return $billable_total;
+	}
 
 
 
