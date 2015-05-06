@@ -686,8 +686,8 @@ abstract class EE_Promotion_Scope {
 			array(
 				'LIN_code' 			=> 'promotion-' . $promotion->ID(),
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
-				'LIN_name' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
-				'LIN_desc' 			=> $promotion->description(),
+				'LIN_name' 			=> __( 'Promotion', 'event_espresso' ),
+				'LIN_desc' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> FALSE,
