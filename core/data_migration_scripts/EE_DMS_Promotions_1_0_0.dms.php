@@ -61,7 +61,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					PRO_wp_user BIGINT UNSIGNED NOT NULL DEFAULT 1,
 					PRIMARY KEY  (PRO_ID) ,
 					KEY PRC_ID (PRC_ID)";
-		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
+		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 
 		$table_name = 'esp_promotion_object';
 		$sql = "POB_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -72,7 +72,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 			PRIMARY KEY  (POB_ID),
 			KEY OBJ_ID (OBJ_ID),
 			KEY PRO_ID (PRO_ID)";
-		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
+		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 
 		$table_name = 'esp_promotion_rule';
 		$sql = "PRR_ID INT UNSIGNED NOT NULL AUTO_INCREMENT ,
@@ -84,7 +84,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					PRIMARY KEY  (PRR_ID) ,
 					KEY PRO_ID (PRO_ID),
 					KEY RUL_ID (RUL_ID) ";
-		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
+		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 
 
 
@@ -100,7 +100,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 					RUL_is_active TINYINT(1) NOT NULL DEFAULT 1 ,
 					RUL_archived TINYINT(1) NOT NULL DEFAULT 0 ,
 					PRIMARY KEY  (RUL_ID)";
-		$this->_table_is_new_in_this_version($table_name, $sql, 'ENGINE=InnoDB ');
+		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 	}
 }
 
