@@ -518,7 +518,11 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function uses_available() {
 		$uses =  $this->get('PRO_uses');
 		$scope_count = $this->get_scope_object_count();
-		return $uses === EE_INF_IN_DB || $scope_count === 0 ? $uses : $uses * $scope_count;
+		$global_uses = $this->global_uses();
+		$total_uses = $uses === EE_INF_IN_DB || $scope_count === 0 ? $uses : $uses * $scope_count;
+
+		//global uses trumps the value above unless $uses is less than it.
+		return $global_uses === EE_INF_IN_DB || $global_uses > $total_uses ? $total_uses : $global_uses;
 	}
 
 
