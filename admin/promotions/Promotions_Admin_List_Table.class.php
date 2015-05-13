@@ -141,7 +141,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_redeemed( EE_Promotion $item ) {
-		echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses();
+		echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses_available();
 	}
 
 
