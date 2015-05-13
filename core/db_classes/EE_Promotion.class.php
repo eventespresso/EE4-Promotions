@@ -500,7 +500,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 
 
 	/**
-	 * Gets the number of times this promotion has been used in its particular scope.
+	 * Gets the number of times this promotion can be used per scope.
 	 *
 	 * @since 1.0.0
 	 *
@@ -508,6 +508,17 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function uses(){
 		return $this->get('PRO_uses');
+	}
+
+
+	/**
+	 * Gets the number of times this promotions can be used considering how many scope objects the promotion applies to.
+	 * Note that this means that we retrieve the number of scopes applied and multiply that by the uses.
+	 */
+	public function uses_available() {
+		$uses =  $this->get('PRO_uses');
+		$scope_count = $this->get_scope_object_count();
+		return $uses === EE_INF_IN_DB || $scope_count === 0 ? $uses : $uses * $scope_count;
 	}
 
 
@@ -784,6 +795,20 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	 */
 	public function promotion_objects( $query_args = array() ) {
 		return $this->get_many_related( 'Promotion_Object', $query_args );
+	}
+
+
+	/**
+	 * This gets the count of scope objects this promotion applies to
+	 *
+	 * @return int
+	 */
+	public function get_scope_object_count() {
+		$scope_count = 0;
+		if ( $this->scope_obj() instanceof EE_Promotion_Scope ) {
+			$scope_count = $this->scope_obj()->get_applied_to_items( $this->ID(), true );
+		}
+		return $scope_count;
 	}
 
 
