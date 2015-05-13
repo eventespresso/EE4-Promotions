@@ -468,6 +468,7 @@ abstract class EE_Promotion_Scope {
 		if ( $count ) {
 			return $PRO_OBJs;
 		} else {
+			$selected = array();
 			foreach ( $PRO_OBJs as $PRO_OBJ ) {
 				/** @var $PRO_OBJ EE_Promotion_Object */
 				$selected[] = $PRO_OBJ->OBJ_ID();
