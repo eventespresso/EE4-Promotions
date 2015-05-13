@@ -234,7 +234,14 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	}
 
 	public function admin_init() {}
-	public function admin_notices() {}
+	public function admin_notices() {
+		//is this a non global promotion?  If so, then if there are no uses then let's show a notice that the promotion is
+		//not active until a scope item is selected.
+		if ( $this->_promotion instanceof EE_Promotion && $this->_promotion->ID() != 0 && ! $this->_promotion->is_global() && $this->_promotion->get_scope_object_count() === 0 ) {
+			EE_Error::add_attention( sprintf( __( 'This promotion is currently not active because you have selected %s as the scope for the promotion but have not applied the promotion to any %s.', 'event_espresso' ), $this->_promotion->scope_obj()->label->singular, strtolower( $this->_promotion->scope_obj()->label->plural ) ) );
+			echo ( EE_Error::get_notices() );
+		}
+	}
 	public function admin_footer_scripts() {}
 
 
