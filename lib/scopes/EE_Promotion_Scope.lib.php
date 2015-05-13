@@ -436,25 +436,45 @@ abstract class EE_Promotion_Scope {
 	}
 
 
+	/**
+	 * Wrapper for the protected _get_applied_to_items method.
+	 * Use to retrieve either the ids of the promotion scope items or a count of promotion scope items the promotion is applied to.
+	 *
+	 * @param $PRO_ID
+	 * @param bool $count
+	 *
+	 * @return array|int  (an array of IDs or int
+	 */
+	public function get_applied_to_items( $PRO_ID, $count = false ) {
+		return $this->_get_applied_to_items( $PRO_ID, $count );
+	}
+
+
 
 
 
 	/**
-	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
+	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to (or a count of the objects)
 	 *
 	 * @since 1.0.0
 	 * @param  int 	$PRO_ID Promotion that is applied.
-	 * @return  array 	array of ids matching the items related to the scope.
+	 * @param  bool $count  Whether to return the count of items or not (array of ids)
+	 * @return  array|int 	array of ids matching the items related to the scope or a count of the items.
 	 */
-	protected function _get_applied_to_items( $PRO_ID ) {
-		$selected = array();
+	protected function _get_applied_to_items( $PRO_ID, $count = false ) {
+		$query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
-		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
-		foreach( $PRO_OBJs as $PRO_OBJ ) {
-			/** @var $PRO_OBJ EE_Promotion_Object */
-			$selected[] = $PRO_OBJ->OBJ_ID();
+		$PRO_OBJs = $count ? EEM_Promotion_Object::instance()->count( $query_args ) : EEM_Promotion_Object::instance()->get_all( $query_args );
+		if ( $count ) {
+			return $PRO_OBJs;
+		} else {
+			foreach ( $PRO_OBJs as $PRO_OBJ ) {
+				/** @var $PRO_OBJ EE_Promotion_Object */
+				$selected[] = $PRO_OBJ->OBJ_ID();
+			}
+
+			return $selected;
 		}
-		return $selected;
 	}
 
 
