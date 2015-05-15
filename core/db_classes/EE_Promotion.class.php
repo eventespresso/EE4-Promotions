@@ -812,7 +812,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	public function get_scope_object_count() {
 		$scope_count = 0;
 		if ( $this->scope_obj() instanceof EE_Promotion_Scope ) {
-			$scope_count = $this->scope_obj()->get_applied_to_items( $this->ID(), true );
+			$scope_count = $this->scope_obj()->count_applied_to_items( $this->ID() );
 		}
 		return $scope_count;
 	}
