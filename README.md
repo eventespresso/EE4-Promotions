@@ -8,11 +8,11 @@
 
 ###Release Candidate (Beta) Version: 1.0.x.rc
 
-> *Please note that this is **NOT a stable release** and should **NOT** be used in a live/production setting or publicly accessible server*
+> Please note that this is **NOT a stable release** and should **NOT** be used in a live/production setting or publicly accessible server
 
-##Boost Ticket Sales with Event Espresso Promotions
+###Boost Ticket Sales with Event Espresso Promotions
 
-**Give your customers incentive to take action with Coupon Codes or automatic Calendar based sales. Promotions encourage purchases from established customers, reel in new customers, draw customers from competitors, get current customers to buy differently, and stimulate business during slow periods.**
+Give your customers incentive to take action with Coupon Codes or automatic Calendar based sales. Promotions encourage purchases from established customers, reel in new customers, draw customers from competitors, get current customers to buy differently, and stimulate business during slow periods.
 
 ![promo.jpeg](http://blenderdude.com/wp-content/uploads/promo.jpeg "Promotions Addon for Event Espresso 4")
 
