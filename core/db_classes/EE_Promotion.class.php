@@ -514,6 +514,8 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	/**
 	 * Gets the number of times this promotions can be used considering how many scope objects the promotion applies to.
 	 * Note that this means that we retrieve the number of scopes applied and multiply that by the uses.
+	 *
+	 * @return int
 	 */
 	public function uses_available() {
 		$uses =  $this->get('PRO_uses');
