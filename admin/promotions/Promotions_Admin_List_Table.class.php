@@ -238,7 +238,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				) );
 		}
 
-		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'ASC';
+		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'DESC';
 		$current_page = ! empty( $this->_req_data['paged'] ) ? $this->_req_data['paged'] : 1;
 		$per_page = ! empty( $per_page ) ? $per_page : 10;
 		$per_page =  ! empty( $this->_req_data['perpage'] ) ? $this->_req_data['perpage'] : $per_page;
