@@ -3,7 +3,7 @@
   Plugin Name: Event Espresso - Promotions (EE 4.7+)
   Plugin URI: http://www.eventespresso.com
   Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.7 or higher.
-  Version: 1.0.0.rc.059
+  Version: 1.0.0.rc.060
   Author: Event Espresso
   Author URI: http://www.eventespresso.com
   Copyright 2014 Event Espresso (email : support@eventespresso.com)
@@ -38,7 +38,7 @@
  */
 
 define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.7.0.beta.000' );
-define( 'EE_PROMOTIONS_VERSION', '1.0.0.rc.059' );
+define( 'EE_PROMOTIONS_VERSION', '1.0.0.rc.060' );
 define( 'EE_PROMOTIONS_PLUGIN_FILE', __FILE__ );
 
 function load_espresso_promotions() {
