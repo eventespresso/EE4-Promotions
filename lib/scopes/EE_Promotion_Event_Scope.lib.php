@@ -241,7 +241,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	public function get_admin_applies_to_selector( $PRO_ID ) {
 		$total_items = $this->_get_total_items();
 		$items_to_select = $this->get_scope_items();
-		$selected_items = $this->_get_applied_to_items( $PRO_ID );
+		$selected_items = $this->_get_applied_to_item_ids( $PRO_ID );
 		$template_args = array(
 			'scope_slug' => $this->slug,
 			'scope' => $this,
