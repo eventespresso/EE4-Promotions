@@ -436,25 +436,61 @@ abstract class EE_Promotion_Scope {
 	}
 
 
+	/**
+	 * Wrapper for the protected _get_applied_to_item_ids.
+	 * Use to retrieve the ids of the promotion scope items.
+	 *
+	 * @param $PRO_ID
+	 *
+	 * @return array  array of IDs
+	 */
+	public function get_applied_to_item_ids( $PRO_ID ) {
+		return $this->_get_applied_to_item_ids( $PRO_ID );
+	}
 
 
 
 	/**
-	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
+	 * Wrapper for the protected _count_applied_to_items method.
+	 * Use to retrieve a count of promotion scope items the promotion is applied to..
+	 *
+	 * @param $PRO_ID
+	 *
+	 * @return int
+	 */
+	public function count_applied_to_items( $PRO_ID ) {
+		return $this->_count_applied_to_items( $PRO_ID );
+	}
+
+
+
+
+
+	/**
+	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to (or a count of the objects)
 	 *
 	 * @since 1.0.0
 	 * @param  int 	$PRO_ID Promotion that is applied.
-	 * @return  array 	array of ids matching the items related to the scope.
+	 * @return  array	array of ids matching the items related to the scope.
 	 */
-	protected function _get_applied_to_items( $PRO_ID ) {
-		$selected = array();
+	protected function _get_applied_to_item_ids( $PRO_ID ) {
+		$query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
-		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
-		foreach( $PRO_OBJs as $PRO_OBJ ) {
-			/** @var $PRO_OBJ EE_Promotion_Object */
-			$selected[] = $PRO_OBJ->OBJ_ID();
-		}
-		return $selected;
+		return EEM_Promotion_Object::instance()->get_col( $query_args, 'OBJ_ID' );
+	}
+
+
+
+	/**
+	 * Returns a count of the objects that the promotion applies to for this scope.
+	 *
+	 * @since 1.0.0
+	 * @param  int 	$PRO_ID Promotion that is applied.
+	 * @return  int
+	 */
+	protected function _count_applied_to_items( $PRO_ID ) {
+		$query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
+		return EEM_Promotion_Object::instance()->count( $query_args );
 	}
 
 

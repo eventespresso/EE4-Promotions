@@ -141,7 +141,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_redeemed( EE_Promotion $item ) {
-		echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses();
+		echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses_available();
 	}
 
 
@@ -238,7 +238,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 				) );
 		}
 
-		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'ASC';
+		$sort = ( ! empty( $this->_req_data['order'] ) ) ? $this->_req_data['order'] : 'DESC';
 		$current_page = ! empty( $this->_req_data['paged'] ) ? $this->_req_data['paged'] : 1;
 		$per_page = ! empty( $per_page ) ? $per_page : 10;
 		$per_page =  ! empty( $this->_req_data['perpage'] ) ? $this->_req_data['perpage'] : $per_page;
