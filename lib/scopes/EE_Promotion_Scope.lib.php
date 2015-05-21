@@ -579,7 +579,7 @@ abstract class EE_Promotion_Scope {
 		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
 		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $this->_per_page;
 		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
+		return '<span class="spinner"></span>&nbsp;' . EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}
 
 
@@ -663,6 +663,45 @@ abstract class EE_Promotion_Scope {
 			empty( $OBJ_type ) ? $this->slug : $OBJ_type,
 			$OBJ_IDs
 		);
+	}
+
+
+
+	/**
+	 * This determines if there are any saved filters for the given Promotion ID and if needed will overload the
+	 * $_REQUEST global for those filter values for use elsewhere in the promotion ui.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $PRO_ID
+	 * @return bool true when there were saved filters, false when not.
+	 */
+	protected function _maybe_overload_request_with_saved_filters( $PRO_ID = 0 ) {
+		//any saved filters (only on non-ajax requests)?
+		if ( ! empty( $PRO_ID ) && ! defined( 'DOING_AJAX') ) {
+			$set_filters = EEM_Extra_Meta::instance()->get_one(
+				array(
+					0 => array(
+						'OBJ_ID' => $PRO_ID,
+						'EXM_type' => 'Promotion',
+						'EXM_key' => 'promo_saved_filters'
+					)
+				)
+			);
+
+			$set_filters = $set_filters instanceof EE_Extra_Meta ? $set_filters->get( 'EXM_value' ) : array();
+
+			//overload $_REQUEST global
+			foreach ( $set_filters as $filter_key => $filter_value ) {
+				if ( $filter_value ) {
+					$_REQUEST[$filter_key] = $filter_value;
+				}
+			}
+			if ( ! empty( $set_filters ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 

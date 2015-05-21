@@ -12,12 +12,14 @@
  * @type EE_Promotion_Scope $scope  The EE_Promotion_Scope object for labels etc.
  * @type string $header_content	Any header content for this template and scope.
  * @type string $filters 		Any filters this selector might use
+ * @type bool   $show_filters   Whether to show the filters container by default.
  * @type string $items_to_select	All the selectable items for this page view.
  * @type string $items_paging		This  will be the html string for the paging of items.
  * @type array $selected_items 	Array of IDs for the selected items
  *       					that this promotion applies to.
  * @type string $display_selected_label The test for the display selected label trigger/toggle.
  */
+$show_filters = ! $show_filters ? ' style="display:none"' : '';
 ?>
 <div class="ee-promotions-applies-to-main-container" id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
 	<div class="ee-promotions-selected-count-container">
@@ -41,17 +43,17 @@
 				);
 			}
 			?>
-		<span class="small-text important-notice">
-		<?php echo sprintf( __('Please note that you may need to adjust the filters below in order to view all of the %1$s that this promotion is applied to (especially the date filters).', 'event_espresso'), strtolower($scope->label->plural) );?>
-		</span>
 		</p>
 	</div>
 	<?php if ( !empty($filters) ) : ?>
 
 		<div class="ee-promotions-applies-to-filters">
-			<p><?php printf( __('Change these settings to filter the %s displayed in the box below.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
-			<?php echo $filters; ?>
-			<button class="button secondary-button right" id="ee-apply-promotion-filter"><?php _e('Apply', 'event_espresso'); ?></button><span class="spinner"></span>
+			<p><?php _e('Advanced Filters', 'event_espresso'); ?><span class="dashicons dashicons-admin-settings ee-toggle-filters" data-filter-container=".ee-promotions-filter-settings"></span></p>
+			<div class="ee-promotions-filter-settings"<?php echo $show_filters; ?>>
+				<p><?php printf( __('Change these settings to filter the %s displayed in the box below.', 'event_espresso'), strtolower($scope->label->plural) ); ?></p>
+				<?php echo $filters; ?>
+				<button class="button secondary-button right" id="ee-apply-promotion-filter"><?php _e('Apply', 'event_espresso'); ?></button><span class="spinner"></span>
+			</div>
 			<div style="clear:both;"></div>
 		</div>
 	<?php endif; ?>
