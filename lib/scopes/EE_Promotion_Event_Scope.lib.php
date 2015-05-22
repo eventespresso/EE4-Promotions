@@ -300,9 +300,9 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			$_where['EVT_name'] = array( 'LIKE', '%' . $_REQUEST['EVT_title_filter'] . '%' );
 		}
 
-		$orderby= ! empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'ASC';
+		$orderby= ! empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'DESC';
 
-		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_name' => $orderby ) );
+		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_created' => $orderby ) );
 
 		//apply caps
 		if ( ! EE_Registry::instance()->CAP->current_user_can( 'ee_read_others_events', 'get_events_for_promotions' ) ) {
