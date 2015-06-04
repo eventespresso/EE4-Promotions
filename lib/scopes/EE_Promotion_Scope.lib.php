@@ -436,25 +436,61 @@ abstract class EE_Promotion_Scope {
 	}
 
 
+	/**
+	 * Wrapper for the protected _get_applied_to_item_ids.
+	 * Use to retrieve the ids of the promotion scope items.
+	 *
+	 * @param $PRO_ID
+	 *
+	 * @return array  array of IDs
+	 */
+	public function get_applied_to_item_ids( $PRO_ID ) {
+		return $this->_get_applied_to_item_ids( $PRO_ID );
+	}
 
 
 
 	/**
-	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to.
+	 * Wrapper for the protected _count_applied_to_items method.
+	 * Use to retrieve a count of promotion scope items the promotion is applied to..
+	 *
+	 * @param $PRO_ID
+	 *
+	 * @return int
+	 */
+	public function count_applied_to_items( $PRO_ID ) {
+		return $this->_count_applied_to_items( $PRO_ID );
+	}
+
+
+
+
+
+	/**
+	 * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching the given ID is applied to (or a count of the objects)
 	 *
 	 * @since 1.0.0
 	 * @param  int 	$PRO_ID Promotion that is applied.
-	 * @return  array 	array of ids matching the items related to the scope.
+	 * @return  array	array of ids matching the items related to the scope.
 	 */
-	protected function _get_applied_to_items( $PRO_ID ) {
-		$selected = array();
+	protected function _get_applied_to_item_ids( $PRO_ID ) {
+		$query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
 		//with the PRO_ID we can get the PRO_OBJ items related to this scope.
-		$PRO_OBJs = EEM_Promotion_Object::instance()->get_all( array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) ) );
-		foreach( $PRO_OBJs as $PRO_OBJ ) {
-			/** @var $PRO_OBJ EE_Promotion_Object */
-			$selected[] = $PRO_OBJ->OBJ_ID();
-		}
-		return $selected;
+		return EEM_Promotion_Object::instance()->get_col( $query_args, 'OBJ_ID' );
+	}
+
+
+
+	/**
+	 * Returns a count of the objects that the promotion applies to for this scope.
+	 *
+	 * @since 1.0.0
+	 * @param  int 	$PRO_ID Promotion that is applied.
+	 * @return  int
+	 */
+	protected function _count_applied_to_items( $PRO_ID ) {
+		$query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
+		return EEM_Promotion_Object::instance()->count( $query_args );
 	}
 
 
@@ -543,7 +579,7 @@ abstract class EE_Promotion_Scope {
 		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
 		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $this->_per_page;
 		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
+		return '<span class="spinner"></span>&nbsp;' . EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}
 
 
@@ -627,6 +663,45 @@ abstract class EE_Promotion_Scope {
 			empty( $OBJ_type ) ? $this->slug : $OBJ_type,
 			$OBJ_IDs
 		);
+	}
+
+
+
+	/**
+	 * This determines if there are any saved filters for the given Promotion ID and if needed will overload the
+	 * $_REQUEST global for those filter values for use elsewhere in the promotion ui.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $PRO_ID
+	 * @return bool true when there were saved filters, false when not.
+	 */
+	protected function _maybe_overload_request_with_saved_filters( $PRO_ID = 0 ) {
+		//any saved filters (only on non-ajax requests)?
+		if ( ! empty( $PRO_ID ) && ! defined( 'DOING_AJAX') ) {
+			$set_filters = EEM_Extra_Meta::instance()->get_one(
+				array(
+					0 => array(
+						'OBJ_ID' => $PRO_ID,
+						'EXM_type' => 'Promotion',
+						'EXM_key' => 'promo_saved_filters'
+					)
+				)
+			);
+
+			$set_filters = $set_filters instanceof EE_Extra_Meta ? $set_filters->get( 'EXM_value' ) : array();
+
+			//overload $_REQUEST global
+			foreach ( $set_filters as $filter_key => $filter_value ) {
+				if ( $filter_value ) {
+					$_REQUEST[$filter_key] = $filter_value;
+				}
+			}
+			if ( ! empty( $set_filters ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
