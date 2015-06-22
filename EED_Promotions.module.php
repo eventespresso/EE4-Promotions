@@ -67,6 +67,7 @@ class EED_Promotions extends EED_Module {
 	  */
 	 public static function set_hooks_admin() {
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
+		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 // _get_promotions
 		 add_action( 'wp_ajax_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
 		 add_action( 'wp_ajax_nopriv_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
@@ -673,10 +674,17 @@ class EED_Promotions extends EED_Module {
 	 * @return    array
 	 */
 	public function _get_payment_info( EE_Cart $cart ) {
+		$transaction = $cart->get_grand_total()->transaction();
+		$registrations = $transaction instanceof EE_Transaction ? $transaction->registrations() : array();
 		// autoload Line_Item_Display classes
 		EEH_Autoloader::register_line_item_display_autoloaders();
 		$Line_Item_Display = new EE_Line_Item_Display( 'spco' );
-		return array( 'payment_info' => $Line_Item_Display->display_line_item( $cart->get_grand_total() ));
+		return array(
+			'payment_info' => $Line_Item_Display->display_line_item(
+				$cart->get_grand_total(),
+				array( 'registrations' => $registrations )
+			)
+		);
 	}
 
 
