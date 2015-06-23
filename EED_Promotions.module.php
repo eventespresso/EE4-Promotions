@@ -624,7 +624,7 @@ class EED_Promotions extends EED_Module {
 		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
 		// check that promotion hasn't already been applied
 		$existing_promotion_line_item = $EEM_Line_Item->get_existing_promotion_line_item( $parent_line_item, $promotion );
-		if ( $existing_promotion_line_item instanceof EE_Line_Item ) {
+		if ( $existing_promotion_line_item instanceof EE_Line_Item && $promotion->code() ) {
 			EE_Error::add_attention(
 				sprintf(
 					__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' ),
