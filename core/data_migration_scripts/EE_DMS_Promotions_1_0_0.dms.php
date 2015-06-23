@@ -42,24 +42,26 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	}
 
 	public function schema_changes_before_migration() {
+		// set promotions_exclusive_default as either 0 or 1
+		$exclusive = absint( filter_var( apply_filters( 'FHEE__EEM_Promotion__promotions_exclusive_default', 0 ), FILTER_VALIDATE_BOOLEAN ) );
 		$table_name = 'esp_promotion';
-		$sql = "PRO_ID INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-					PRC_ID INT UNSIGNED NOT NULL ,
-					PRO_scope VARCHAR(16) NOT NULL DEFAULT 'event' ,
-					PRO_start DATETIME NULL DEFAULT NULL ,
-					PRO_end DATETIME NULL DEFAULT NULL ,
-					PRO_code VARCHAR(45) NULL DEFAULT NULL ,
-					PRO_uses SMALLINT NULL DEFAULT 1 ,
-					PRO_global TINYINT(1) NOT NULL DEFAULT 0 ,
-					PRO_global_uses SMALLINT NOT NULL DEFAULT -1 ,
-					PRO_exclusive TINYINT(1) NOT NULL DEFAULT 0 ,
-					PRO_accept_msg TINYTEXT NULL DEFAULT NULL ,
-					PRO_decline_msg TINYTEXT NULL DEFAULT NULL ,
-					PRO_default TINYINT(1) NOT NULL DEFAULT 0 ,
-					PRO_order TINYINT UNSIGNED NOT NULL DEFAULT 40 ,
+		$sql = "PRO_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+					PRC_ID INT UNSIGNED NOT NULL,
+					PRO_scope VARCHAR(16) NOT NULL DEFAULT 'event',
+					PRO_start DATETIME NULL DEFAULT NULL,
+					PRO_end DATETIME NULL DEFAULT NULL,
+					PRO_code VARCHAR(45) NULL DEFAULT NULL,
+					PRO_uses SMALLINT NULL DEFAULT 1,
+					PRO_global TINYINT(1) NOT NULL DEFAULT 0,
+					PRO_global_uses SMALLINT NOT NULL DEFAULT -1,
+					PRO_exclusive TINYINT(1) NOT NULL DEFAULT $exclusive,
+					PRO_accept_msg TINYTEXT NULL DEFAULT NULL,
+					PRO_decline_msg TINYTEXT NULL DEFAULT NULL,
+					PRO_default TINYINT(1) NOT NULL DEFAULT 0,
+					PRO_order TINYINT UNSIGNED NOT NULL DEFAULT 40,
 					PRO_deleted TINYINT(1) NOT NULL DEFAULT 0,
 					PRO_wp_user BIGINT UNSIGNED NOT NULL DEFAULT 1,
-					PRIMARY KEY  (PRO_ID) ,
+					PRIMARY KEY  (PRO_ID),
 					KEY PRC_ID (PRC_ID)";
 		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 
