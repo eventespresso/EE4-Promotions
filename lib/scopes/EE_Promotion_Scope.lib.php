@@ -764,6 +764,8 @@ abstract class EE_Promotion_Scope {
 		if ( ! $promotion instanceof EE_Promotion ) {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
+		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
+		$promo_name .= $promotion->code() != '' ? ' (' . $promotion->code() . ')' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
@@ -774,7 +776,7 @@ abstract class EE_Promotion_Scope {
 					__( 'Discount', 'event_espresso' ),
 					$promotion
 				),
-				'LIN_desc' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
+				'LIN_desc' 			=> $promo_name,
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> FALSE,
