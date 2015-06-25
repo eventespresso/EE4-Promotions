@@ -723,10 +723,18 @@ abstract class EE_Promotion_Scope {
 		$OBJ_type = empty( $OBJ_type ) ? $this->slug : $OBJ_type;
 		// check that redeemable scope promos for the requested type exist
 		if ( isset( $redeemable_scope_promos[ $OBJ_type ] )) {
-			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
+			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs(
+				$total_line_item,
+				$OBJ_type,
+				$redeemable_scope_promos[ $OBJ_type ]
+			);
 			if ( is_array( $object_type_line_items )) {
 				foreach ( $object_type_line_items as $object_type_line_item ) {
-					$applicable_items[] = $object_type_line_item;
+					if (
+						apply_filters( 'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item', true, $object_type_line_item )
+					) {
+						$applicable_items[ ] = $object_type_line_item;
+					}
 				}
 			}
 		}
@@ -761,7 +769,11 @@ abstract class EE_Promotion_Scope {
 			array(
 				'LIN_code' 			=> 'promotion-' . $promotion->ID(),
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
-				'LIN_name' 			=> __( 'Promotion', 'event_espresso' ),
+				'LIN_name' 			=> apply_filters(
+					'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
+					__( 'Discount', 'event_espresso' ),
+					$promotion
+				),
 				'LIN_desc' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
