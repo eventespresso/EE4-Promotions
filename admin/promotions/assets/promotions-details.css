@@ -142,6 +142,13 @@
     vertical-align: middle;
     font-size:13px;
 }
+.wp-list-table.promotion th,
+.wp-list-table.promotion td {
+    padding: 8px 5px;
+}
+.wp-list-table.promotion th.sortable {
+    padding:0;
+}
 
 .wp-list-table.promotion th.column-cb,
 .wp-list-table.promotion th.column-id {
@@ -165,6 +172,11 @@
     width: 10%;
 }
 
+.wp-list-table.promotion .column-exclusive {
+    width: 4.5%;
+    text-align: center;
+}
+
 .wp-list-table.promotion .column-valid_from,
 .wp-list-table.promotion .column-valid_until {
     width: 9.5%;
@@ -185,6 +197,7 @@
 .wp-list-table.promotion .column-actions {
     width: 6%;
     text-align: right;
+    padding-right: 10px;
 }
 .wp-list-table.promotion .column-actions .dashicons {
     margin-right:0;
