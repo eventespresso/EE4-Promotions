@@ -148,6 +148,7 @@ jQuery(document).ready(function($) {
 			if ( typeof PROMO.form_data.action === 'undefined' || PROMO.form_data.action === '' ) {
 				return;
 			}
+			PROMO.form_data.action = 'espresso_' + PROMO.form_data.action;
 			PROMO.form_data.noheader = 1;
 			PROMO.form_data.ee_front_ajax = 1;
 			PROMO.form_data.EESID = eei18n.EESID;
@@ -166,7 +167,7 @@ jQuery(document).ready(function($) {
 					PROMO.process_response( response );
 				},
 				error: function() {
-					return SPCO.ajax_request_server_error();
+					SPCO.ajax_request_server_error();
 				}
 			});
 		},
@@ -178,7 +179,7 @@ jQuery(document).ready(function($) {
 		 * @param  {object} response
 		 */
 		process_response : function( response ) {
-			if ( typeof response !== 'undefined' && typeof response !== null ) {
+			if ( typeof response !== 'undefined' && response !== null ) {
 
 				//SPCO.console_log_object( 'PROMO.response', response, 0 );
 
