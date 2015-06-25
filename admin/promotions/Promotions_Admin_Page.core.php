@@ -309,15 +309,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return array
 	 */
 	protected function _promotion_legend_items() {
-		$scope_legend = array();
-		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
-			if ( $scope instanceof EE_Promotion_Scope ) {
-				$scope_legend[$scope->slug] = array(
-					'class' => $scope->get_scope_icon(TRUE),
-					'desc' => $scope->label->singular
-				);
-			}
-		}
 		$items = array(
 			'active_status' => array(
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::active,
@@ -335,12 +326,28 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'class' => 'ee-status-legend ee-status-legend-' . EE_Promotion::unavailable,
 				'desc' => EEH_Template::pretty_status( EE_Promotion::unavailable, FALSE, 'sentence')
 				),
-			array(
+			'' => array(
 				'class' => '',
-				'desc' => '<span class="ee-infinity-sign">&#8734;</span>   ' . __('Unlimited', 'event_espresso')
-			)
+				'desc' => ''
+			),
 		);
-		return array_merge( $scope_legend, $items);
+		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
+			if ( $scope instanceof EE_Promotion_Scope ) {
+				$items[ $scope->slug ] = array(
+					'class' => $scope->get_scope_icon( true ),
+					'desc'  => $scope->label->singular
+				);
+			}
+		}
+		$items['exclusive'] = array(
+			'class' => 'dashicons dashicons-awards',
+			'desc'  => '' . __( 'Exclusive (can not be combined with other promotions)', 'event_espresso' )
+		);
+		$items['unlimited'] = array(
+			'class' => '<span class="ee-infinity-sign" style="margin-right: 0.5em;">&#8734;</span>',
+			'desc'  => '' . __( 'Unlimited', 'event_espresso' )
+		);
+		return $items;
 	}
 
 
@@ -403,6 +410,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$promotion_uses = $this->_promotion->uses();
 		$form_args = array(
 			'promotion' => $this->_promotion,
+			'promotion_exclusive' => EEH_Form_Fields::select_input( 'PRO_exclusive', $this->_yes_no_values, $this->_promotion->is_exclusive() ),
 			'promotion_uses' => $promotion_uses !== EE_INF_IN_DB ? $promotion_uses : '',
 			'price_type_selector' => $this->_get_price_type_selector(),
 			'scope_selector' => $this->_get_promotion_scope_selector()
@@ -489,6 +497,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'PRO_scope' => !empty( $this->_req_data['PRO_scope'] ) ? $this->_req_data['PRO_scope'] : 'Event',
 			'PRO_start' => !empty( $this->_req_data['PRO_start'] ) ? $this->_req_data['PRO_start'] : NULL,
 			'PRO_end' => ! empty( $this->_req_data['PRO_end'] ) ? $this->_req_data['PRO_end'] : NULL,
+			'PRO_exclusive' => isset( $this->_req_data['PRO_exclusive'] ) ? $this->_req_data['PRO_exclusive'] : true,
 			'PRO_uses' => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses'] : EE_INF_IN_DB,
 			'PRO_accept_msg' => ! empty( $this->_req_data['PRO_accept_msg'] ) ? $this->_req_data['PRO_accept_msg'] : '',
 			'PRO_decline_msg' => !empty( $this->_req_data['PRO_decline_msg'] ) ? $this->_req_data['PRO_decline_msg'] : ''
@@ -500,7 +509,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'PRC_amount' => !empty( $this->_req_data['PRC_amount'] ) ? $this->_req_data['PRC_amount'] : 0,
 			'PRC_desc' => !empty( $this->_req_data['PRC_desc'] ) ? $this->_req_data['PRC_desc'] : ''
 		);
-
 		//first handle the price object
 		$price = empty( $promo_price_values['PRC_ID'] ) ? EE_Price::new_instance( $promo_price_values ) : EEM_Price::instance()->get_one_by_ID( $promo_price_values['PRC_ID'] );
 
