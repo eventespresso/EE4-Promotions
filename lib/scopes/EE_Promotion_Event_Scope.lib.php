@@ -25,12 +25,12 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$this->label->singular = __('Event', 'event_espresso');
 		$this->label->plural = __('Events', 'event_espresso');
 		$this->slug = 'Event';
-
-		//filters
-		//filter for get_events on admin list table to only show events attached to specific promotion.
+		// filter for get_events on admin list table to only show events attached to specific promotion.
 		add_filter( 'FHEE__Events_Admin_Page__get_events__where', array( $this, 'event_list_query_params' ), 10, 2 );
-		//filter to show a helpful title on events list table when displaying events filtered by promotion
+		// filter to show a helpful title on events list table when displaying events filtered by promotion
 		add_filter( 'FHEE__EE_Admin_Page___display_admin_list_table_page__before_list_table__template_arg', array( $this, 'before_events_list_table_content' ), 10, 4 );
+		// control which events have promotions applied to them
+		add_filter( 'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item', array( $this, 'is_applicable_item' ), 10, 2 );
 	}
 
 
@@ -69,11 +69,10 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string  If correct page then and conditions are met the new string. Otherwise existing.
 	 */
 	public function before_events_list_table_content( $content, $page_slug, $req_data, $req_action ) {
-		if ( $page_slug !== 'espresso_events' || $req_action !== 'default' || empty( $req_data['PRO_ID']) )
+		if ( $page_slug !== 'espresso_events' || $req_action !== 'default' || empty( $req_data['PRO_ID'] ) ) {
 			return $content;
-
+		}
 		$promotion = EEM_Promotion::instance()->get_one_by_ID( $req_data['PRO_ID'] );
-
 		if ( $promotion instanceof EE_Promotion ) {
 			$query_args = array(
 				'action' => 'edit',
@@ -110,7 +109,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			switch ( $link ) {
 
 				case 'front' :
-					//@todo eventually a filter could be added here so that the link goes to a filtered archive view of the events JUST for this promotion in the frontend. For now we won't don anything (cause I doubt this will be used much).
+					//@todo eventually a filter could be added here so that the link goes to a filtered archive view of the events JUST for this promotion in the frontend. For now we won't do anything (cause I doubt this will be used much).
 					$prepend = $append = '';
 					break;
 
@@ -420,6 +419,19 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	}
 
 
+
+	/**
+	 * is_applicable_item
+	 * control which events have promotions applied to them
+	 *
+	 * @param bool          $is_applicable_item
+	 * @param \EE_Line_Item $object_type_line_item
+	 * @return bool
+	 */
+	public function is_applicable_item( $is_applicable_item = true, EE_Line_Item $object_type_line_item ) {
+		$is_applicable_item = $object_type_line_item->total() > 0 ? $is_applicable_item : false;
+		return $is_applicable_item;
+	}
 
 }
 // end of file :
