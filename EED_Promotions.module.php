@@ -69,11 +69,11 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
 		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 // _get_promotions
-		 add_action( 'wp_ajax_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
-		 add_action( 'wp_ajax_nopriv_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
+		 add_action( 'wp_ajax_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
+		 add_action( 'wp_ajax_nopriv_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
 		 // submit_promo_code
-		 add_action( 'wp_ajax_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
-		 add_action( 'wp_ajax_nopriv_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+		 add_action( 'wp_ajax_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+		 add_action( 'wp_ajax_nopriv_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
 		 // adjust SPCO totals
 		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
 		 // TXN admin
@@ -479,7 +479,7 @@ class EED_Promotions extends EED_Module {
 			// and make sure the model cache is
 			$cart->get_grand_total()->get_model()->refresh_entity_map_with( $cart->get_grand_total()->ID(), $cart->get_grand_total() );
 			$promotion = $this->get_promotion_details_from_request();
-			if ( $promotion ) {
+			if ( $promotion instanceof EE_Promotion ) {
 				// determine if the promotion can be applied to an item in the current cart
 				$applicable_items = $this->get_applicable_items( $promotion, $cart, FALSE );
 				if ( ! empty( $applicable_items )) {
@@ -500,7 +500,10 @@ class EED_Promotions extends EED_Module {
 		} else {
 			EE_Error::add_error(
 				sprintf(
-					__( 'We\'re sorry, but the %1$s could not be applied because the event queue could not be retrieved.', 'event_espresso' ),
+					apply_filters(
+						'FHEE__EED_Promotions___submit_promo_code__invalid_cart_notice',
+						__( 'We\'re sorry, but the %1$s could not be applied because the event cart could not be retrieved.', 'event_espresso' )
+					),
 					strtolower( $this->_config->label->singular )
 				),
 				__FILE__, __FUNCTION__, __LINE__
@@ -517,7 +520,7 @@ class EED_Promotions extends EED_Module {
 	 *
 	 * @access 	public
 	 * @param string $promo_code
-	 * @return 	EE_Promotion | bool
+	 * @return 	EE_Promotion
 	 */
 	public function get_promotion_details_from_request( $promo_code = '' ) {
 		// get promo code from $_REQUEST or use incoming default value
@@ -529,14 +532,17 @@ class EED_Promotions extends EED_Module {
 		if ( ! $promo instanceof EE_Promotion ) {
 			EE_Error::add_attention(
 				sprintf(
-					__( 'We\'re sorry, but the %1$s "%2$s" appears to be invalid.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
+					apply_filters(
+						'FHEE__EED_Promotions__get_promotion_details_from_request__invalid_promotion_notice',
+						__( 'We\'re sorry, but the %1$s "%2$s" appears to be invalid.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' )
+					),
 					strtolower( $this->_config->label->singular ),
 					$promo_code,
 					'<br />'
 				),
 				__FILE__, __FUNCTION__, __LINE__
 			);
-			return FALSE;
+			return null;
 		}
 		return $promo;
 	}
@@ -554,7 +560,7 @@ class EED_Promotions extends EED_Module {
 	 * @param bool          $suppress_notices
 	 * @return EE_Line_Item[]
 	 */
-	public function get_applicable_items( EE_Promotion $promotion, EE_Cart $cart, $suppress_notices = TRUE ) {
+	public function get_applicable_items( EE_Promotion $promotion, EE_Cart $cart, $suppress_notices = true ) {
 		$applicable_items = array();
 		// verify EE_Promotion
 		if ( $promotion instanceof EE_Promotion ) {
@@ -566,7 +572,10 @@ class EED_Promotions extends EED_Module {
 		if ( empty( $applicable_items ) && ! $suppress_notices) {
 			EE_Error::add_attention(
 				sprintf(
-					__( 'We\'re sorry, but the %1$s "%2$s" could not be applied to any %4$s.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
+					apply_filters(
+						'FHEE__EED_Promotions__get_applicable_items__no_applicable_items_notice',
+						__( 'We\'re sorry, but the %1$s "%2$s" could not be applied to any %4$s.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' )
+					),
 					strtolower( $this->_config->label->singular ),
 					$promotion->code(),
 					'<br />',
@@ -595,7 +604,10 @@ class EED_Promotions extends EED_Module {
 		// verify EE_Promotion
 		if ( $promotion instanceof EE_Promotion ) {
 			foreach ( $applicable_items as $applicable_item ) {
-				if ( $this->verify_no_existing_promotion_line_items( $applicable_item, $promotion )) {
+				if (
+					$this->verify_no_existing_promotion_line_items( $applicable_item, $promotion ) &&
+					$this->verify_no_exclusive_promotions_combined( $applicable_item, $promotion )
+				) {
 					$promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item( $applicable_item, $promotion, $promotion->name() );
 					if ( $promotion_line_item instanceof EE_Line_Item ) {
 						$success = $this->add_promotion_line_item( $applicable_item, $promotion_line_item, $promotion ) ? TRUE : $success;
@@ -624,10 +636,13 @@ class EED_Promotions extends EED_Module {
 		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
 		// check that promotion hasn't already been applied
 		$existing_promotion_line_item = $EEM_Line_Item->get_existing_promotion_line_item( $parent_line_item, $promotion );
-		if ( $existing_promotion_line_item instanceof EE_Line_Item && ( $promotion->code() || $promotion->is_exclusive() ) ) {
+		if ( $existing_promotion_line_item instanceof EE_Line_Item && $promotion->code() ) {
 			EE_Error::add_attention(
 				sprintf(
-					__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' ),
+					apply_filters(
+						'FHEE__EED_Promotions__verify_no_existing_promotion_line_items__existing_promotion_code_notice',
+						__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' )
+					),
 					$existing_promotion_line_item->name(),
 					$parent_line_item->desc(),
 					$parent_line_item->OBJ_type(),
@@ -635,9 +650,97 @@ class EED_Promotions extends EED_Module {
 				),
 				__FILE__, __FUNCTION__, __LINE__
 			);
-			return FALSE;
+			return false;
 		}
-		return TRUE;
+		return true;
+	}
+
+
+
+
+	/**
+	 * verify_no_exclusive_promotions_combined
+	 * verifies that no exclusive promotions are being combined together
+	 *
+	 * @since   1.0.0
+	 *
+	 * @param EE_Line_Item $parent_line_item
+	 * @param EE_Promotion $promotion
+	 * @return EE_Line_Item
+	 */
+	public function verify_no_exclusive_promotions_combined( EE_Line_Item $parent_line_item, EE_Promotion $promotion ) {
+		/** @type EEM_Line_Item $EEM_Line_Item */
+		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
+		// get all existing promotions that have already been added to the cart
+		$existing_promotion_line_items = $EEM_Line_Item->get_all_promotion_line_items( $parent_line_item );
+		if ( ! empty( $existing_promotion_line_items ) ) {
+			// can't apply this new promotion if it is exclusive
+			if ( $promotion->is_exclusive() ) {
+				EE_Error::add_attention(
+					sprintf(
+						apply_filters(
+							'FHEE__EED_Promotions__verify_no_exclusive_promotions_combined__new_promotion_is_exclusive_notice',
+							__( 'We\'re sorry, but %3$s have already been added to the cart and the "%1$s%2$s" promotion can not be combined with others.', 'event_espresso' )
+						),
+						$promotion->code() ? $promotion->code() . ' : ' : '',
+						$promotion->name(),
+						strtolower( $this->_config->label->plural )
+					),
+					__FILE__, __FUNCTION__, __LINE__
+				);
+				return false;
+			}
+			// new promotion is not exclusive...
+			// so now determine if any existing ones are
+			foreach ( $existing_promotion_line_items as $existing_promotion_line_item ) {
+				if ( $existing_promotion_line_item instanceof EE_Line_Item ) {
+					$existing_promotion = $this->get_promotion_from_line_item( $existing_promotion_line_item );
+					if ( $existing_promotion instanceof EE_Promotion && $existing_promotion->is_exclusive() ) {
+						EE_Error::add_attention(
+							sprintf(
+								apply_filters(
+									'FHEE__EED_Promotions__verify_no_exclusive_promotions_combined__existing_promotion_is_exclusive_notice',
+									__( 'We\'re sorry, but the "%1$s%2$s" %3$s has already been added to the cart and can not be combined with others.', 'event_espresso' )
+								),
+								$existing_promotion->code() ? $existing_promotion->code() . ' : ' : '',
+								$existing_promotion->name(),
+								strtolower( $this->_config->label->singular )
+							),
+							__FILE__, __FUNCTION__, __LINE__
+						);
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+
+
+	/**
+	 *    get_promotion_from_line_item
+	 *
+	 * @access 	public
+	 * @param EE_Line_Item $promotion_line_item the line item representing the new promotion
+	 * @return 	EE_Promotion | null
+	 */
+	public function get_promotion_from_line_item( EE_Line_Item $promotion_line_item ) {
+		$promotion = EEM_Promotion::instance()->get_one_by_ID( $promotion_line_item->OBJ_ID() );
+		if ( ! $promotion instanceof EE_Promotion ) {
+			EE_Error::add_error(
+				sprintf(
+					apply_filters(
+						'FHEE__EED_Promotions__get_promotion_from_line_item__invalid_promotion_notice',
+						__( 'We\'re sorry, but the %1$s could not be applied because information pertaining to it could not be retrieved from the database.', 'event_espresso' )
+					),
+					strtolower( $this->_config->label->singular )
+				),
+				__FILE__, __FUNCTION__, __LINE__
+			);
+			return null;
+		}
+		return $promotion;
 	}
 
 
