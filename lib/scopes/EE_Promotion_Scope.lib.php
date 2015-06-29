@@ -765,7 +765,7 @@ abstract class EE_Promotion_Scope {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
 		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
-		$promo_name .= $promotion->code() != '' ? ' (' . $promotion->code() . ')' : '';
+		$promo_name .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
