@@ -426,7 +426,6 @@ class EED_Promotions extends EED_Module {
 							'ee_promotion_code_submit' 	=> new EE_Submit_Input(
 								array(
 									'html_id' 			=> 'ee-promotion-code',
-									'html_class' 	=> 'spco-next-step-btn',
 									'html_name' 	=> 'ee_promotion_code_submit',
 									'default' 			=> apply_filters(
 										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_submit__default',
