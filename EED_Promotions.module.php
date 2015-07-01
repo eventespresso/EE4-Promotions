@@ -785,7 +785,8 @@ class EED_Promotions extends EED_Module {
 			'payment_info' => $Line_Item_Display->display_line_item(
 				$cart->get_grand_total(),
 				array( 'registrations' => $registrations )
-			)
+			),
+			'cart_total' => $cart->get_grand_total()->total()
 		);
 	}
 
