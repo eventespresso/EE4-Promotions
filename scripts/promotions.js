@@ -136,6 +136,11 @@ jQuery(document).ready(function($) {
 			//SPCO.console_log( 'payment_info', response.return_data.payment_info, true );
 			$('#spco-payment-info-table' ).find('tbody').html( response.return_data.payment_info );
 			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+			if ( typeof response.return_data.cart_total !== 'undefined' ) {
+				if ( parseFloat( response.return_data.cart_total ) === 0 ) {
+					SPCO.main_container.find( '.spco-next-step-btn' ).trigger( 'click' );
+				}
+			}
 		},
 
 
@@ -179,6 +184,7 @@ jQuery(document).ready(function($) {
 		 * @param  {object} response
 		 */
 		process_response : function( response ) {
+			PROMO.form_input.val( '' );
 			if ( typeof response !== 'undefined' && response !== null ) {
 
 				//SPCO.console_log_object( 'PROMO.response', response, 0 );
