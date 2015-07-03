@@ -623,12 +623,11 @@ abstract class EE_Promotion_Scope {
 		}
 		// retrieve promotion objects for this promotion type scope
 		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug )));
-//		d( $promotion_objects );
 		if ( ! empty( $promotion_objects )) {
 			foreach ( $promotion_objects as $promotion_object ) {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
 					// can the promotion still be be redeemed fro this scope object?
-					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+					if ( $promotion->uses_left_for_scope_object( $promotion_object ) > 0 ) {
 						// make sure array exists for holding redeemable scope promos
 						if ( ! isset( $redeemable_scope_promos[ $this->slug ] )) {
 							$redeemable_scope_promos[ $this->slug ] = array();
