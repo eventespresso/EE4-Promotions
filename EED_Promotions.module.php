@@ -603,13 +603,15 @@ class EED_Promotions extends EED_Module {
 		// verify EE_Promotion
 		if ( $promotion instanceof EE_Promotion ) {
 			foreach ( $applicable_items as $applicable_item ) {
-				if (
-					$this->verify_no_existing_promotion_line_items( $applicable_item, $promotion ) &&
-					$this->verify_no_exclusive_promotions_combined( $applicable_item, $promotion )
-				) {
-					$promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item( $applicable_item, $promotion, $promotion->name() );
-					if ( $promotion_line_item instanceof EE_Line_Item ) {
-						$success = $this->add_promotion_line_item( $applicable_item, $promotion_line_item, $promotion ) ? TRUE : $success;
+				if ( $applicable_item instanceof EE_Line_Item ) {
+					if (
+						$this->verify_no_existing_promotion_line_items( $applicable_item, $promotion ) &&
+						$this->verify_no_exclusive_promotions_combined( $applicable_item, $promotion )
+					) {
+						$promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item( $applicable_item, $promotion, $promotion->name() );
+						if ( $promotion_line_item instanceof EE_Line_Item ) {
+							$success = $this->add_promotion_line_item( $applicable_item, $promotion_line_item, $promotion ) ? true : $success;
+						}
 					}
 				}
 			}
