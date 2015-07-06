@@ -76,15 +76,6 @@ Class  EE_Promotions extends EE_Addon {
 						'ee_delete_promotion',
 						'ee_delete_promotions',
 						'ee_delete_others_promotions',
-						'ee_read_promotion_rule',
-						'ee_read_promotion_rules',
-						'ee_read_others_promotions_rules',
-						'ee_edit_promotion_rule',
-						'ee_edit_promotions_rules',
-						'ee_edit_others_promotions_rules',
-						'ee_delete_promotion_rule',
-						'ee_delete_promotions_rules',
-						'ee_delete_others_promotions_rules'
 						)
 					),
 				'capability_maps' => array(
