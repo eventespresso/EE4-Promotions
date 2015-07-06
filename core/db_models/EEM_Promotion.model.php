@@ -39,7 +39,12 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				'PRO_uses'        		=> new EE_Integer_Field( 'PRO_uses', __( "Times this can be used in a given scope", "event_espresso" ), FALSE, EE_INF_IN_DB ),
 				'PRO_global'      		=> new EE_Boolean_Field( 'PRO_global', __( "Usable Globally?", "event_espresso" ), FALSE, FALSE ),
 				'PRO_global_uses' 	=> new EE_Integer_Field( 'PRO_global_uses', __( "Times it can be used in all scopes", "event_espresso" ), FALSE, EE_INF_IN_DB ),
-				'PRO_exclusive'   	=> new EE_Boolean_Field( 'PRO_exclusive', __( "Exclusive? (ie, can't be used with other promotions)", "event_espresso" ), FALSE, FALSE ),
+				'PRO_exclusive'   	=> new EE_Boolean_Field(
+					'PRO_exclusive',
+					__( "Exclusive? (ie, can't be used with other promotions)", "event_espresso" ),
+					false,
+					apply_filters( 'FHEE__EEM_Promotion__promotions_exclusive_default', true )
+				),
 				'PRO_accept_msg' 	=> new EE_Simple_HTML_Field( 'PRO_accept_msg', __( "Acceptance Message", "event_espresso" ), FALSE, __( "Accepted", "event_espresso" ) ),
 				'PRO_decline_msg'	=> new EE_Simple_HTML_Field( 'PRO_decline_msg', __( "Declined Message", "event_espresso" ), FALSE, __( "Declined", "event_espresso" ) ),
 				'PRO_default'     		=> new EE_Boolean_Field( 'PRO_default', __( "Usable by default on all new items within promotion's scope", "event_espresso" ), FALSE, FALSE ),

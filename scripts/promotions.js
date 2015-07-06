@@ -136,6 +136,11 @@ jQuery(document).ready(function($) {
 			//SPCO.console_log( 'payment_info', response.return_data.payment_info, true );
 			$('#spco-payment-info-table' ).find('tbody').html( response.return_data.payment_info );
 			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+			if ( typeof response.return_data.cart_total !== 'undefined' ) {
+				if ( parseFloat( response.return_data.cart_total ) === 0 ) {
+					SPCO.main_container.find( '.spco-next-step-btn' ).trigger( 'click' );
+				}
+			}
 		},
 
 
@@ -148,6 +153,7 @@ jQuery(document).ready(function($) {
 			if ( typeof PROMO.form_data.action === 'undefined' || PROMO.form_data.action === '' ) {
 				return;
 			}
+			PROMO.form_data.action = 'espresso_' + PROMO.form_data.action;
 			PROMO.form_data.noheader = 1;
 			PROMO.form_data.ee_front_ajax = 1;
 			PROMO.form_data.EESID = eei18n.EESID;
@@ -166,7 +172,7 @@ jQuery(document).ready(function($) {
 					PROMO.process_response( response );
 				},
 				error: function() {
-					return SPCO.ajax_request_server_error();
+					SPCO.ajax_request_server_error();
 				}
 			});
 		},
@@ -178,7 +184,8 @@ jQuery(document).ready(function($) {
 		 * @param  {object} response
 		 */
 		process_response : function( response ) {
-			if ( typeof response !== 'undefined' && typeof response !== null ) {
+			PROMO.form_input.val( '' );
+			if ( typeof response !== 'undefined' && response !== null ) {
 
 				//SPCO.console_log_object( 'PROMO.response', response, 0 );
 

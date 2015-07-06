@@ -71,6 +71,15 @@
 	</tr>
 	<tr>
 		<th scope="row">
+			<label for="PRO_uses"><?php _e('Promo Is Exclusive', 'event_espresso'); ?></label>
+		</th>
+		<td class="field-column">
+			<?php echo $promotion_exclusive; ?>
+			<p class="description"><?php _e('If set to "Yes" then this promotion can not be combined with any other promotions', 'event_espresso'); ?></p>
+		</td>
+	</tr>
+	<tr>
+		<th scope="row">
 			<label for="PRO_uses"><?php _e('Number of Uses', 'event_espresso'); ?></label>
 		</th>
 		<td class="field-column">

@@ -1,12 +1,12 @@
 <?php
 /*
-  Plugin Name: Event Espresso - Promotions (EE 4.7+)
+  Plugin Name: Event Espresso - Promotions (EE 4.8+)
   Plugin URI: http://www.eventespresso.com
-  Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.7 or higher.
-  Version: 1.0.0.rc.061
+  Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.8 or higher.
+  Version: 1.0.0.rc.074
   Author: Event Espresso
   Author URI: http://www.eventespresso.com
-  Copyright 2014 Event Espresso (email : support@eventespresso.com)
+  Copyright 2015 Event Espresso (email : support@eventespresso.com)
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License, version 2, as
@@ -29,7 +29,7 @@
  *
  * @ package		Event Espresso
  * @ author			Event Espresso
- * @ copyright	(c) 2008-2014 Event Espresso  All Rights Reserved.
+ * @ copyright	(c) 2008-2015 Event Espresso  All Rights Reserved.
  * @ license		http://eventespresso.com/support/terms-conditions/   * see Plugin Licensing *
  * @ link				http://www.eventespresso.com
  * @ version	 	EE4
@@ -37,8 +37,8 @@
  * ------------------------------------------------------------------------
  */
 
-define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.7.0.beta.000' );
-define( 'EE_PROMOTIONS_VERSION', '1.0.0.rc.061' );
+define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.8.0.beta.000' );
+define( 'EE_PROMOTIONS_VERSION', '1.0.0.rc.074' );
 define( 'EE_PROMOTIONS_PLUGIN_FILE', __FILE__ );
 
 function load_espresso_promotions() {

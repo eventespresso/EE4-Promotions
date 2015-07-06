@@ -211,7 +211,7 @@ jQuery(document).ready(function($){
 		 * @return {void}
 		 */
 		doAjax: function(data) {
-			$('.spinner').show();
+			$('.spinner').css('visibility', 'visible');
 			data.ee_admin_ajax = true;
 			data.page = typeof(data.page) === 'undefined' ? 'espresso_promotions' : data.page;/**/
 
@@ -220,7 +220,7 @@ jQuery(document).ready(function($){
 				url: ajaxurl,
 				data: data,
 				success: function(response, status, xhr) {
-					$('.spinner').hide();
+					$('.spinner').css('visibility', 'hidden');
 				}
 			});
 		}
@@ -371,5 +371,19 @@ jQuery(document).ready(function($){
 		var data = $(this).data();
 		$(data.field).val('');
 	});
+
+    $('#post-body').on( 'click', '.ee-clear-field', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var data = $(this).data();
+        $(data.clearfield).val('');
+    });
+
+    $('#post-body').on( 'click', '.ee-toggle-filters', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var data = $(this).data();
+        $(data.filterContainer).slideToggle();
+    });
 
 });

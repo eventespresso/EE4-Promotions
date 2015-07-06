@@ -48,6 +48,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			'valid_until' => __('Valid Until', 'event_espresso'),
 			'amount' => __('Discount', 'event_espresso'),
 			'redeemed' => __('Uses', 'event_espresso'),
+			'exclusive' => '<span class="small-text">' . __( 'Exclusive', 'event_espresso' ) . '</span >',
 			'actions' => __('Actions', 'event_espresso')
 			);
 
@@ -113,6 +114,12 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 	public function column_applies_to( EE_Promotion $item ) {
 		echo $item->applied_to_name( 'admin' );
+	}
+
+
+
+	public function column_exclusive( EE_Promotion $item ) {
+		echo $item->is_exclusive() ? '<span class="dashicons dashicons-awards"></span>' : '';
 	}
 
 

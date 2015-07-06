@@ -579,7 +579,7 @@ abstract class EE_Promotion_Scope {
 		$current_page = isset( $_REQUEST['paged'] ) ? $_REQUEST['paged'] : 1;
 		$perpage = isset( $_REQUEST['perpage'] ) ? $_REQUEST['perpage'] : $this->_per_page;
 		$url = isset( $_REQUEST['redirect_url'] ) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-		return EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
+		return '<span class="spinner"></span>&nbsp;' . EEH_Template::get_paging_html( $total_items, $current_page, $perpage, $url  );
 	}
 
 
@@ -623,12 +623,11 @@ abstract class EE_Promotion_Scope {
 		}
 		// retrieve promotion objects for this promotion type scope
 		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug )));
-//		d( $promotion_objects );
 		if ( ! empty( $promotion_objects )) {
 			foreach ( $promotion_objects as $promotion_object ) {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
 					// can the promotion still be be redeemed fro this scope object?
-					if ( $promotion->uses_left_for_scope_object( $promotion_object )) {
+					if ( $promotion->uses_left_for_scope_object( $promotion_object ) > 0 ) {
 						// make sure array exists for holding redeemable scope promos
 						if ( ! isset( $redeemable_scope_promos[ $this->slug ] )) {
 							$redeemable_scope_promos[ $this->slug ] = array();
@@ -668,6 +667,45 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
+	 * This determines if there are any saved filters for the given Promotion ID and if needed will overload the
+	 * $_REQUEST global for those filter values for use elsewhere in the promotion ui.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $PRO_ID
+	 * @return bool true when there were saved filters, false when not.
+	 */
+	protected function _maybe_overload_request_with_saved_filters( $PRO_ID = 0 ) {
+		//any saved filters (only on non-ajax requests)?
+		if ( ! empty( $PRO_ID ) && ! defined( 'DOING_AJAX') ) {
+			$set_filters = EEM_Extra_Meta::instance()->get_one(
+				array(
+					0 => array(
+						'OBJ_ID' => $PRO_ID,
+						'EXM_type' => 'Promotion',
+						'EXM_key' => 'promo_saved_filters'
+					)
+				)
+			);
+
+			$set_filters = $set_filters instanceof EE_Extra_Meta ? $set_filters->get( 'EXM_value' ) : array();
+
+			//overload $_REQUEST global
+			foreach ( $set_filters as $filter_key => $filter_value ) {
+				if ( $filter_value ) {
+					$_REQUEST[$filter_key] = $filter_value;
+				}
+			}
+			if ( ! empty( $set_filters ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+	/**
 	 * get_object_line_items_from_cart
 	 * searches the line items for any objects that this promotion applies to
 	 *
@@ -684,10 +722,18 @@ abstract class EE_Promotion_Scope {
 		$OBJ_type = empty( $OBJ_type ) ? $this->slug : $OBJ_type;
 		// check that redeemable scope promos for the requested type exist
 		if ( isset( $redeemable_scope_promos[ $OBJ_type ] )) {
-			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs( $total_line_item, $OBJ_type, $redeemable_scope_promos[ $OBJ_type ] );
+			$object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs(
+				$total_line_item,
+				$OBJ_type,
+				$redeemable_scope_promos[ $OBJ_type ]
+			);
 			if ( is_array( $object_type_line_items )) {
 				foreach ( $object_type_line_items as $object_type_line_item ) {
-					$applicable_items[] = $object_type_line_item;
+					if (
+						apply_filters( 'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item', true, $object_type_line_item )
+					) {
+						$applicable_items[ ] = $object_type_line_item;
+					}
 				}
 			}
 		}
@@ -717,13 +763,19 @@ abstract class EE_Promotion_Scope {
 		if ( ! $promotion instanceof EE_Promotion ) {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
+		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
+		$promo_name .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
 				'LIN_code' 			=> 'promotion-' . $promotion->ID(),
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
-				'LIN_name' 			=> __( 'Promotion', 'event_espresso' ),
-				'LIN_desc' 			=> ! empty( $promo_name ) ? $promo_name : $promotion->name(),
+				'LIN_name' 			=> apply_filters(
+					'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
+					__( 'Discount', 'event_espresso' ),
+					$promotion
+				),
+				'LIN_desc' 			=> $promo_name,
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> FALSE,

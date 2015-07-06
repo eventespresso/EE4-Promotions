@@ -1,253 +1,276 @@
 #promotion-details-form .ee-numeric {
-	width: 100px;
+    width: 100px;
 }
 
 #promotions-applied-to-mbox input[type='checkbox'] {
-	margin-top: 1px;
+    margin-top: 1px;
 }
 
 #promotion-details-form .dashicons-tagcloud {
-	font-size: 20px;
-	top: 0px;
-	margin-right: 3px;
+    font-size: 20px;
+    top: 0px;
+    margin-right: 3px;
 }
 
 #promotion-details-form .regular-text,
 #promotion-details-form select {
-	margin-right: 15px;
+    margin-right: 15px;
 }
 
 .ee-promotions-selected-count {
-	margin: 1em 0;
+    margin: 1em 0;
 }
 
 .ee-promotions-applies-to-filters {
-	background-color: #ededed;
-	padding: 10px;
-	padding-top: 1px;
+    background-color: #ededed;
+    padding: 10px;
+    padding-top: 1px;
 }
 
 .ee-promotions-applies-to-filters select {
-	width: 100%;
+    width: 100%;
 }
 
 .ee-promotions-filter-lbl {
-	margin-top: 1em;
-	font-size: .8em;
-	line-height : .8em;
-	letter-spacing: 1px;
-	color: #999;
+    margin-top: 1em;
+    font-size: .8em;
+    line-height : .8em;
+    letter-spacing: 1px;
+    color: #999;
 }
 
 .ee-promotions-applies-to-filters .promotions-date-filter,
 .ee-date-column .ee-datepicker {
-	position: relative;
-	padding-right: 25px;
+    position: relative;
+    padding-right: 25px;
 }
 
 .ee-promotions-applies-to-filters .promotions-date-filter {
-	width: 100%;
+    width: 100%;
 }
 
 .ee-promotions-applies-to-filters .promotions-general-filter {
-	padding-top: 5px;
+    padding-top: 5px;
 }
 
 .ee-promotions-applies-to-filters .button {
-	margin-top: 8px;
+    margin-top: 8px;
 }
 
 .ee-promotions-applies-to-filters .dashicons {
-	display: inline-block;
-	float: right;
+    display: inline-block;
+    float: right;
 }
 
-.ee-promotions-applies-to-filters .dashicons-calendar:before {
-	position: absolute;
-	font-size: 18px;
-	top: -22px;
-	left: -18px;
+.ee-promotions-applies-to-filters .dashicons-calendar:before, .ee-promotions-applies-to-filters .dashicons-editor-removeformatting:before {
+    position: absolute;
+    font-size: 18px;
+    top: -22px;
+    left: -35px;
+}
+
+.ee-promotions-applies-to-filters .dashicons-editor-removeformatting:before {
+    left: -15px;
+    cursor: pointer;
+}
+
+.ee-promotions-applies-to-filters .dashicons-admin-settings:before {
+    font-size: 1.5em;
+    cursor: pointer;
 }
 
 .ee-date-column .dashicons-calendar:before {
-	position:absolute;
-	font-size: 18px;
-	top: -10px;
-	left: -40px;
+    position:absolute;
+    font-size: 18px;
+    top: -10px;
+    left: -40px;
 }
 
 .ee-date-column .dashicons-editor-removeformatting:before {
-	position:absolute;
-	font-size: 18px;
-	top: -10px;
-	left: -10px;
+    position:absolute;
+    font-size: 18px;
+    top: -10px;
+    left: -10px;
 }
 
 .ee-promotions-applies-to-selector {
-	margin-top: 15px;
+    margin-top: 15px;
 }
 
 .ee-sort-container, .ee-promotions-applies-to-paging {
-	display: inline-block;
-	float: right;
+    display: inline-block;
+    float: right;
 }
 
 .ee-promotions-applies-to-paging {
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 .ee-promotions-applies-to-paging .tablenav .tablenav-pages a {
-	font-size: 14px;
-	padding: 0 7px 2px;
+    font-size: 14px;
+    padding: 0 7px 2px;
 }
 .ee-promotions-applies-to-paging .tablenav .tablenav-pages .current-page {
-	font-size: 12px;
-	padding: 1px 2px;
+    font-size: 12px;
+    padding: 1px 2px;
 }
 .ee-promotions-applies-to-paging .tablenav .tablenav-pages {
-	font-size: 12px;
-	line-height: 24px;
+    font-size: 12px;
+    line-height: 24px;
 }
 
 .ee-sort-container .dashicons:before {
-	font-size: 20px;
+    font-size: 20px;
 }
 
 .ee-promotions-applies-to-items-container {
-	margin-top: 5px;
-	border: 1px solid grey;
-	padding: 1px 10px;
-	min-height: 180px;
-	height:auto;
-	max-height: 640px;
+    margin-top: 5px;
+    border: 1px solid grey;
+    padding: 1px 10px;
+    min-height: 180px;
+    height:auto;
+    max-height: 640px;
 }
 
 .ee-promotions-applies-to-filters .spinner {
-	position: relative;
-	top: 10px;
+    position: relative;
+    top: 10px;
 }
 
 /** LIST TABLE **/
 .wp-list-table.promotion th,
 .wp-list-table.promotion th a {
-	vertical-align: middle;
-	font-size:13px;
+    vertical-align: middle;
+    font-size:13px;
+}
+.wp-list-table.promotion th,
+.wp-list-table.promotion td {
+    padding: 8px 5px;
+}
+.wp-list-table.promotion th.sortable {
+    padding:0;
 }
 
 .wp-list-table.promotion th.column-cb,
 .wp-list-table.promotion th.column-id {
-	text-align: center;
+    text-align: center;
 }
 
 .wp-list-table.promotion .column-id {
-	width: 5%;
-	text-align: right;
+    width: 5%;
+    text-align: right;
 }
 
 .wp-list-table.promotion .column-name {
-	width: 15%;
+    width: 15%;
 }
 
 .wp-list-table.promotion .column-code {
-	/*width: 20%;*/
+    /*width: 20%;*/
 }
 
 .wp-list-table.promotion .column-applies_to {
-	width: 10%;
+    width: 10%;
+}
+
+.wp-list-table.promotion .column-exclusive {
+    width: 4.5%;
+    text-align: center;
 }
 
 .wp-list-table.promotion .column-valid_from,
 .wp-list-table.promotion .column-valid_until {
-	width: 9.5%;
-	text-align: right;
+    width: 9.5%;
+    text-align: right;
 }
 
 .wp-list-table.promotion .column-amount {
-	width: 6%;
-	text-align: right;
-	line-height: 1em;
+    width: 6%;
+    text-align: right;
+    line-height: 1em;
 }
 
 .wp-list-table.promotion .column-redeemed {
-	width: 8%;
-	text-align: center;
+    width: 8%;
+    text-align: center;
 }
 
 .wp-list-table.promotion .column-actions {
-	width: 6%;
-	text-align: right;
+    width: 6%;
+    text-align: right;
+    padding-right: 10px;
 }
 .wp-list-table.promotion .column-actions .dashicons {
-	margin-right:0;
+    margin-right:0;
 }
 .wp-list-table.promotion .column-actions .dashicons-edit {
-	margin-right:.4em;
+    margin-right:.4em;
 }
 
 .wp-list-table .ee-lock-icon:before {
-	margin-bottom: 5px;
-	margin-top: 0px;
+    margin-bottom: 5px;
+    margin-top: 0px;
 }
 
 /** status strip **/
 
 /*upcoming*/
 .pro-status-PRU {
-	border-left-color: #00B1CA;
+    border-left-color: #00B1CA;
 }
 
 /*active*/
 .pro-status-PRA {
-	border-left-color: #70CC50;
+    border-left-color: #70CC50;
 }
 
 /*expired*/
 .pro-status-PRX {
-	border-left-color: #AC9D9C;
+    border-left-color: #AC9D9C;
 }
 
 /*unavailable*/
 .pro-status-PRN {
-	border-left-color: #E44064;
+    border-left-color: #E44064;
 }
 
 .widefat td.column-pro_status, .widefat th.column-pro_status {
-	width: 1%;
-	padding: 0;
-	margin: 0;
+    width: 1%;
+    padding: 0;
+    margin: 0;
 }
 
 .ee-status-legend-PRU {
-	background-color: #00B1CA;
+    background-color: #00B1CA;
 }
 .ee-status-legend-PRA {
-	background-color: #70CC50;
+    background-color: #70CC50;
 }
 .ee-status-legend-PRX {
-	background-color: #AC9D9C;
+    background-color: #AC9D9C;
 }
 .ee-status-legend-PRN {
-	background-color: #E44064;
+    background-color: #E44064;
 }
 
 
 /** count bubble **/
 .promotion-count-bubble {
-	background-color: #555555;
-	display: inline-block;
-	max-width: 40px;
-	min-width: 15px;
-	max-height: 15px;
-	margin-left: 1em;
-	padding: 2px;
-	line-height: 15px;
-	color: #fff;
-	font-size: 10px;
-	text-align: center;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 15px;
+    background-color: #555555;
+    display: inline-block;
+    max-width: 40px;
+    min-width: 15px;
+    max-height: 15px;
+    margin-left: 1em;
+    padding: 2px;
+    line-height: 15px;
+    color: #fff;
+    font-size: 10px;
+    text-align: center;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 15px;
 }
 
 #reset-promo-code-prefix {
-	margin: 0 1em;
+    margin: 0 1em;
 }
