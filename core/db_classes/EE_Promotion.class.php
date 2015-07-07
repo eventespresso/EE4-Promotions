@@ -17,7 +17,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  * @subpackage models
  * @author Mike Nelson
  */
-class EE_Promotion extends EE_Soft_Delete_Base_Class implements EEI_Line_Item_Object, EEI_Admin_Links {
+class EE_Promotion extends EE_Soft_Delete_Base_Class implements EEI_Line_Item_Object, EEI_Admin_Links, EEI_Visual_Representation {
 
 	//constants
 
@@ -885,6 +885,16 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements EEI_Line_Item_Ob
 	 */
 	public function get_ID() {
 		return $this->ID();
+	}
+
+
+	/**
+	 * Implementation for EEI_Visual_Representation interface method.
+	 * @see EEI_Visual_Representation for comments
+	 * @return string
+	 */
+	public function get_icon() {
+		return '<span class="dashicons dashicons-tag"></span>';
 	}
 
 
