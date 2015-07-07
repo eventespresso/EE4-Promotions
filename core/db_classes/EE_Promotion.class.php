@@ -17,7 +17,7 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  * @subpackage models
  * @author Mike Nelson
  */
-class EE_Promotion extends EE_Soft_Delete_Base_Class{
+class EE_Promotion extends EE_Soft_Delete_Base_Class implements EEI_Line_Item_Object, EEI_Admin_Links, EEI_Has_Icon {
 
 	//constants
 
@@ -866,4 +866,83 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class{
 	}
 
 
+
+
+	/**
+	 * Implementation for EEI_Has_Icon interface method.
+	 * @see EEI_Visual_Representation for comments
+	 * @return string
+	 */
+	public function get_icon() {
+		return '<span class="dashicons dashicons-tag"></span>';
+	}
+
+
+
+
+	/**
+	 * Implementation for EEI_Admin_Links interface method.
+	 * @see EEI_Admin_Links for comments
+	 * @return string
+	 */
+	public function get_admin_details_link() {
+		return $this->get_admin_edit_link();
+	}
+
+
+
+
+
+
+	/**
+	 * Implementation for EEI_Admin_Links interface method.
+	 * @see EEI_Admin_Links for comments
+	 * @return return string
+	 */
+	public function get_admin_edit_link() {
+		EE_Registry::instance()->load_helper('URL');
+		return EEH_URL::add_query_args_and_nonce( array(
+			'page' => 'espresso_promotions',
+			'action' => 'edit',
+			'PRO_ID' => $this->ID()
+		),
+			admin_url( 'admin.php' )
+		);
+	}
+
+
+
+	/**
+	 * Implementation for EEI_Admin_Links interface method.
+	 * @see EEI_Admin_Links for comments
+	 * @return string
+	 */
+	public function get_admin_settings_link() {
+		EE_Registry::instance()->load_helper('URL');
+		return EEH_URL::add_query_args_and_nonce( array(
+			'page' => 'espresso_promotions',
+			'action' => 'basic_settings'
+		),
+			admin_url( 'admin.php' )
+		);
+	}
+
+
+
+
+
+	/**
+	 * Implementation for EEI_Admin_Links interface method.
+	 * @see EEI_Admin_Links for comments
+	 * @return string
+	 */
+	public function get_admin_overview_link() {
+		EE_Registry::instance()->load_helper('URL');
+		return EEH_URL::add_query_args_and_nonce( array(
+			'page' => 'espresso_promotions',
+			'action' => 'default'
+		),
+			admin_url( 'admin.php' )
+		);
+	}
 }
