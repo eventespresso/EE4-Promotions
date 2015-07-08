@@ -56,8 +56,6 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 		$this->_model_relations = array(
 			'Price'            				=> new EE_Belongs_To_Relation(),
-			'Rule'             				=> new EE_HABTM_Relation( 'Promotion_Rule' ),
-			'Promotion_Rule'   	=> new EE_Has_Many_Relation(),
 			'Promotion_Object' 	=> new EE_Has_Many_Relation()
 		);
 
