@@ -90,18 +90,6 @@ Class  EE_Promotions extends EE_Addon {
 					2 => array( 'EE_Meta_Capability_Map_Delete' => array(
 						'ee_delete_promotion',
 						array( 'Promotion', '', 'ee_delete_others_promotions', '' )
-						) ),
-					3 => array( 'EE_Meta_Capability_Map_Read' => array(
-						'ee_read_promotion_rule',
-						array( 'Rule', '', 'ee_read_others_promotion_rules', '' )
-						) ),
-					4 => array( 'EE_Meta_Capability_Map_Edit' => array(
-						'ee_edit_promotion_rule',
-						array( 'Rule', '', 'ee_edit_others_promotion_rules', '' )
-						) ),
-					5 => array( 'EE_Meta_Capability_Map_Delete' => array(
-						'ee_delete_promotion_rule',
-						array( 'Rule', '', 'ee_delete_others_promotion_rules', '' )
 						) )
 					)
 			)
