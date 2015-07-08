@@ -28,13 +28,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	 * @return boolean
 	 */
 	public function can_migrate_from_version($versions) {
-		$can_migrate = FALSE;
-		// first compare versions
-		if ( isset( $versions['Promotions'] ) && version_compare( '1.0.0', $versions['Promotions'], '>' ) ){
-			// now check that old table even exists
-			$can_migrate = $this->_old_table_exists( 'events_discount_codes' );
-		}
-		return $can_migrate;
+		return false;
 	}
 
 	public function schema_changes_after_migration() {
