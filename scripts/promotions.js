@@ -144,7 +144,9 @@ jQuery(document).ready(function($) {
 			$('#spco-payment-info-table' ).find('tbody').html( response.return_data.payment_info );
 			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response, true );
 			if ( typeof response.return_data.cart_total !== 'undefined' ) {
-				if ( parseFloat( response.return_data.cart_total ) === 0 ) {
+				var payment_amount = parseFloat( response.return_data.cart_total );
+				SPCO.main_container.trigger( 'spco_payment_amount', [ payment_amount ] );
+				if ( payment_amount === 0 ) {
 					SPCO.enable_submit_buttons();
 					SPCO.main_container.find( '.spco-next-step-btn' ).trigger( 'click' );
 				}
