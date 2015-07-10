@@ -20,7 +20,9 @@ jQuery(document).ready(function($) {
 	 * }}
 	 * @namespace eei18n
 	 * @type {{
+		 *     EESID: string,
 		 *     ajax_url: string,
+		 *     wp_debug: boolean,
 		 *     no_promotions_code: string
 		 * }}
 	 * @namespace response
@@ -31,6 +33,11 @@ jQuery(document).ready(function($) {
 		 *     return_data: object,
 		 *     payment_info: string,
 		 *     promo_accepted: boolean
+		 * }}
+	 * @namespace return_data
+	 * @type {{
+		 *     payment_info: string,
+		 *     cart_total: number
 		 * }}
 	 */
 	PROMO = {
@@ -104,7 +111,7 @@ jQuery(document).ready(function($) {
 					PROMO.submit_promo_code( promo_code );
 				} else {
 					var msg = SPCO.generate_message_object( '', SPCO.tag_message_for_debugging( 'Promotions: set_listener_for_form_input', eei18n.no_promotions_code ), '' );
-					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, msg );
+					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, msg, true );
 				}
 			});
 		},
@@ -135,9 +142,10 @@ jQuery(document).ready(function($) {
 		update_payment_info_table : function( response ) {
 			//SPCO.console_log( 'payment_info', response.return_data.payment_info, true );
 			$('#spco-payment-info-table' ).find('tbody').html( response.return_data.payment_info );
-			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+			SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response, true );
 			if ( typeof response.return_data.cart_total !== 'undefined' ) {
 				if ( parseFloat( response.return_data.cart_total ) === 0 ) {
+					SPCO.enable_submit_buttons();
 					SPCO.main_container.find( '.spco-next-step-btn' ).trigger( 'click' );
 				}
 			}
@@ -192,12 +200,12 @@ jQuery(document).ready(function($) {
 				if ( typeof response.errors !== 'undefined' ) {
 					// no response...
 					//SPCO.hide_notices();
-					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response, true );
 				} else if ( typeof response.attention !== 'undefined' ) {
 					// Achtung Baby!!!
-					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response, true );
 				} else if ( typeof response.success !== 'undefined' ) {
-					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response );
+					SPCO.scroll_to_top_and_display_messages( SPCO.main_container, response, true );
 				} else if ( typeof response.return_data !== 'undefined' ) {
 
 					if ( typeof response.return_data.payment_info !== 'undefined' ) {
