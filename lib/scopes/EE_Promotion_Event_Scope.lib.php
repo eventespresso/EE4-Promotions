@@ -358,7 +358,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		//include expired events
 		$expired_checked = isset( $_REQUEST['include_expired_events_filter'] ) ? " checked=checked" : '';
-		$include_expired_filter = '<div class="jst-rght"><label for="include-expired-events-filter" class="ee-promotions-filter-lbl single-line-filter-label">' . __( 'Include_expired_events?', 'event_espresso' );
+		$include_expired_filter = '<div class="jst-rght"><label for="include-expired-events-filter" class="ee-promotions-filter-lbl single-line-filter-label">' . __( 'Include expired events?', 'event_espresso' );
 		$include_expired_filter .= ' <input type="checkbox" id="include-expired-events-filter" name="include_expired_events_filter" class="promotions-general-filter ee-checkbox-inp" value="1"' . $expired_checked . '></label></div>';
 
 
