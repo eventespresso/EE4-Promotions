@@ -39,6 +39,11 @@
     color: #999;
 }
 
+.ee-promotions-filter-lbl.single-line-filter-label {
+    display: block;
+    margin-top: 10px;
+}
+
 .ee-promotions-applies-to-filters .promotions-date-filter,
 .ee-date-column .ee-datepicker {
     position: relative;
