@@ -61,8 +61,8 @@ $show_filters = ! $show_filters ? ' style="display:none"' : '';
 		<?php echo $header_content; ?>
 		<input class="ee-select-all-trigger" type="checkbox" id="ee-select-all-<?php echo $scope_slug; ?>"><label class="ee-select-all-label" for="ee-select-all-<?php echo $scope_slug; ?>"><?php _e('select all below', 'event_espresso'); ?></label>
 		<div class="ee-sort-container right">
-			<span class="ee-sort-text ee-sort-trigger clickable"><?php _e('sort', 'event_espresso'); ?></span><span class="dashicons dashicons-arrow-up ee-sort-trigger clickable"><span>
-			<span style="display:none" id="ee-promotion-items-sort-order">ASC</span>
+			<span class="ee-sort-text ee-sort-trigger clickable"><?php _e('sort', 'event_espresso'); ?></span><span class="dashicons dashicons-arrow-down ee-sort-trigger clickable"><span>
+			<span style="display:none" id="ee-promotion-items-sort-order">DESC</span>
 		</div>
 		<div style="clear:both"></div>
 		<!-- box for containing dynamically retrieved items to select -->
