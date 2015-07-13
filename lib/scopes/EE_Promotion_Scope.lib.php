@@ -749,12 +749,13 @@ abstract class EE_Promotion_Scope {
 	 * @since   1.0.0
 	 *
 	 * @param EE_Line_Item $parent_line_item the line item to create the new promotion line item under
-	 * @param EE_Promotion $promotion the promotion object that the line item is being created for
+	 * @param EE_Promotion $promotion        the promotion object that the line item is being created for
 	 * @param string       $promo_name
+	 * @param bool         $affects_tax
+	 * @return \EE_Line_Item
 	 * @throws \EE_Error
-	 * @return EE_Line_Item
 	 */
-	public function generate_promotion_line_item( EE_Line_Item $parent_line_item, EE_Promotion $promotion, $promo_name = '' ) {
+	public function generate_promotion_line_item( EE_Line_Item $parent_line_item, EE_Promotion $promotion, $promo_name = '', $affects_tax = false ) {
 		// verify EE_Line_Item
 		if ( ! $parent_line_item instanceof EE_Line_Item ) {
 			throw new EE_Error( __( 'A valid EE_Line_Item object is required to generate a promotion line item.', 'event_espresso' ));
@@ -778,7 +779,7 @@ abstract class EE_Promotion_Scope {
 				'LIN_desc' 			=> $promo_name,
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
-				'LIN_is_taxable' 	=> FALSE,
+				'LIN_is_taxable' 	=> $affects_tax,
 				'LIN_order' 			=> 0, 		// set in add_item()
 				'LIN_total' 			=> $promotion->calculated_amount_on_value( $parent_line_item->total() ),
 				'LIN_quantity' 	=> 1,
