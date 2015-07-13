@@ -289,6 +289,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			$_where['Datetime.DTT_EVT_end'] = array( '<', EEM_Datetime::instance()->convert_datetime_for_query( 'DTT_EVT_end', $DTT_EVT_end, 'Y-m-d g:i a' ) );
 		}
 
+		//exclude expired events by default unless include_expiry is checked.
+		if ( ! isset( $_REQUEST['include_expired_events_filter'] ) ) {
+			$_where['Datetime.DTT_EVT_end**exclude_expired_events_query'] = array( '>', time() );
+		}
+
 		//category filters?
 		if ( ! empty( $_REQUEST['EVT_CAT_ID'] ) ) {
 			$_where['Term_Taxonomy.term_id'] = $_REQUEST['EVT_CAT_ID'];
@@ -351,7 +356,13 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		$event_title_filter = '<label for="EVT_title_filter" class="ee-promotions-filter-lbl">' . __('event title', 'event_espresso') . '</label>';
 		$event_title_filter .= '<input type="text" id="EVT_title_filter" name="EVT_title_filter" class="promotions-general-filter ee-text-inp" value="' . $existing_name . '" placeholder="' . __('Event Title Filter', 'event_espresso') . '">';
 
-		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<br>' . $event_title_filter . '<div style="clear: both"></div>';
+		//include expired events
+		$expired_checked = isset( $_REQUEST['include_expired_events_filter'] ) ? " checked=checked" : '';
+		$include_expired_filter = '<div class="jst-rght"><label for="include-expired-events-filter" class="ee-promotions-filter-lbl single-line-filter-label">' . __( 'Include_expired_events?', 'event_espresso' );
+		$include_expired_filter .= ' <input type="checkbox" id="include-expired-events-filter" name="include_expired_events_filter" class="promotions-general-filter ee-checkbox-inp" value="1"' . $expired_checked . '></label></div>';
+
+
+		return $cat_filter . '<br>' . $start_date_filter . '<br>' . $end_date_filter . '<br>' . $event_title_filter . '<br>' . $include_expired_filter . '<div style="clear: both"></div>';
 	}
 
 
@@ -400,7 +411,8 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 			'EVT_CAT_ID' => $data['EVT_CAT_ID'] ? $data['EVT_CAT_ID'] : null,
 			'EVT_start_date_filter' => $data['EVT_start_date_filter'] ? $data['EVT_start_date_filter'] : null,
 			'EVT_end_date_filter' => $data['EVT_end_date_filter'] ? $data['EVT_end_date_filter'] : null,
-			'EVT_title_filter' => $data['EVT_title_filter'] ? $data['EVT_title_filter'] : null
+			'EVT_title_filter' => $data['EVT_title_filter'] ? $data['EVT_title_filter'] : null,
+			'include_expired_events_filter' => $data['include_expired_events_filter'] ? $data['include_expired_events_filter'] : null
 		);
 
 		$promotion->update_extra_meta( 'promo_saved_filters', $set_filters );

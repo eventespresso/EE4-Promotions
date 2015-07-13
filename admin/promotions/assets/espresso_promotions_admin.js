@@ -160,6 +160,10 @@ jQuery(document).ready(function($){
 				data[$(this).attr('name')] = $(this).val();
 			});
 			$('input', '.ee-promotions-applies-to-filters').each( function(i) {
+				//if item is a checkbox and its not checked, then don't include.
+				if ( $(this).attr('type') == 'checkbox' && ! $(this).prop('checked') ) {
+					return;
+				}
 				data[$(this).attr('name')] = $(this).val();
 			});
 
