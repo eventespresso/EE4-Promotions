@@ -30,6 +30,7 @@ General Styles
 	}
 	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input {
 		margin: 0 0 1em;
+		background:#FFF;
 	}
 	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-input,
 	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-submit {
