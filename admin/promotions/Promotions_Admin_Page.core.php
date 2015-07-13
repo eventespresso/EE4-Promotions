@@ -30,6 +30,11 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 */
 	protected $_promotion;
 
+	/**
+	 * @var EE_Promotions_Config
+	 */
+	protected $_config;
+
 
 	protected function _init_page_props() {
 		$this->page_slug = PROMOTIONS_PG_SLUG;
@@ -59,7 +64,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'publishbox' => array(
 				'create_new' => __('Save New Promotion', 'event_espresso'),
 				'edit' => __('Update Promotion', 'event_espresso'),
-				'basic_settings' => __('Update Settings', 'event_espresso')
+				'promotions_settings' => __('Update Settings', 'event_espresso')
 				)
 		);
 	}
@@ -139,8 +144,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'obj_id' => $pro_id,
 				'noheader' => TRUE
 				),
-			'basic_settings' => array(
-				'func' => '_basic_settings',
+			'promotions_settings' => array(
+				'func' => '_promotions_settings',
 				'capability' => 'manage_options',
 				),
 			'update_settings' => array(
@@ -191,7 +196,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'metaboxes' => array( '_promotions_metaboxes', '_publish_post_box' ),
 				'require_nonce' => FALSE
 				),
-			'basic_settings' => array(
+			'promotions_settings' => array(
 				'nav' => array(
 					'label' => __('Settings', 'event_espresso'),
 					'order' => 20
@@ -801,66 +806,99 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 
 	/**
-	 * _basic_settings
+	 * _get_config
 	 * @access protected
+	 * @return EE_Promotions_Config
 	 */
-	protected function _basic_settings() {
-		$this->_settings_page( 'promotions_basic_settings.template.php' );
+	protected function _get_config() {
+		return EED_Promotions::instance()->set_config();
 	}
 
 
 
 
 	/**
-	 * _settings_page
+	 * promotions_settings
+	 *
 	 * @access protected
-	 * @param $template
 	 */
-	protected function _settings_page( $template ) {
-		EE_Registry::instance()->load_helper( 'Form_Fields' );
-		EED_Promotions::instance()->set_config();
-		$this->_template_args['config'] = EE_Registry::instance()->CFG->addons->promotions;
-
-		add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
-
-		$this->_template_args['yes_no_values'] = array(
-			EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 1, 'QSO_desc' => __('Yes', 'event_espresso')))
-		);
-
-		$this->_template_args['banner_template'] = array(
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'promo-banner-ribbon.template.php', 'QSO_desc' => __('Ribbon Banner', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'promo-banner-plain-text.template.php', 'QSO_desc' => __('Plain Text', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => '', 'QSO_desc' => __('Do Not Display Promotions', 'event_espresso')))
-		);
-
-		$this->_template_args['ribbon_banner_color'] = array(
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'lite-blue', 'QSO_desc' => __('lite-blue', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'blue', 'QSO_desc' => __('blue', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'green', 'QSO_desc' => __('green', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'pink', 'QSO_desc' => __('pink', 'event_espresso'))),
-			EE_Question_Option::new_instance( array( 'QSO_value' => 'red', 'QSO_desc' => __('red', 'event_espresso')))
-		);
-
-		$this->_template_args = apply_filters( 'FHEE__Promotions_Admin_Page___settings_page___template_args', $this->_template_args );
-
-		$this->_template_args['return_action'] = $this->_req_action;
-		$this->_template_args['reset_url'] = EE_Admin_Page::add_query_args_and_nonce( array('action'=> 'reset_settings','return_action'=>$this->_req_action), EE_PROMOTIONS_ADMIN_URL );
+	protected function _promotions_settings() {
 		$this->_set_add_edit_form_tags( 'update_settings' );
 		$this->_set_publish_post_box_vars( NULL, FALSE, FALSE, NULL, FALSE);
-		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . $template, $this->_template_args, TRUE );
+		$this->_template_args['admin_page_content'] = $this->_generate_promo_settings_form()->get_html_and_js();
 		$this->display_admin_page_with_sidebar();
 	}
 
 
 
 	/**
-	 * 	_usage
+	 *    _generate_promo_settings_form
+	 *
 	 * @access protected
+	 * @return EE_Form_Section_Proper
 	 */
-	protected function _usage() {
-		$this->_template_args['admin_page_content'] = EEH_Template::display_template( EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotions_usage_info.template.php', array(), TRUE );
-		$this->display_admin_page_with_no_sidebar();
+	protected function _generate_promo_settings_form() {
+		$this->_config = $this->_get_config();
+		return new EE_Form_Section_Proper(
+			array(
+				'name'            		=> 'promotions_settings',
+				'html_id'         		=> 'promotions_settings',
+				'html_class' => 'form-table',
+				'layout_strategy' => new EE_Admin_Two_Column_Layout(),
+				'subsections' 		=> apply_filters(
+					'FHEE__Promotions_Admin_Page___generate_promo_settings_form__form_subsections',
+					array(
+						'affects_tax' => new EE_Yes_No_Input(
+							array(
+								'default' 					=> $this->_config->affects_tax(),
+								'html_label_text' 	=> __( 'Promotions Affect Taxes', 'event_espresso' ),
+								'html_help_text' 		=> sprintf(
+									__( 'If set to "Yes" then all promotions will be applied before taxes are calculated,%1$smeaning that the taxes will be applied to the discounted total.%1$s example: $10 total - $5 discount + 10%% tax = $5.50%1$sIf set to "No" then taxes will applied to transaction totals first, followed by promotions.%1$s example: $10 total + 10%% tax - $5 discount = $6.00', 'event_espresso' ),
+									'<br />'
+								),
+							)
+						),
+						'banner_template' 	=> new EE_Select_Input(
+							array(
+								'promo-banner-ribbon.template.php' 	=> __( 'Ribbon Banner', 'event_espresso' ),
+								'promo-banner-plain-text.template.php' => __( 'Plain Text', 'event_espresso' ),
+								'none' 															=> __( 'Do Not Display Promotions', 'event_espresso' ),
+							),
+							array(
+								'default' 						=> isset( $this->_config->banner_template ) ? $this->_config->banner_template : false,
+								'html_label_text'         => __( 'Promotion Banners', 'event_espresso' ),
+								'html_help_text'          => sprintf(
+									__( 'How Non-Code Promotions* are advertised and displayed above the Ticket Selector.%1$s* "Non-Code Promotions" are promotions that do not use a text code, and are applied automatically when all of the promotion\'s qualifying requirements are met (ie: start date, selected events, etc).%2$s', 'event_espresso' ),
+									'<br /><span class="smaller-text">',
+									'</span>'
+								),
+							)
+						),
+						'ribbon_banner_color' 	=> new EE_Select_Input(
+							array(
+								'lite-blue' 	=> __( 'lite-blue', 'event_espresso' ),
+								'blue' 			=> __( 'blue', 'event_espresso' ),
+								'green' 		=> __( 'green', 'event_espresso' ),
+								'pink' 			=> __( 'pink', 'event_espresso' ),
+								'red' 			=> __( 'red', 'event_espresso' ),
+							),
+							array(
+								'default' 					=> isset( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : false,
+								'html_label_text' 	=> __( 'Ribbon Banner Color', 'event_espresso' ),
+								'html_help_text' 		=> __( 'If "Ribbon Banner" is selected above, then this determines the color of the ribbon banner.', 'event_espresso' ),
+							)
+						),
+						'reset_promotions' => new EE_Yes_No_Input(
+							array(
+								'default'         			=> 0,
+								'html_label_text' 	=> __( 'Reset Promotions Settings?', 'event_espresso' ),
+								'html_help_text'  	=>  __( 'Set to "Yes" and then click "Save" to confirm reset all basic and advanced Event Espresso Promotions settings to their plugin defaults.', 'event_espresso' ),
+							)
+						),
+					)
+				)
+			)
+		);
 	}
 
 
@@ -873,78 +911,46 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 		EE_Registry::instance()->load_helper( 'Class_Tools' );
 
-		if ( isset( $_POST['reset_promotions'] ) && $_POST['reset_promotions'] == '1' ){
-			$config = new EE_Promotions_Config();
-			$count = 1;
-		} else {
-
-			$config =  EE_Registry::instance()->CFG->addons->promotions;
-			$count=0;
-			//otherwise we assume you want to allow full html
-			foreach($this->_req_data['promotions'] as $top_level_key => $top_level_value){
-				if(is_array($top_level_value)){
-					foreach($top_level_value as $second_level_key => $second_level_value){
-						if ( EEH_Class_Tools::has_property( $config, $top_level_key ) && EEH_Class_Tools::has_property( $config->$top_level_key, $second_level_key ) && $second_level_value != $config->$top_level_key->$second_level_key ) {
-							$config->$top_level_key->$second_level_key = $this->_sanitize_config_input( $top_level_key, $second_level_key, $second_level_value );
+		$count = 0;
+		$this->_config = $this->_get_config();
+		$promo_settings_form = $this->_generate_promo_settings_form();
+		if ( $promo_settings_form->was_submitted() ) {
+			// capture form data
+			$promo_settings_form->receive_form_submission();
+			// validate form data
+			if ( $promo_settings_form->is_valid() ) {
+				// grab validated data from form
+				$valid_data = $promo_settings_form->valid_data();
+				if ( isset( $valid_data[ 'reset_promotions' ] ) && filter_var( $valid_data[ 'reset_promotions' ], FILTER_VALIDATE_BOOLEAN ) === true ) {
+					$this->_config = new EE_Promotions_Config();
+					$count++;
+				} else {
+					foreach ( $valid_data as $property => $value ) {
+						$setter = 'set_' . $property;
+						if ( method_exists( $this->_config, $setter )) {
+							$this->_config->$setter( $value );
+						} else if ( property_exists( $this->_config, $property ) && $this->_config->$property != $value ) {
+							$this->_config->$property = $value;
 							$count++;
 						}
-					}
-				}else{
-					if ( EEH_Class_Tools::has_property($config, $top_level_key) && $top_level_value != $config->$top_level_key){
-						$config->$top_level_key = $this->_sanitize_config_input($top_level_key, NULL, $top_level_value);
-						$count++;
 					}
 				}
 			}
 		}
-		EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $config );
-		$this->_redirect_after_action( $count, 'Settings', 'updated', array('action' => $this->_req_data['return_action']));
+		EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $this->_config );
+		$this->_redirect_after_action( $count, 'Settings', 'updated', array( 'action' => 'promotions_settings' ) );
 	}
 
 
 
 	/**
-	 * _sanitize_config_input
-	 * @param $top_level_key
-	 * @param $second_level_key
-	 * @param $value
-	 * @return int|null
+	 *    _usage
+	 * @access protected
 	 */
-	private function _sanitize_config_input( $top_level_key, $second_level_key, $value ){
-		$sanitization_methods = array(
-			'display'=>array(
-				'enable_promotions'=>'bool',
-			),
-			'banner_template'=>'plaintext',
-			'ribbon_banner_color'=>'plaintext',
-		);
-		$sanitization_method = NULL;
-		if(isset($sanitization_methods[$top_level_key]) &&
-				$second_level_key === NULL &&
-				! is_array($sanitization_methods[$top_level_key]) ){
-			$sanitization_method = $sanitization_methods[$top_level_key];
-		}elseif(is_array($sanitization_methods[$top_level_key]) && isset($sanitization_methods[$top_level_key][$second_level_key])){
-			$sanitization_method = $sanitization_methods[$top_level_key][$second_level_key];
-		}
-//		echo "$top_level_key [$second_level_key] with value $value will be sanitized as a $sanitization_method<br>";
-		switch($sanitization_method){
-			case 'bool':
-				return (boolean)intval($value);
-			case 'plaintext':
-				return wp_strip_all_tags($value);
-			case 'int':
-				return intval($value);
-			case 'html':
-				return $value;
-			default:
-				$input_name = $second_level_key == NULL ? $top_level_key : $top_level_key."[".$second_level_key."]";
-				EE_Error::add_error(sprintf(__("Could not sanitize input '%s' because it has no entry in our sanitization methods array", "event_espresso"),$input_name));
-				return NULL;
-
-		}
+	protected function _usage() {
+		$this->_template_args[ 'admin_page_content' ] = EEH_Template::display_template( EE_PROMOTIONS_ADMIN_TEMPLATE_PATH . 'promotions_usage_info.template.php', array(), true );
+		$this->display_admin_page_with_no_sidebar();
 	}
-
-
 
 
 

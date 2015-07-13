@@ -38,6 +38,11 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 */
 	public $ribbon_banner_color;
 
+	/**
+	 * @var boolean
+	 */
+	protected $_affects_tax = false;
+
 
 
 	/**
@@ -102,6 +107,24 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 */
 	public function __wakeup() {
 		$this->init();
+	}
+
+
+
+	/**
+	 * @return boolean
+	 */
+	public function affects_tax() {
+		return $this->_affects_tax;
+	}
+
+
+
+	/**
+	 * @param boolean $affects_tax
+	 */
+	public function set_affects_tax( $affects_tax ) {
+		$this->_affects_tax = filter_var( $affects_tax, FILTER_VALIDATE_BOOLEAN );
 	}
 
 
