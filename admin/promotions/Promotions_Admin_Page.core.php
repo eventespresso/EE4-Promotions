@@ -921,7 +921,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			if ( $promo_settings_form->is_valid() ) {
 				// grab validated data from form
 				$valid_data = $promo_settings_form->valid_data();
-				if ( isset( $valid_data[ 'reset_promotions' ] ) && filter_var( $valid_data[ 'reset_promotions' ], FILTER_VALIDATE_BOOLEAN ) === true ) {
+				if ( isset( $valid_data[ 'reset_promotions' ] ) && $valid_data[ 'reset_promotions' ] === true ) {
 					$this->_config = new EE_Promotions_Config();
 					$count++;
 				} else {
