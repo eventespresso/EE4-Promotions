@@ -487,9 +487,6 @@ class EED_Promotions extends EED_Module {
 						// ensure cart totals have been recalculated and saved
 						$cart->get_grand_total()->recalculate_total_including_taxes();
 						$cart->get_grand_total()->save();
-						/** @type EE_Registration_Processor $registration_processor */
-						$registration_processor = EE_Registry::instance()->load_class( 'Registration_Processor' );
-						$registration_processor->update_registration_final_prices( $cart->get_grand_total()->transaction() );
 						$cart->save_cart( FALSE );
 						$return_data = $this->_get_payment_info( $cart );
 						$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
