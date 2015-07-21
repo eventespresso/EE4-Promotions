@@ -408,11 +408,11 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		//any filters to save?
 		$set_filters = array(
-			'EVT_CAT_ID' => $data['EVT_CAT_ID'] ? $data['EVT_CAT_ID'] : null,
-			'EVT_start_date_filter' => $data['EVT_start_date_filter'] ? $data['EVT_start_date_filter'] : null,
-			'EVT_end_date_filter' => $data['EVT_end_date_filter'] ? $data['EVT_end_date_filter'] : null,
-			'EVT_title_filter' => $data['EVT_title_filter'] ? $data['EVT_title_filter'] : null,
-			'include_expired_events_filter' => $data['include_expired_events_filter'] ? $data['include_expired_events_filter'] : null
+			'EVT_CAT_ID' => ! empty( $data['EVT_CAT_ID'] ) ? $data['EVT_CAT_ID'] : null,
+			'EVT_start_date_filter' => ! empty( $data['EVT_start_date_filter'] ) ? $data['EVT_start_date_filter'] : null,
+			'EVT_end_date_filter' => ! empty( $data['EVT_end_date_filter'] ) ? $data['EVT_end_date_filter'] : null,
+			'EVT_title_filter' => ! empty( $data['EVT_title_filter'] ) ? $data['EVT_title_filter'] : null,
+			'include_expired_events_filter' => ! empty( $data['include_expired_events_filter'] ) ? $data['include_expired_events_filter'] : null
 		);
 
 		$promotion->update_extra_meta( 'promo_saved_filters', $set_filters );
