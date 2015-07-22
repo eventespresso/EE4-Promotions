@@ -99,7 +99,7 @@ abstract class EE_Promotion_Scope {
 		if ( $initialized ) {
 			return;
 		}
-		EE_Promotion_Scope::$_counter = 100;
+		EE_Promotion_Scope::$_counter = 1000;
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
