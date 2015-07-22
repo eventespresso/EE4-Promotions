@@ -642,20 +642,22 @@ class EED_Promotions extends EED_Module {
 		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
 		// check that promotion hasn't already been applied
 		$existing_promotion_line_item = $EEM_Line_Item->get_existing_promotion_line_item( $parent_line_item, $promotion );
-		if ( $existing_promotion_line_item instanceof EE_Line_Item && $promotion->code() ) {
-			EE_Error::add_attention(
-				sprintf(
-					apply_filters(
-						'FHEE__EED_Promotions__verify_no_existing_promotion_line_items__existing_promotion_code_notice',
-						__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' )
+		if ( $existing_promotion_line_item instanceof EE_Line_Item ) {
+			if ( $promotion->code() ) {
+				EE_Error::add_attention(
+					sprintf(
+						apply_filters(
+							'FHEE__EED_Promotions__verify_no_existing_promotion_line_items__existing_promotion_code_notice',
+							__( 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.', 'event_espresso' )
+						),
+						$existing_promotion_line_item->name(),
+						$parent_line_item->desc(),
+						$parent_line_item->OBJ_type(),
+						$existing_promotion_line_item->OBJ_type()
 					),
-					$existing_promotion_line_item->name(),
-					$parent_line_item->desc(),
-					$parent_line_item->OBJ_type(),
-					$existing_promotion_line_item->OBJ_type()
-				),
-				__FILE__, __FUNCTION__, __LINE__
-			);
+					__FILE__, __FUNCTION__, __LINE__
+				);
+			}
 			return false;
 		}
 		return true;
@@ -763,7 +765,7 @@ class EED_Promotions extends EED_Module {
 	public function add_promotion_line_item( EE_Line_Item $parent_line_item, EE_Line_Item $promotion_line_item, EE_Promotion $promotion ) {
 		EE_Registry::instance()->load_helper( 'Line_Item' );
 		// add it to the cart
-		if ( $parent_line_item->add_child_line_item( $promotion_line_item ) ) {
+		if ( $parent_line_item->add_child_line_item( $promotion_line_item, false ) ) {
 			if ( $promotion->scope_obj()->increment_promotion_scope_uses( $promotion, $parent_line_item->OBJ_ID() )) {
 				return TRUE;
 			} else {
