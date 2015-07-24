@@ -762,7 +762,8 @@ abstract class EE_Promotion_Scope {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
 		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
-		$promo_name .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
+		$promo_desc = $promotion->price()->desc();
+		$promo_desc .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
@@ -770,10 +771,10 @@ abstract class EE_Promotion_Scope {
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
 				'LIN_name' 			=> apply_filters(
 					'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
-					__( 'Discount', 'event_espresso' ),
+					__( 'Discount: ', 'event_espresso' ) . $promo_name,
 					$promotion
 				),
-				'LIN_desc' 			=> $promo_name,
+				'LIN_desc' 			=> $promo_desc,
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> $affects_tax,
