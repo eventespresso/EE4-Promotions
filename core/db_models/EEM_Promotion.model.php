@@ -56,7 +56,8 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 
 		$this->_model_relations = array(
 			'Price'            				=> new EE_Belongs_To_Relation(),
-			'Promotion_Object' 	=> new EE_Has_Many_Relation()
+			'Promotion_Object' 	=> new EE_Has_Many_Relation(),
+			'Line_Item' => new EE_Has_Many_Any_Relation(),
 		);
 
 		parent::__construct();
