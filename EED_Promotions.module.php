@@ -79,6 +79,7 @@ class EED_Promotions extends EED_Module {
 		 // TXN admin
 		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
 		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
+		 add_filter( 'FHEE__EE_Export__report_registrations__reg_csv_array', array( 'EED_Promotions', 'add_promotions_column_to_reg_csv_report' ), 10, 2 );
 	 }
 
 
@@ -861,7 +862,24 @@ class EED_Promotions extends EED_Module {
 		return $billable_total;
 	}
 
+	/**
+	 * Alters the registration csv report generated from the normal registration list table.
+	 * Add a column
+	 * @param type $csv_row
+	 * @param type $reg_db_row
+	 */
+	public static function add_promotions_column_to_reg_csv_report( $csv_row, $reg_db_row ) {
+		$promo_names = EEM_Price::instance()->get_col(
+				array(
+					array(
+						'Promotion.Line_Item.TXN_ID' => $reg_db_row[ 'Registration.TXN_ID' ]
+					)
+				),
+				'PRC_name' );
 
+		$csv_row[ __( 'Transaction Promotions', 'event_espresso' ) ] = implode(',', $promo_names );
+		return $csv_row;
+	}
 
 }
 // End of file EED_Promotions.module.php
