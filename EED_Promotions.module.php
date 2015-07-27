@@ -869,15 +869,23 @@ class EED_Promotions extends EED_Module {
 	 * @param type $reg_db_row
 	 */
 	public static function add_promotions_column_to_reg_csv_report( $csv_row, $reg_db_row ) {
-		$promo_names = EEM_Price::instance()->get_col(
+		$promo_rows = EEM_Price::instance()->get_all_wpdb_results(
 				array(
 					array(
 						'Promotion.Line_Item.TXN_ID' => $reg_db_row[ 'Registration.TXN_ID' ]
 					)
-				),
-				'PRC_name' );
+				));
 
-		$csv_row[ __( 'Transaction Promotions', 'event_espresso' ) ] = implode(',', $promo_names );
+		$promos_for_csv_col = array();
+		foreach( $promo_rows as $promo_row ) {
+			if( $promo_row[ 'Promotion.PRO_code' ] ) {
+				$promos_for_csv_col[] = sprintf( '%1$s [%2$s]', $promo_row[ 'Price.PRC_name' ], $promo_row[ 'Promotion.PRO_code'] );
+			}else{
+				$promos_for_csv_col[] = $promo_row[ 'Price.PRC_name' ];
+			}
+
+		}
+		$csv_row[ __( 'Transaction Promotions', 'event_espresso' ) ] = implode(',', $promos_for_csv_col );
 		return $csv_row;
 	}
 
