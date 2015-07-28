@@ -29,8 +29,6 @@ abstract class EE_Promotion_Scope {
 	 */
 	public $label;
 
-
-
 	/**
 	 * Slug used to identify the scope in the system.
 	 * The Promotion db will use this slug to reference the scope in the db and to know
@@ -42,9 +40,6 @@ abstract class EE_Promotion_Scope {
 	 */
 	public $slug;
 
-
-
-
 	/**
 	 * The primary key name for this scope's model
 	 *
@@ -52,9 +47,6 @@ abstract class EE_Promotion_Scope {
 	 * @var string
 	 */
 	protected $_model_pk_name;
-
-
-
 
 	/**
 	 * This is a cache of all the EE_Base_Class model objects related to this scope that have
@@ -65,10 +57,6 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected $_model_objects;
 
-
-
-
-
 	/**
 	 * This is the default per page amount when no perpage value is set.
 	 *
@@ -76,6 +64,14 @@ abstract class EE_Promotion_Scope {
 	 * @var int
 	 */
 	protected $_per_page;
+
+	/**
+	 * used for setting LIN_order
+	 *
+	 * @since 1.0.0
+	 * @var int
+	 */
+	protected static $_counter;
 
 
 
@@ -103,6 +99,7 @@ abstract class EE_Promotion_Scope {
 		if ( $initialized ) {
 			return;
 		}
+		EE_Promotion_Scope::$_counter = 1000;
 		$this->label = new stdClass();
 		$this->_set_main_properties_and_hooks();
 		$this->_verify_properties_set();
@@ -765,7 +762,8 @@ abstract class EE_Promotion_Scope {
 			throw new EE_Error( __( 'A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso' ));
 		}
 		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
-		$promo_name .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
+		$promo_desc = $promotion->price()->desc();
+		$promo_desc .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
@@ -773,14 +771,14 @@ abstract class EE_Promotion_Scope {
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
 				'LIN_name' 			=> apply_filters(
 					'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
-					__( 'Discount', 'event_espresso' ),
+					sprintf( __( 'Discount: %1$s', 'event_espresso' ), $promo_name ),
 					$promotion
 				),
-				'LIN_desc' 			=> $promo_name,
+				'LIN_desc' 			=> $promo_desc,
 				'LIN_unit_price' 	=> $promotion->is_percent() ? 0 : $promotion->amount(),
 				'LIN_percent' 		=> $promotion->is_percent() ? $promotion->amount() : 0,
 				'LIN_is_taxable' 	=> $affects_tax,
-				'LIN_order' 			=> 0, 		// set in add_item()
+				'LIN_order' 			=> $promotion->price()->order() + EE_Promotion_Scope::$_counter, // we want promotions to be applied AFTER other line items
 				'LIN_total' 			=> $promotion->calculated_amount_on_value( $parent_line_item->total() ),
 				'LIN_quantity' 	=> 1,
 				'LIN_parent' 		=> $parent_line_item->ID(), 		// Parent ID (this item goes towards that Line Item's total)
@@ -789,6 +787,7 @@ abstract class EE_Promotion_Scope {
 				'OBJ_type'			=> 'Promotion' 	// Model Name this Line Item is for
 			)
 		);
+		EE_Promotion_Scope::$_counter++;
 		return $line_item;
 	}
 

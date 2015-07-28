@@ -17,7 +17,11 @@ if ( ! defined( 'EVENT_ESPRESSO_VERSION' )) { exit('NO direct script access allo
  * @subpackage models
  * @author Mike Nelson
  */
-class EE_Promotion extends EE_Soft_Delete_Base_Class implements EEI_Line_Item_Object, EEI_Admin_Links, EEI_Has_Icon {
+class EE_Promotion extends EE_Soft_Delete_Base_Class implements
+	EEI_Line_Item_Object,
+	EEI_Admin_Links,
+	EEI_Has_Icon,
+	EEI_Has_Code {
 
 	//constants
 
