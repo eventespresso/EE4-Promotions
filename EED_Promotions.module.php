@@ -56,7 +56,7 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
 		 // adjust SPCO totals
-		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
+		 //add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
 	 }
 
 	 /**
@@ -75,7 +75,7 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'wp_ajax_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
 		 add_action( 'wp_ajax_nopriv_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
 		 // adjust SPCO totals
-		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
+		 //add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
 		 // TXN admin
 		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
 		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
@@ -856,19 +856,22 @@ class EED_Promotions extends EED_Module {
 	 * @param \EE_Line_Item $line_item
 	 * @return float
 	 */
-	public static function adjust_SPCO_billable_total( $billable_total = 0.00, EE_Line_Item $line_item ) {
-		// is this a promotion ?
-		if ( $line_item->OBJ_type() == 'Promotion' ) {
-			$billable_total += $line_item->total();
-		}
-		return $billable_total;
-	}
+	//public static function adjust_SPCO_billable_total( $billable_total = 0.00, EE_Line_Item $line_item ) {
+	//	// is this a promotion ?
+	//	if ( $line_item->OBJ_type() == 'Promotion' ) {
+	//		$billable_total += $line_item->total();
+	//	}
+	//	return $billable_total;
+	//}
+
+
 
 	/**
 	 * Alters the registration csv report generated from the normal registration list table.
 	 * Add a column
-	 * @param type $csv_row
-	 * @param type $reg_db_row
+	 * @param array $csv_row
+	 * @param array $reg_db_row
+	 * @return array
 	 */
 	public static function add_promotions_column_to_reg_csv_report( $csv_row, $reg_db_row ) {
 		$promo_rows = EEM_Price::instance()->get_all_wpdb_results(
@@ -890,6 +893,8 @@ class EED_Promotions extends EED_Module {
 		$csv_row[ __( 'Transaction Promotions', 'event_espresso' ) ] = implode(',', $promos_for_csv_col );
 		return $csv_row;
 	}
+
+
 
 }
 // End of file EED_Promotions.module.php
