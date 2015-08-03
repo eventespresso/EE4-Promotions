@@ -786,17 +786,23 @@ class EED_Promotions extends EED_Module {
 	 * @return    array
 	 */
 	public function _get_payment_info( EE_Cart $cart ) {
-		$transaction = $cart->get_grand_total()->transaction();
-		$registrations = $transaction instanceof EE_Transaction ? $transaction->registrations() : array();
+		EEH_Autoloader::register_line_item_filter_autoloaders();
+		$line_item_filter_processor = new EE_Line_Item_Filter_Processor(
+			apply_filters(
+				'FHEE__SPCO__EE_Line_Item_Filter_Collection',
+				new EE_Line_Item_Filter_Collection()
+			),
+			$cart->get_grand_total()
+		);
+		$filtered_line_item_tree = $line_item_filter_processor->process();
 		// autoload Line_Item_Display classes
 		EEH_Autoloader::register_line_item_display_autoloaders();
+
+		//$this->checkout->line_item_filters();
 		$Line_Item_Display = new EE_Line_Item_Display( 'spco' );
 		return array(
-			'payment_info' => $Line_Item_Display->display_line_item(
-				$cart->get_grand_total(),
-				array( 'registrations' => $registrations )
-			),
-			'cart_total' => $cart->get_grand_total()->total()
+			'payment_info' 	=> $Line_Item_Display->display_line_item( $filtered_line_item_tree ),
+			'cart_total' 			=> $filtered_line_item_tree->total()
 		);
 	}
 
