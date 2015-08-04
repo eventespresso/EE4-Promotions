@@ -230,14 +230,15 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		wp_enqueue_style( 'promotions-details-css' );
 		wp_register_script( 'espresso_promotions_admin', EE_PROMOTIONS_ADMIN_ASSETS_URL . 'espresso_promotions_admin.js', array( 'espresso_core', 'ee-datepicker', 'ee-parse-uri' ), EE_PROMOTIONS_VERSION, TRUE );
 		wp_enqueue_script( 'espresso_promotions_admin');
-
-		EE_Registry::$i18n_js_strings['confirm_reset'] = __( 'Are you sure you want to reset ALL your Event Espresso Promotions Information? This cannot be undone.', 'event_espresso' );
-		EE_Registry::$i18n_js_strings['codefieldEmptyError'] = __( 'eePromotionsHelper.generate_code requires a selector for the codefield param. None was provided.', 'event_espresso' );
-		EE_Registry::$i18n_js_strings['codefieldInvalidError'] = __( 'The codefield parameter sent to eePromotionsHelper.generate_code is invalid.  It must be a valid selector for the input field holding the generated coupon code.', 'event_espresso' );
-		EE_Registry::$i18n_js_strings['toggledScopeItemMissingParam'] = __( 'eePromotionsHelper.scopeItemToggle requires the toggled checkbox dom element to be included as the argument.  Nothing was included.', 'event_espresso' );
 	}
 
-	public function admin_init() {}
+	public function admin_init() {
+		EE_Registry::$i18n_js_strings[ 'confirm_reset' ] = __( 'Are you sure you want to reset ALL your Event Espresso Promotions Information? This cannot be undone.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings[ 'codefieldEmptyError' ] = __( 'eePromotionsHelper.generate_code requires a selector for the codefield param. None was provided.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings[ 'codefieldInvalidError' ] = __( 'The codefield parameter sent to eePromotionsHelper.generate_code is invalid.  It must be a valid selector for the input field holding the generated coupon code.', 'event_espresso' );
+		EE_Registry::$i18n_js_strings[ 'toggledScopeItemMissingParam' ] = __( 'eePromotionsHelper.scopeItemToggle requires the toggled checkbox dom element to be included as the argument.  Nothing was included.', 'event_espresso' );
+	}
+
 	public function admin_notices() {
 		//is this a non global promotion?  If so, then if there are no uses then let's show a notice that the promotion is
 		//not active until a scope item is selected.
