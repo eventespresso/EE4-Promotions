@@ -771,7 +771,7 @@ abstract class EE_Promotion_Scope {
 				'TXN_ID'				=> $parent_line_item->TXN_ID(),
 				'LIN_name' 			=> apply_filters(
 					'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
-					sprintf( __( 'Discount: %1$s', 'event_espresso' ), $promo_name ),
+					$promo_name,
 					$promotion
 				),
 				'LIN_desc' 			=> $promo_desc,
