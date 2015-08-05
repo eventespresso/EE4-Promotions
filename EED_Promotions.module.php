@@ -55,8 +55,8 @@ class EED_Promotions extends EED_Module {
 		 add_action( 'AHEE__ticket_selector_chart__template__before_ticket_selector', array( 'EED_Promotions', 'display_event_promotions_banner' ), 10, 1 );
 		 add_action( 'FHEE__EE_Ticket_Selector__process_ticket_selections__before_redirecting_to_checkout', array( 'EED_Promotions', 'auto_process_promotions_in_cart' ), 10, 1 );
 		 add_action( 'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options', array( 'EED_Promotions', 'add_promotions_form_inputs' ));
-		 // adjust SPCO totals
-		 //add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
+		 // adjust SPCO
+		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy__item_row__name', array( 'EED_Promotions', 'adjust_SPCO_line_item_display' ), 10, 2 );
 	 }
 
 	 /**
@@ -74,8 +74,8 @@ class EED_Promotions extends EED_Module {
 		 // submit_promo_code
 		 add_action( 'wp_ajax_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
 		 add_action( 'wp_ajax_nopriv_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
-		 // adjust SPCO totals
-		 //add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy___is_billable___billable_total', array( 'EED_Promotions', 'adjust_SPCO_billable_total' ), 10, 2 );
+		 // adjust SPCO
+		 add_filter( 'FHEE__EE_SPCO_Line_Item_Display_Strategy__item_row__name', array( 'EED_Promotions', 'adjust_SPCO_line_item_display' ), 10, 2 );
 		 // TXN admin
 		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
 		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
@@ -853,22 +853,22 @@ class EED_Promotions extends EED_Module {
 
 
 	/**
-	 *    adjust_SPCO_billable_total
+	 *    adjust_SPCO_line_item_display
 	 *
-	 *   allows promotions to adjust SPCO's billable total as calculated in EE_SPCO_Line_Item_Display_Strategy
+	 *   allows promotions to adjust the line item name in EE_SPCO_Line_Item_Display_Strategy
 	 *
 	 * @access    public
-	 * @param float $billable_total
+	 * @param string $line_item_name
 	 * @param \EE_Line_Item $line_item
 	 * @return float
 	 */
-	//public static function adjust_SPCO_billable_total( $billable_total = 0.00, EE_Line_Item $line_item ) {
-	//	// is this a promotion ?
-	//	if ( $line_item->OBJ_type() == 'Promotion' ) {
-	//		$billable_total += $line_item->total();
-	//	}
-	//	return $billable_total;
-	//}
+	public static function adjust_SPCO_line_item_display( $line_item_name, EE_Line_Item $line_item ) {
+		// is this a promotion ?
+		if ( $line_item->OBJ_type() == 'Promotion' ) {
+			$line_item_name = sprintf( __( 'Discount: %1$s', 'event_espresso' ), $line_item->name() );
+		}
+		return $line_item_name;
+	}
 
 
 
