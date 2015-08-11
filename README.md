@@ -18,8 +18,8 @@ Give your customers incentive to take action with Coupon Codes or automatic Cale
 
 This plugin/addon needs to be uploaded to the "/wp-content/plugins/" directory on your server or installed using the WordPress plugins installer. Once the plugin/addon is installed and activated, please visit the **Event Espresso > Promotions** admin page to configure it's settings. You can also paste the [ESPRESSO_PROMOTIONS] shortcode into a page of your website to display a list of active and upcoming promotions on that page.
 
-#####Currently the Promotions addon requires the Event Espresso core BETA-4.8-CORE branch in order to operate.
-The BETA-4.8-CORE branch can be found at: https://github.com/eventespresso/event-espresso-core/tree/BETA-4.8-CORE
+#####Currently the Promotions addon requires the Event Espresso core Master branch in order to operate.
+The EE4 Master branch can be found at: https://github.com/eventespresso/event-espresso-core
 Once it is released, it will function with whatever the latest core version of Event Espresso is at that time.
 
 > This README.md file is targeted for display with our Github repo.
