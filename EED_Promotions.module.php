@@ -493,10 +493,10 @@ class EED_Promotions extends EED_Module {
 						$registration_processor->update_registration_final_prices( $cart->get_grand_total()->transaction() );
 						$cart->save_cart( FALSE );
 						$return_data = $this->_get_payment_info( $cart );
-						$return_data['success'] = $this->_config->label->singular . ' ' . $promotion->accept_message();
+						$return_data['success'] = $promotion->accept_message();
 						EED_Single_Page_Checkout::update_checkout();
 					} else {
-						EE_Error::add_attention( $this->_config->label->singular . ' ' . $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
+						EE_Error::add_attention( $promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__ );
 					}
 				}
 			}
