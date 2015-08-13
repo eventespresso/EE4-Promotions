@@ -38,18 +38,14 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 	public function schema_changes_before_migration() {
 		// set promotions_exclusive_default as either 0 or 1
 		$exclusive = absint( filter_var( apply_filters( 'FHEE__EEM_Promotion__promotions_exclusive_default', 0 ), FILTER_VALIDATE_BOOLEAN ) );
-		$table_name = 'esp_promotion_applied';
-		if ( $this->_old_table_exists( $table_name )) {
-			$this->_delete_table_if_empty( $table_name );
-		}
-		$table_name = 'esp_promotion_rule';
-		if ( $this->_old_table_exists( $table_name )) {
-			$this->_delete_table_if_empty( $table_name );
-		}
+
+		// delete old tables (if empty)
+		$this->_delete_table_if_empty( 'esp_promotion' );
+		$this->_delete_table_if_empty( 'esp_promotion_object' );
+		$this->_delete_table_if_empty( 'esp_promotion_applied' );
+		$this->_delete_table_if_empty( 'esp_promotion_rule' );
+
 		$table_name = 'esp_promotion';
-		if ( $this->_old_table_exists( $table_name )) {
-			$this->_delete_table_if_empty( $table_name );
-		}
 		$sql = "PRO_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 					PRC_ID INT UNSIGNED NOT NULL,
 					PRO_scope VARCHAR(16) NOT NULL DEFAULT 'event',
@@ -71,9 +67,6 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base{
 		$this->_table_should_exist_previously($table_name, $sql, 'ENGINE=InnoDB ');
 
 		$table_name = 'esp_promotion_object';
-		if ( $this->_old_table_exists( $table_name ) ) {
-			$this->_delete_table_if_empty( $table_name );
-		}
 		$sql = "POB_ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			PRO_ID INT UNSIGNED NOT NULL,
 			OBJ_ID INT UNSIGNED NOT NULL,
