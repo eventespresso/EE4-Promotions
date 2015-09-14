@@ -24,7 +24,7 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 
 	protected function _set_tips_array() {
 		$this->_qtipsa = array(
-			0 => array(
+			/**0 => array(
 				'content_id' => 'promotion-status-' . EE_Promotion::active,
 				'target' => '.pro-status-' . EE_Promotion::active,
 				'content' => $this->_promotion_status_legend(EE_Promotion::active),
@@ -63,7 +63,7 @@ class Promotions_List_Table_Tips extends EE_Qtip_Config {
 						'target' => 'mouse'
 						)
 					)
-				),
+				),/**/
 			4 => array(
 				'content_id' => 'promotions-delete-lock',
 				'target' => '.ee-lock-icon',

@@ -144,7 +144,7 @@
 /** LIST TABLE **/
 .wp-list-table.promotion th,
 .wp-list-table.promotion th a {
-    vertical-align: middle;
+    vertical-align: middle;/**/
     font-size:13px;
 }
 .wp-list-table.promotion th,
@@ -216,25 +216,54 @@
     margin-top: 0px;
 }
 
+
+/** fix for mobile view in new WP > 4.3 list tables **/
+@media screen and ( max-width: 782px ) {
+
+    .wp-list-table.promotion .column-id,
+    .wp-list-table.promotion .column-name,
+    .wp-list-table.promotion .column-code,
+    .wp-list-table.promotion .column-applies_to,
+    .wp-list-table.promotion .column-exclusive,
+    .wp-list-table.promotion .column-amount,
+    .wp-list-table.promotion .column-redeemed,
+    .wp-list-table.promotion .column-actions {
+        text-align:left;
+        margin-left: 10px;
+    }
+
+    .wp-list-table.promotion th,
+    .wp-list-table.promotion th a {
+        vertical-align: top;/**/
+        font-size:inherit;
+    }
+}
+
+
+
 /** status strip **/
 
 /*upcoming*/
-.pro-status-PRU {
+.pro-status-PRU,
+.pro-status-PRU .check-column{
     border-left-color: #00B1CA;
 }
 
 /*active*/
-.pro-status-PRA {
+.pro-status-PRA,
+.pro-status-PRA .check-column{
     border-left-color: #70CC50;
 }
 
 /*expired*/
-.pro-status-PRX {
+.pro-status-PRX,
+.pro-status-PRX .check-column{
     border-left-color: #AC9D9C;
 }
 
 /*unavailable*/
-.pro-status-PRN {
+.pro-status-PRN,
+.pro-status-PRN .check-column{
     border-left-color: #E44064;
 }
 
