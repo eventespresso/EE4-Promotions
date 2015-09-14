@@ -38,7 +38,6 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			);
 
 		$this->_columns = array(
-			'pro_status' => '',
 			'cb' => '<input type="checkbox" />',
 			'id' => __('ID', 'event_espresso'),
 			'name' => __('Name', 'event_espresso'),
@@ -51,6 +50,9 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			'exclusive' => '<span class="small-text">' . __( 'Exclusive', 'event_espresso' ) . '</span >',
 			'actions' => __('Actions', 'event_espresso')
 			);
+
+		$this->_primary_column = 'ID';
+		$this->_has_checkbox_column = true;
 
 		$this->_sortable_columns = array(
 			'id' => array( 'id' => TRUE ),
@@ -80,8 +82,12 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 	}
 
 
-	public function column_pro_status( EE_Promotion $item ) {
-		return '<span class="ee-status-strip ee-status-strip-td pro-status-' . $item->status() . '"></span>';
+	protected function _get_row_class( $item ) {
+		$class = parent::_get_row_class( $item );
+		//add status class
+		$class .= ' ee-status-strip pro-status-' . $item->status();
+
+		return $class;
 	}
 
 
@@ -96,13 +102,18 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 	public function column_id( EE_Promotion $item ) {
-		echo $item->ID();
+		$content = $item->ID();
+		$content .= '<div class="show-on-mobile-view-only">';
+		$content .= ' - ' . $item->name();
+		return $content;
 	}
 
 
 	public function column_name( EE_Promotion $item ) {
 		$edit_link = EEH_URL::add_query_args_and_nonce( array( 'action' => 'edit', 'PRO_ID' => $item->ID() ), EE_PROMOTIONS_ADMIN_URL );
-		echo EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotion', 'espresso_promotions_edit_promotion', $item->ID() ) ? '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '">' . $item->name() . '</a>' : $item->name();
+		$content = EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotion', 'espresso_promotions_edit_promotion', $item->ID() ) ? '<a href="' . $edit_link . '" title="' . __('Edit Promotion', 'event_espresso') . '">' . $item->name() . '</a>' : $item->name();
+		$content .= '<br><span class="ee-status-text-small">' . EEH_Template::pretty_status( $item->status(), false, 'sentence' ) . '</span>';
+		return $content;
 	}
 
 
