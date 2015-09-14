@@ -402,6 +402,12 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$view = $new ? 'insert_promotion' : 'update_promotion';
 		$this->_set_add_edit_form_tags($view);
 		$route = $this->_promotion->get('PRO_deleted') ? 'restore_promotion' : 'trash_promotion';
+
+		/** add new button */
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'esspresso_promotions_create_new_promotion' ) ) {
+			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+		}
+
 		$this->_set_publish_post_box_vars( 'PRO_ID', $id, $route, $redirect );
 		$this->display_admin_page_with_sidebar();
 	}
