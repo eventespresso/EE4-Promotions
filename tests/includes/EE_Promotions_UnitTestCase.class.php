@@ -16,17 +16,21 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 	 * @return EE_Promotion[]
 	 */
 	protected function _demo_promotions() {
+		//require_once( EE_PROMOTIONS_CORE . 'db_classes' . DS . 'EE_Promotion.class.php' );
 		$promotions_to_test = array(
-			'upcoming_start_no_end' => EE_Promotion::new_instance( array(
-				'PRO_start' => time() + 86400,
-				'PRO_code' => 'test_code_for_promotions' ) ),
+			'upcoming_start_no_end' => EE_Promotion::new_instance(
+				array(
+					'PRO_start' => time() + 86400,
+					'PRO_code' => 'test_code_for_promotions'
+				)
+			),
 			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400, 'PRO_end' => time() + 96000 ) ),
 			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400 ) ),
 			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + 96000 ) ),
 			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() - 56000 ) ),
 			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() + 96000 ) ),
 			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() - 96000 ) )
-			);
+		);
 
 
 		$base_promo_name = 'Promo %s';
@@ -63,4 +67,6 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 	}
 
 
-} // end EE_Promotions_UnitTestCase
+}
+// end EE_Promotions_UnitTestCase
+// Location: /tests/includes/EE_Promotions_UnitTestCase.class.php
