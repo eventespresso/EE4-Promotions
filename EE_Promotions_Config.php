@@ -16,30 +16,30 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * Holds all the EE_Promotion_Scope objects that are registered for promotions.
 	 *
 	 * @since 1.0.0
-	 * @var EE_Promotion_Scope[]
+	 * @type EE_Promotion_Scope[] $scopes
 	 */
-	public $scopes;
+	public $scopes = array();
 
 	/**
 	 * what to call promo codes on the frontend. ie: Promo codes, coupon codes, etc
 	 *
 	 * @since 1.0.0
-	 * @var stdClass
+	 * @type stdClass $label
 	 */
 	public $label;
 
 	/**
-	 * @var string
+	 * @type string $banner_template
 	 */
-	public $banner_template;
+	public $banner_template = 'promo-banner-ribbon.template.php';
 
 	/**
-	 * @var string
+	 * @type string $ribbon_banner_color
 	 */
-	public $ribbon_banner_color;
+	public $ribbon_banner_color = 'lite-blue';
 
 	/**
-	 * @var boolean
+	 * @type boolean $_affects_tax
 	 */
 	protected $_affects_tax = false;
 
