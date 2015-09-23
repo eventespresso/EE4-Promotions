@@ -669,7 +669,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 
 
 	/**
-	 * Sets how many times this promotion has been used in the given scope.
+	 * Sets how many times this promotion can be used for the given scope.
 	 *
 	 * @since 1.0.0
 	 *
@@ -696,7 +696,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 
 
 	/**
-	 * Sets the number of times this promotion hsa been used globally.
+	 * Sets the number of times this promotion can be used globally.
 	 *
 	 * @since 1.0.0
 	 *
