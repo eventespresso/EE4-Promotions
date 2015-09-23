@@ -587,7 +587,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _duplicate_promotion() {
 		$success = TRUE;
 		//first verify we have a promotion id
-		$pro_id = !empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0;
+		$pro_id = ! empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0;
 		if ( empty( $pro_id ) ) {
 			$success = FALSE;
 			EE_Error::add_error( __('Unable to duplicate the promotion because there was no ID present in the request.', 'event_espresso' ) );
@@ -611,6 +611,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 					$new_promo_obj = clone $promo_obj;
 					$new_promo_obj->set('POB_ID', 0);
 					$new_promo_obj->set('PRO_ID', $new_promo->ID() );
+					$new_promo_obj->set( 'POB_used', 0 );
 					$new_promo_obj->save();
 				}
 
@@ -629,8 +630,8 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		}
 
 		$query_args = array(
-			'PRO_ID' => $pro_id,
-			'action' => !empty( $pro_id ) ? 'edit' : 'default'
+			'PRO_ID' => $new_promo->ID(),
+			'action' => ! empty( $pro_id ) ? 'edit' : 'default'
 			);
 		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
 	}
