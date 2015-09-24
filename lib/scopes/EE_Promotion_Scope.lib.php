@@ -607,7 +607,7 @@ abstract class EE_Promotion_Scope {
 	 * 	if a promotion is global but doesn't already have a corresponding EE_Promotion_Object record,
 	 *	then this method will create one and add it to the supplied list of $promotion_objects
 	 *
-	 * @since   1.0.0
+	 * @since   1.0.4
 	 *
 	 * @param \EE_Promotion_Object[] $promotion_objects
 	 * @param \EE_Promotion $promotion
