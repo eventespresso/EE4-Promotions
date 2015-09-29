@@ -379,7 +379,9 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_total_items() {
 		$query_args = $this->get_query_args();
-		return $this->_model()->count( $query_args, NULL, TRUE );
+		//make sure for counts we ONLY include the $where_query.
+		$_where = array_key_exists( 0, $query_args ) ? array( $query_args[0] ) : array();
+		return $this->_model()->count( $_where, null, true );
 	}
 
 
