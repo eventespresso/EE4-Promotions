@@ -306,7 +306,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		$orderby= ! empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'DESC';
 
-		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_created' => $orderby ) );
+		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_created' => $orderby ), 'group_by' => 'EVT_ID' );
 
 		//apply caps
 		if ( ! EE_Registry::instance()->CAP->current_user_can( 'ee_read_others_events', 'get_events_for_promotions' ) ) {
