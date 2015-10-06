@@ -604,58 +604,6 @@ abstract class EE_Promotion_Scope {
 
 
 	/**
-	 * 	add_promotion_objects_for_global_promotions
-	 *
-	 * 	if a promotion is global but doesn't already have a corresponding EE_Promotion_Object record,
-	 *	then this method will create one and add it to the supplied list of $promotion_objects
-	 *
-	 * @since   1.0.0
-	 *
-	 * @param \EE_Promotion_Object[] $promotion_objects
-	 * @param \EE_Promotion $promotion
-	 * @param \EE_Base_Class[] $objects
-	 * @return \EE_Promotion_Object[]
-	 */
-	public function add_promotion_objects_for_global_promotions( $promotion_objects, EE_Promotion $promotion, $objects = array() ) {
-		$objects = (array)$objects;
-		if ( ! empty( $objects ) ) {
-			foreach ( $objects as $object ) {
-				if (
-					$object instanceof EE_Base_Class
-					&& $promotion instanceof EE_Promotion
-					&& $promotion->is_global()
-				) {
-					if ( ! empty( $promotion_objects ) ) {
-						foreach ( $promotion_objects as $promotion_object ) {
-							if (
-								$promotion_object instanceof EE_Promotion_Object
-								&& $promotion_object->type() == $this->slug
-								&& $promotion_object->OBJ_ID() == $object->ID()
-							) {
-								return $promotion_objects;
-							}
-						}
-					}
-					$promotion_obj = EE_Promotion_Object::new_instance(
-						array(
-							'PRO_ID'   => $promotion->ID(),
-							'OBJ_ID'   => $object->ID(),
-							'POB_type' => $this->slug,
-							'POB_used' => 0
-						)
-					);
-					if ( $promotion_obj->save() ) {
-						$promotion_objects[ $promotion_obj->ID() ] = $promotion_obj;
-					}
-				}
-			}
-		}
-		return $promotion_objects;
-	}
-
-
-
-	/**
 	 * get_redeemable_scope_promos
 	 * searches the cart for any items that the supplied promotion applies to.
 	 * can be overridden by specific promotion scope classes for greater performance or specificity
@@ -663,17 +611,17 @@ abstract class EE_Promotion_Scope {
 	 * @since   1.0.0
 	 *
 	 * @param EE_Promotion $promotion
-	 * @param bool         $IDs_only - whether to return array of EE_Promotion_Object IDs or the actual EE_Promotion_Object objects
-	 * @param \EE_Base_Class[] $objects
+	 * @param bool         $IDs_only  - whether to return array of EE_Promotion_Object IDs or the actual EE_Promotion_Object objects
 	 * @return array
 	 */
-	public function get_redeemable_scope_promos( EE_Promotion $promotion, $IDs_only = true, $objects = array() ) {
+	public function get_redeemable_scope_promos( EE_Promotion $promotion, $IDs_only = TRUE ) {
 		$redeemable_scope_promos = array();
 		// exceeded global use limit ?
 		if ( ! $promotion->global_uses_left() ) {
 			return $redeemable_scope_promos;
 		}
-		$promotion_objects = $this->get_promotion_objects( $promotion, $objects );
+		// retrieve promotion objects for this promotion type scope
+		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug )));
 		if ( ! empty( $promotion_objects )) {
 			foreach ( $promotion_objects as $promotion_object ) {
 				if ( $promotion_object instanceof EE_Promotion_Object ) {
@@ -689,26 +637,6 @@ abstract class EE_Promotion_Scope {
 			}
 		}
 		return $redeemable_scope_promos;
-	}
-
-
-
-	/**
-	 * get_promotion_objects
-	 * returns an array of EE_Promotion_Object's for the current scope type,
-	 * and adds any new ones required for the passed array of objects
-	 *
-	 * @since   1.0.4
-	 *
-	 * @param \EE_Promotion   $promotion
-	 * @param \EE_Base_Class[] $objects
-	 * @return \EE_Promotion_Object[]
-	 */
-	protected function get_promotion_objects( EE_Promotion $promotion, $objects = array() ) {
-		// retrieve promotion objects for this promotion type scope
-		$promotion_objects = $promotion->promotion_objects( array( array( 'POB_type' => $this->slug ) ) );
-		// check that global promotions cover all events
-		return $this->add_promotion_objects_for_global_promotions( $promotion_objects, $promotion, $objects );
 	}
 
 
@@ -782,10 +710,10 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param EE_Line_Item  $total_line_item the EE_Cart grand total line item to be searched
-	 * @param array         $redeemable_scope_promos
-	 * @param string        $OBJ_type
-	 * @return \EE_Line_Item[]
+	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
+	 * @param string $OBJ_type
+	 * @param array $redeemable_scope_promos
+	 * @return EE_Line_Item[]
 	 */
 	public function get_object_line_items_from_cart( EE_Line_Item $total_line_item, $redeemable_scope_promos = array(), $OBJ_type = '' ) {
 		EE_Registry::instance()->load_helper( 'Line_Item' );
@@ -798,7 +726,7 @@ abstract class EE_Promotion_Scope {
 				$OBJ_type,
 				$redeemable_scope_promos[ $OBJ_type ]
 			);
-			if ( is_array( $object_type_line_items ) ) {
+			if ( is_array( $object_type_line_items )) {
 				foreach ( $object_type_line_items as $object_type_line_item ) {
 					if (
 						apply_filters( 'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item', true, $object_type_line_item )
