@@ -421,7 +421,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$promotion_uses = $this->_promotion->uses();
 		$form_args = array(
 			'promotion' => $this->_promotion,
-			'promotion_global' => EEH_Form_Fields::select_input( 'PRO_global', $this->_yes_no_values, $this->_promotion->is_global() ),
 			'promotion_exclusive' => EEH_Form_Fields::select_input( 'PRO_exclusive', $this->_yes_no_values, $this->_promotion->is_exclusive() ),
 			'promotion_uses' => $promotion_uses !== EE_INF_IN_DB ? $promotion_uses : '',
 			'price_type_selector' => $this->_get_price_type_selector(),
@@ -509,7 +508,6 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			'PRO_scope' => !empty( $this->_req_data['PRO_scope'] ) ? $this->_req_data['PRO_scope'] : 'Event',
 			'PRO_start' => !empty( $this->_req_data['PRO_start'] ) ? $this->_req_data['PRO_start'] : NULL,
 			'PRO_end' => ! empty( $this->_req_data['PRO_end'] ) ? $this->_req_data['PRO_end'] : NULL,
-			'PRO_global' => isset( $this->_req_data['PRO_global'] ) ? $this->_req_data['PRO_global'] : false,
 			'PRO_exclusive' => isset( $this->_req_data['PRO_exclusive'] ) ? $this->_req_data['PRO_exclusive'] : true,
 			'PRO_uses' => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses'] : EE_INF_IN_DB,
 			'PRO_accept_msg' => ! empty( $this->_req_data['PRO_accept_msg'] ) ? $this->_req_data['PRO_accept_msg'] : '',
