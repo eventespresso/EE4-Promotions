@@ -236,7 +236,7 @@ class EED_Promotions extends EED_Module {
 
 
 	/**
-	 * 	_display_event_promotions_banner
+	 *    _display_promotions
 	 *
 	 * @access 	private
 	 * @param 	array $attributes
