@@ -615,7 +615,7 @@ abstract class EE_Promotion_Scope {
 	 * @return \EE_Promotion_Object[]
 	 */
 	public function add_promotion_objects_for_global_promotions( $promotion_objects, EE_Promotion $promotion, $objects = array() ) {
-		$objects = (array)$objects;
+		$objects = is_array( $objects ) ? $objects : array( $objects );
 		if ( ! empty( $objects ) ) {
 			foreach ( $objects as $object ) {
 				if (
