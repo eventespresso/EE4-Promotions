@@ -71,15 +71,6 @@
 	</tr>
 	<tr>
 		<th scope="row">
-			<label for="PRO_uses"><?php _e('Apply Promo to ALL Scope Items', 'event_espresso'); ?></label>
-		</th>
-		<td class="field-column">
-			<?php echo $promotion_global; ?>
-			<p class="description"><?php _e('If set to "Yes" then this promotion will be applied to ALL items of the Scope type selected above, without having to manually select the individual items via the "Promotion applies to..." metabox in the sidebar.', 'event_espresso'); ?></p>
-		</td>
-	</tr>
-	<tr>
-		<th scope="row">
 			<label for="PRO_uses"><?php _e('Promo Is Exclusive', 'event_espresso'); ?></label>
 		</th>
 		<td class="field-column">

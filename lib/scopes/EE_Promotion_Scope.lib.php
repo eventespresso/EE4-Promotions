@@ -379,7 +379,9 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_total_items() {
 		$query_args = $this->get_query_args();
-		return $this->_model()->count( $query_args, NULL, TRUE );
+		//make sure for counts we ONLY include the $where_query.
+		$_where = array_key_exists( 0, $query_args ) ? array( $query_args[0] ) : array();
+		return $this->_model()->count( $_where, null, true );
 	}
 
 
@@ -661,7 +663,7 @@ abstract class EE_Promotion_Scope {
 	 * @since   1.0.0
 	 *
 	 * @param EE_Promotion $promotion
-	 * @param bool         $IDs_only - whether to return array of EE_Promotion_Object IDs or the actual EE_Promotion_Object objects
+	 * @param bool         $IDs_only  - whether to return array of EE_Promotion_Object IDs or the actual EE_Promotion_Object objects
 	 * @param \EE_Base_Class[] $objects
 	 * @return array
 	 */
@@ -780,9 +782,9 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param EE_Line_Item  $total_line_item the EE_Cart grand total line item to be searched
-	 * @param array         $redeemable_scope_promos
-	 * @param string        $OBJ_type
+	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
+	 * @param array $redeemable_scope_promos
+	 * @param string $OBJ_type
 	 * @return \EE_Line_Item[]
 	 */
 	public function get_object_line_items_from_cart( EE_Line_Item $total_line_item, $redeemable_scope_promos = array(), $OBJ_type = '' ) {

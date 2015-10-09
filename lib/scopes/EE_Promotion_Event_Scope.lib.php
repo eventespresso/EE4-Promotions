@@ -306,7 +306,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 
 		$orderby= ! empty( $_REQUEST['PRO_scope_sort'] ) ? $_REQUEST['PRO_scope_sort'] : 'DESC';
 
-		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_created' => $orderby ) );
+		$query_params = array( '0' => $_where, 'order_by' => array( 'EVT_created' => $orderby ), 'group_by' => 'EVT_ID' );
 
 		//apply caps
 		if ( ! EE_Registry::instance()->CAP->current_user_can( 'ee_read_others_events', 'get_events_for_promotions' ) ) {
@@ -396,14 +396,13 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 		foreach( $selected_items as $EVT_ID ) {
 			if( in_array( $EVT_ID, $evt_ids ) )
 				continue;
-			$promotion_obj = EE_Promotion_Object::new_instance(
-				array(
-					'PRO_ID'   => $promotion->ID(),
-					'OBJ_ID'   => $EVT_ID,
-					'POB_type' => $this->slug,
-					'POB_used' => 0
-				)
-			);
+			$pro_obj_values = array(
+				'PRO_ID' => $promotion->ID(),
+				'OBJ_ID' => $EVT_ID,
+				'POB_type' => $this->slug,
+				'POB_used' => 0
+				);
+			$promotion_obj = EE_Promotion_Object::new_instance( $pro_obj_values );
 			$promotion_obj->save();
 		}
 
