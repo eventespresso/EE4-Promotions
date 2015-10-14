@@ -38,7 +38,7 @@ Class  EE_Promotions extends EE_Addon {
 				'plugin_slug' 		=> 'espresso_promotions',
 				'config_class' 		=> 'EE_Promotions_Config',
 				'config_name' 		=> 'promotions',
-				'plugins_page_row'	=> EE_Promotions::plugins_page_row(),
+				//'plugins_page_row'	=> EE_Promotions::plugins_page_row(),
 				'dms_paths' 		=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
 				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php' ),
