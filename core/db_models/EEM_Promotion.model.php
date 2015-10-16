@@ -81,7 +81,9 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 						'PRO_code' 		=> $promo_code,
 						'PRO_deleted' 	=> 0
 					 )
-				)
+				),
+				// query params for calendar controlled expiration
+				$this->_get_promotion_expiration_query_params()
 			)
 		);
 	}
@@ -104,30 +106,49 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 			array_replace_recursive(
 				array(
 					array(
-						'PRO_code' => null,
+						'PRO_code' 		=> null,
 						'PRO_deleted' 	=> 0,
-						'OR'=> array(
-							'AND'=> array(
-								'PRO_start' 	=> array( '<=', $this->current_time_for_query( 'PRO_start' )),
-								'PRO_end' 	=> array( '>=', $this->current_time_for_query( 'PRO_end' ))
-							),
-							'AND*'=> array(
-								'PRO_start*' 	=> array( 'IS NULL' ),
-								'PRO_end*' 		=> array( 'IS NULL' )
-							),
-							'AND**' => array(
-								'PRO_start**' 	=> array( '<=', $this->current_time_for_query( 'PRO_start' )),
-								'PRO_end**' => array( 'IS NULL' )
-								),
-							'AND***' => array(
-								'PRO_start***' 	=> array( 'IS NULL' ),
-								'PRO_end***' => array( '>=', $this->current_time_for_query( 'PRO_end' ))
-								),
-						)
 					)
 				),
+				// query params for calendar controlled expiration
+				$this->_get_promotion_expiration_query_params(),
 				// incoming $query_params array filtered to remove null values and empty strings
 				array_filter( (array) $query_params, 'EEM_Promotion::has_value' )
+			)
+		);
+	}
+
+
+
+	/**
+	 * _get_promotion_expiration_query_params
+	 * query params for calendar controlled expiration
+	 *
+	 * @return array
+	 */
+	protected function _get_promotion_expiration_query_params() {
+		$promo_start_date = $this->current_time_for_query( 'PRO_start' );
+		$promo_end_date = $this->current_time_for_query( 'PRO_end' );
+		return array(
+			array(
+				'OR' => array(
+					'AND'    => array(
+						'PRO_start' => array( '<=', $promo_start_date ),
+						'PRO_end'   => array( '>=', $promo_end_date ),
+					),
+					'AND*'   => array(
+						'PRO_start*' => array( 'IS NULL' ),
+						'PRO_end*'   => array( 'IS NULL' ),
+					),
+					'AND**'  => array(
+						'PRO_start**' => array( '<=', $promo_start_date ),
+						'PRO_end**'   => array( 'IS NULL' ),
+					),
+					'AND***' => array(
+						'PRO_start***' => array( 'IS NULL' ),
+						'PRO_end***'   => array( '>=', $promo_end_date ),
+					),
+				)
 			)
 		);
 	}
