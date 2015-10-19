@@ -78,9 +78,9 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				$additional_query_params,
 				array(
 					array(
-						'PRO_code' 		=> $promo_code,
-						'PRO_deleted' 	=> 0
-					 )
+						'PRO_code'    => $promo_code,
+						'PRO_deleted' => false,
+					)
 				),
 				// query params for calendar controlled expiration
 				$this->_get_promotion_expiration_query_params()
@@ -107,7 +107,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				array(
 					array(
 						'PRO_code' 		=> null,
-						'PRO_deleted' 	=> 0,
+						'PRO_deleted' 	=> false,
 					)
 				),
 				// query params for calendar controlled expiration
@@ -182,7 +182,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 							'PRO_end' => array( '<=', $this->convert_datetime_for_query( 'PRO_end', $PRO_end, 'Y-m-d H:i:s' ) ),
 						),
 						'PRO_code' => null,
-						'PRO_deleted' 	=> 0
+						'PRO_deleted' 	=> false,
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
@@ -227,7 +227,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 							)
 						),
 						'PRO_code' => null,
-						'PRO_deleted' 	=> 0
+						'PRO_deleted' 	=> false,
 					)
 				),
 				// incoming $query_params array filtered to remove null values and empty strings
