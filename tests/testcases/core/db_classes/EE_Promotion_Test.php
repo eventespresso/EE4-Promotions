@@ -80,3 +80,5 @@ class EE_Promotion_Test extends EE_Promotions_UnitTestCase {
 		$this->assertEquals( 'Starts: 2015-12-24 00:00:00', $null_end_promo->promotion_date_range() );
 	}
 }
+
+// Location: wp-content/plugins/eea-promotions/tests/testcases/core/db_classes/EE_Promotion_Test.php
