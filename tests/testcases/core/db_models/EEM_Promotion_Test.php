@@ -25,7 +25,11 @@ class EEM_Promotion_Test extends EE_Promotions_UnitTestCase {
 	 */
 	public function test_get_promotion_details_via_code() {
 		$promotions = $this->_demo_promotions();
-		$expected_promotion = reset( $promotions );
+		reset( $promotions );
+		next( $promotions );
+		// had to move the code to a valid promotion (active within current date)
+		// so now we want promo 3
+		$expected_promotion = next( $promotions );
 		$actual_promotion = EEM_Promotion::instance()->get_promotion_details_via_code( 'test_code_for_promotions' );
 		$this->assertEquals( $expected_promotion->name(), $actual_promotion->name() );
 	}
@@ -39,7 +43,7 @@ class EEM_Promotion_Test extends EE_Promotions_UnitTestCase {
 	public function test_get_all_active_codeless_promotions() {
 		$this->_demo_promotions();
 		$active_codeless_promos = EEM_Promotion::instance()->get_all_active_codeless_promotions();
-		$this->assertEquals( 3, count( $active_codeless_promos ) );
+		$this->assertEquals( 2, count( $active_codeless_promos ) );
 	}
 
 
