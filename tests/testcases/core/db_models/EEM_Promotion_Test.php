@@ -70,3 +70,5 @@ class EEM_Promotion_Test extends EE_Promotions_UnitTestCase {
 
 
 }
+
+// Location: wp-content/plugins/eea-promotions/tests/testcases/core/db_models/EEM_Promotion_Test.php
