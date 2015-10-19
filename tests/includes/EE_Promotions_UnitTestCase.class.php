@@ -23,14 +23,9 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 		$half_day_ago = time() - 43200;
 		$two_days_ago = time() - 129600;
 		$promotions_to_test = array(
-			'upcoming_start_no_end' => EE_Promotion::new_instance(
-				array(
-					'PRO_start' => $day_ago,
-					'PRO_code' => 'test_code_for_promotions'
-				)
-			),
+			'upcoming_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_from_now ) ),
 			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_from_now, 'PRO_end' => $day_and_half_from_now ) ),
-			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_ago ) ),
+			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_ago, 'PRO_code'  => 'test_code_for_promotions' ) ),
 			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_ago, 'PRO_end' => $day_and_half_from_now ) ),
 			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_ago, 'PRO_end' => $half_day_ago ) ),
 			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => $day_and_half_from_now ) ),
