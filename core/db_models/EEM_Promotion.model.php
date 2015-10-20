@@ -37,7 +37,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base {
 				'PRO_end'         		=> new EE_Datetime_Field( 'PRO_end', __( "End Date/Time", "event_espresso" ), TRUE, NULL ),
 				'PRO_code'        		=> new EE_Plain_Text_Field( 'PRO_code', __( "Code", "event_espresso" ), TRUE, '' ),
 				'PRO_uses'        		=> new EE_Integer_Field( 'PRO_uses', __( "Times this can be used in a given scope", "event_espresso" ), FALSE, EE_INF_IN_DB ),
-				'PRO_global'      		=> new EE_Boolean_Field( 'PRO_global', __( "Usable Globally?", "event_espresso" ), FALSE, FALSE ),
+				'PRO_global'      		=> new EE_Boolean_Field( 'PRO_global', __( "Applies to ALL Scope items", "event_espresso" ), FALSE, FALSE ),
 				'PRO_global_uses' 	=> new EE_Integer_Field( 'PRO_global_uses', __( "Times it can be used in all scopes", "event_espresso" ), FALSE, EE_INF_IN_DB ),
 				'PRO_exclusive'   	=> new EE_Boolean_Field(
 					'PRO_exclusive',
