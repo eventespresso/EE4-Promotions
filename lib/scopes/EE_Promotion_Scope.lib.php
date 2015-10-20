@@ -782,9 +782,9 @@ abstract class EE_Promotion_Scope {
 	 *
 	 * @since   1.0.0
 	 *
-	 * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
-	 * @param array $redeemable_scope_promos
-	 * @param string $OBJ_type
+	 * @param EE_Line_Item  $total_line_item the EE_Cart grand total line item to be searched
+	 * @param array         $redeemable_scope_promos
+	 * @param string        $OBJ_type
 	 * @return \EE_Line_Item[]
 	 */
 	public function get_object_line_items_from_cart( EE_Line_Item $total_line_item, $redeemable_scope_promos = array(), $OBJ_type = '' ) {
