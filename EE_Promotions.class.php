@@ -32,32 +32,32 @@ Class  EE_Promotions extends EE_Addon {
 		'Promotions',
 			array(
 				'version' 					=> EE_PROMOTIONS_VERSION,
-				'min_core_version' => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
-				'main_file_path' 		=> EE_PROMOTIONS_PLUGIN_FILE,
-				'admin_path' 			=> EE_PROMOTIONS_ADMIN,
-				'plugin_slug' 			=> 'espresso_promotions',
-				'config_class' 			=> 'EE_Promotions_Config',
-				'config_name'			=> 'promotions',
-				'plugins_page_row'=> EE_Promotions::plugins_page_row(),
-				'dms_paths' 			=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
+				'min_core_version' 	=> EE_PROMOTIONS_CORE_VERSION_REQUIRED,
+				'main_file_path' 	=> EE_PROMOTIONS_PLUGIN_FILE,
+				'admin_path' 		=> EE_PROMOTIONS_ADMIN,
+				'plugin_slug' 		=> 'espresso_promotions',
+				'config_class' 		=> 'EE_Promotions_Config',
+				'config_name' 		=> 'promotions',
+				//'plugins_page_row'	=> EE_Promotions::plugins_page_row(),
+				'dms_paths' 		=> array( EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS ),
 				'module_paths' 		=> array( EE_PROMOTIONS_PATH . 'EED_Promotions.module.php' ),
 				'shortcode_paths' 	=> array( EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php' ),
 				'widget_paths' 		=> array( EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php' ),
 				// register autoloaders
 				'autoloader_paths' => array(
-					'EE_Promotions_Config' 				=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
+					'EE_Promotions_Config' 			=> EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
 					'Promotions_Admin_Page_Init' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
-					'Promotions_Admin_Page' 			=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
+					'Promotions_Admin_Page' 		=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
 					'Promotions_Admin_List_Table' 	=> EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php',
-					'EE_Promotion_Scope' 					=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes' . DS . 'EE_Promotion_Scope.lib.php'
+					'EE_Promotion_Scope' 			=> EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes' . DS . 'EE_Promotion_Scope.lib.php'
 				),
 				'autoloader_folders' => array(
 					'Promotions_Plugin_API' 	=> EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api',
 				),
 				'pue_options'			=> array(
-					'pue_plugin_slug' 		=> 'eea-promotions',
-					'checkPeriod' 				=> '24',
-					'use_wp_update' 		=> FALSE
+					'pue_plugin_slug' 	=> 'eea-promotions',
+					'checkPeriod' 		=> '24',
+					'use_wp_update' 	=> FALSE
 				),
 				// EE_Register_Model
 				'model_paths'	=> array( EE_PROMOTIONS_CORE . 'db_models' ),
@@ -107,10 +107,14 @@ Class  EE_Promotions extends EE_Addon {
 	 *
 	 * HTML to appear within a new table row on the WP Plugins page, below the promotions plugin row
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public static function plugins_page_row() {
-		return '<h3>Promotions Addon Upsell Info</h3><p>To edit me, open up ' . __FILE__ . ' and find the ' . __FUNCTION__ . '() method</p>';
+		return array(
+				'link_text' 	=> 'Promotions Addon Upsell Info',
+				'link_url' 		=> '#',
+				'description' 	=> 'To edit me, open up ' . __FILE__ . ' and find the ' . __METHOD__ . '() method',
+		);
 	}
 
 

@@ -144,8 +144,11 @@ class EED_Promotions extends EED_Module {
 			// EE promotions style
 			wp_register_style( 'espresso_promotions', EE_PROMOTIONS_URL . 'css' . DS . 'promotions.css' );
 		}
-		// promotions script
-		wp_register_script( 'espresso_promotions', EE_PROMOTIONS_URL . 'scripts' . DS . 'promotions.js', array( 'single_page_checkout' ), EE_PROMOTIONS_VERSION, TRUE );
+		// only load JS if SPCO is active
+		if ( apply_filters( 'EED_Single_Page_Checkout__SPCO_active', false ) ) {
+			// promotions script
+			wp_register_script( 'espresso_promotions', EE_PROMOTIONS_URL . 'scripts' . DS . 'promotions.js', array( 'single_page_checkout' ), EE_PROMOTIONS_VERSION, true );
+		}
 
 		if ( EED_Promotions::load_assets() ) {
 			// load JS

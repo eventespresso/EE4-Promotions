@@ -17,19 +17,31 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 	 */
 	protected function _demo_promotions() {
 		//require_once( EE_PROMOTIONS_CORE . 'db_classes' . DS . 'EE_Promotion.class.php' );
+		$day_from_now = time() + DAY_IN_SECONDS;
+		$day_and_half_from_now = time() + ( DAY_IN_SECONDS * 1.5 );
+		$day_ago = time() - DAY_IN_SECONDS;
+		$half_day_ago = time() - ( DAY_IN_SECONDS / 2 );
+		$day_and_half_ago = time() - ( DAY_IN_SECONDS * 1.5 );
 		$promotions_to_test = array(
-			'upcoming_start_no_end' => EE_Promotion::new_instance(
-				array(
-					'PRO_start' => time() + 86400,
-					'PRO_code' => 'test_code_for_promotions'
-				)
-			),
-			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() + 86400, 'PRO_end' => time() + 96000 ) ),
-			'past_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400 ) ),
-			'past_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() + 96000 ) ),
-			'past_start_past_end' => EE_Promotion::new_instance( array( 'PRO_start' => time() - 86400, 'PRO_end' => time() - 56000 ) ),
-			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() + 96000 ) ),
-			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => time() - 96000 ) )
+			'upcoming_start_no_end' => EE_Promotion::new_instance( array( 'PRO_start' => $day_from_now ) ),
+			'upcoming_start_upcoming_end' => EE_Promotion::new_instance( array(
+				'PRO_start' => $day_from_now,
+				'PRO_end'   => $day_and_half_from_now
+			) ),
+			'past_start_no_end' => EE_Promotion::new_instance( array(
+				'PRO_start' => $day_ago,
+				'PRO_code'  => 'test_code_for_promotions'
+			) ),
+			'past_start_upcoming_end' => EE_Promotion::new_instance( array(
+				'PRO_start' => $day_ago,
+				'PRO_end'   => $day_and_half_from_now
+			) ),
+			'past_start_past_end' => EE_Promotion::new_instance( array(
+				'PRO_start' => $day_ago,
+				'PRO_end'   => $half_day_ago
+			) ),
+			'no_start_upcoming_end' => EE_Promotion::new_instance( array( 'PRO_end' => $day_and_half_from_now ) ),
+			'no_start_past_end' => EE_Promotion::new_instance( array( 'PRO_end' => $day_and_half_ago ) )
 		);
 
 
@@ -55,7 +67,8 @@ class EE_Promotions_UnitTestCase extends EE_UnitTestCase {
 				'PRC_amount' => $base_price_amount * $count,
 				'PRC_name' => sprintf( $base_promo_name, $count ),
 				'PRC_desc' => sprintf( $base_promo_description, $count )
-				));
+			));
+			$price->save();
 			/** @type EE_Promotion $promotion */
 			$promotion->_add_relation_to( $price, 'Price' );
 			$promotion->save();
