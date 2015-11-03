@@ -416,6 +416,17 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 	 * @return string
 	 */
 	public function applied_to_name( $link = FALSE ) {
+		// global promotions apply to ALL scope items, so just return a link if this is the admin
+		if ( $this->is_global() && $link === 'admin' ) {
+			$scope_obj = $this->scope_obj();
+			return sprintf(
+				_x( '%1$sView all %2$s%3$sAll %2$s%4$s', '(link title)View all events(link text)All Events', 'event_espresso' ),
+				$scope_obj->get_scope_icon() . '<a href="' . $scope_obj->get_admin_url( null ) . '" title="',
+				$scope_obj->label->plural,
+				'">',
+				'</a>'
+			);
+		}
 		$pro_objects = $this->promotion_objects();
 		$obj = 0;
 		if ( !empty( $pro_objects ) ) {
