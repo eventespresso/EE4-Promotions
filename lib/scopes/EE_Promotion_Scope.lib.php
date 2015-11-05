@@ -273,7 +273,7 @@ abstract class EE_Promotion_Scope {
 	 * @return string
 	 */
 	public function get_scope_icon( $class_only = FALSE ) {
-		return $class_only ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-megaphone"></span>';
+		return $class_only ? 'dashicons dashicons-megaphone' : '<span class="dashicons dashicons-megaphone" title="' . __( 'Promotion', 'event_espresso' ) . '"></span>';
 	}
 
 
