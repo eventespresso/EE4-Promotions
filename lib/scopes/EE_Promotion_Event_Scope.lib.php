@@ -164,7 +164,9 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope {
 	 * @return string
 	 */
 	public function get_scope_icon( $class_only = FALSE ) {
-		return $class_only ? 'dashicons dashicons-flag' : '<span class="dashicons dashicons-flag"></span>';
+		return $class_only
+			? 'dashicons dashicons-flag'
+			: '<span class="dashicons dashicons-flag" title="' . __( 'Event Scope Promotion - applies to Events', 'event_espresso' ) . '"></span>';
 	}
 
 
