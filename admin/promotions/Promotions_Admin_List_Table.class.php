@@ -47,7 +47,7 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 			'valid_until' => __('Valid Until', 'event_espresso'),
 			'amount' => __('Discount', 'event_espresso'),
 			'redeemed' => __('Uses', 'event_espresso'),
-			'exclusive' => '<span class="small-text">' . __( 'Exclusive', 'event_espresso' ) . '</span >',
+			'attributes' => '<span class="small-text">' . __( 'Attributes', 'event_espresso' ) . '</span >',
 			'actions' => __('Actions', 'event_espresso')
 			);
 
@@ -129,8 +129,9 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table {
 
 
 
-	public function column_exclusive( EE_Promotion $item ) {
-		echo $item->is_exclusive() ? '<span class="dashicons dashicons-awards"></span>' : '';
+	public function column_attributes( EE_Promotion $item ) {
+		echo $item->is_exclusive() ? '<span class="dashicons dashicons-awards" title="' . __('Exclusive Promotion - can NOT be combined with others', 'event_espresso') . '"></span>' : '';
+		echo $item->is_global() ? '<span class="dashicons dashicons-admin-site" title="' . __('Global Promotion - applies to ALL scope items', 'event_espresso') . '"></span>' : '';
 	}
 
 
