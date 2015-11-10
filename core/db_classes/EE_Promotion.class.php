@@ -344,7 +344,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 	 * @return int
 	 */
 	public function global_uses_left(){
-		return $this->global_uses() === EE_INF_IN_DB ? INF : $this->global_uses() - $this->redeemed();
+		return $this->global_uses() === EE_INF_IN_DB ? EE_INF : $this->global_uses() - $this->redeemed();
 	}
 
 
@@ -553,7 +553,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 	 * @return int
 	 */
 	public function uses_left( $OBJ_ID = 0 ){
-		return $this->uses() === EE_INF_IN_DB ? INF : $this->uses() - $this->redeemed( $OBJ_ID );
+		return $this->uses() === EE_INF_IN_DB ? EE_INF : $this->uses() - $this->redeemed( $OBJ_ID );
 	}
 
 
@@ -567,7 +567,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 	 * @return int
 	 */
 	public function uses_left_for_scope_object( EE_Promotion_Object $promotion_object ){
-		return $this->uses() === EE_INF_IN_DB ? INF : $this->uses() - $promotion_object->used();
+		return $this->uses() === EE_INF_IN_DB ? EE_INF : $this->uses() - $promotion_object->used();
 	}
 
 
@@ -912,7 +912,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
 	/**
 	 * Implementation for EEI_Admin_Links interface method.
 	 * @see EEI_Admin_Links for comments
-	 * @return return string
+	 * @return string
 	 */
 	public function get_admin_edit_link() {
 		EE_Registry::instance()->load_helper('URL');
