@@ -300,6 +300,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @access protected
 	 */
 	protected function _list_table() {
+		$this->_config = $this->_get_config();
 		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'esspresso_promotions_create_new_promotion' ) ) {
 			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
 		}
@@ -336,7 +337,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 				'desc' => ''
 			),
 		);
-		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope ) {
+		foreach ( $this->_config->scopes as $scope ) {
 			if ( $scope instanceof EE_Promotion_Scope ) {
 				$items[ $scope->slug ] = array(
 					'class' => $scope->get_scope_icon( true ),
@@ -383,6 +384,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _promotions_metaboxes() {
+		$this->_config = $this->_get_config();
 		$this->_set_promotion_object();
 		add_meta_box( 'promotion-details-mbox', __('Promotions', 'event-espresso'), array( $this, 'promotion_details_metabox'), $this->wp_page_slug, 'normal', 'high' );
 		add_meta_box( 'promotions-applied-to-mbox', __('Promotion applies to...', 'event_espresso'), array( $this, 'promotions_applied_to_metabox'), $this->wp_page_slug, 'side', 'default');
@@ -404,7 +406,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		$route = $this->_promotion->get('PRO_deleted') ? 'restore_promotion' : 'trash_promotion';
 
 		/** add new button */
-		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'esspresso_promotions_create_new_promotion' ) ) {
+		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'espresso_promotions_create_new_promotion' ) ) {
 			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
 		}
 
@@ -475,7 +477,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 */
 	protected function _get_promotion_scope_selector() {
 		$values = array();
-		foreach ( EE_Registry::instance()->CFG->addons->promotions->scopes as $scope_name => $scope ) {
+		foreach ( $this->_config->scopes as $scope_name => $scope ) {
 			$values[] = array(
 				'text' => $scope->label->singular,
 				'id' => $scope_name
@@ -587,6 +589,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @return void
 	 */
 	protected function _duplicate_promotion() {
+		$new_promo = null;
 		$success = TRUE;
 		//first verify we have a promotion id
 		$pro_id = ! empty( $this->_req_data['PRO_ID'] ) ? $this->_req_data['PRO_ID'] : 0;
@@ -632,7 +635,7 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 		}
 
 		$query_args = array(
-			'PRO_ID' => $new_promo->ID(),
+			'PRO_ID' => $new_promo instanceof EE_Promotion ? $new_promo->ID() : 0,
 			'action' => ! empty( $pro_id ) ? 'edit' : 'default'
 			);
 		$this->_redirect_after_action( NULL, '', '', $query_args, TRUE );
