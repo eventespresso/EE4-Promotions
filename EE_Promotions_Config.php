@@ -77,8 +77,7 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return array
 	 */
 	private function _get_scopes() {
-
-		$scopes = array();
+		static $scopes = array();
 		$scopes_to_register = apply_filters( 'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register', glob( EE_PROMOTIONS_PATH.'lib/scopes/*.lib.php' ) );
 		foreach ( $scopes_to_register as $scope ) {
 			$class_name = EEH_File::get_classname_from_filepath_with_standard_filename( $scope );
