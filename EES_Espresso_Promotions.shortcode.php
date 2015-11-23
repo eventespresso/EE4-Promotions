@@ -79,9 +79,9 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 		$html = '<div id="ee-upcoming-promotions-dv">';
 		foreach ( $active_promotions as $promotion ) {
 			if ( $promotion instanceof EE_Promotion ) {
-				$config = EE_Registry::instance()->CFG->addons->promotions;
+				$config = EED_Promotions::instance()->set_config();
 				if ( ! empty( $config->banner_template ) && $config->banner_template == 'promo-banner-ribbon.template.php' && ! empty( $config->ribbon_banner_color )) {
-					$promo_bg_color = EE_Registry::instance()->CFG->addons->promotions->ribbon_banner_color;
+					$promo_bg_color = $config->ribbon_banner_color;
 				} else {
 					$promo_bg_color = '';
 				}
@@ -89,11 +89,11 @@ class EES_Espresso_Promotions  extends EES_Shortcode {
 				$html .= EEH_Template::locate_template(
 					apply_filters( 'FHEE__EED_Promotions__process_shortcode__upcoming_promotions', EE_PROMOTIONS_PATH . 'templates' . DS . 'upcoming-promotions-grid.template.php' ),
 					array(
-						'PRO_ID' 					=> $promotion->ID(),
-						'promo_bg_color'	=> apply_filters( 'FHEE__EED_Promotions__process_shortcode__promo_bg_color', $promo_bg_color ),
+						'PRO_ID' 			=> $promotion->ID(),
+						'promo_bg_color' 	=> apply_filters( 'FHEE__EED_Promotions__process_shortcode__promo_bg_color', $promo_bg_color ),
 						'promo_header' 		=> $promotion->name(),
-						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
-						'promo_amount'	=> $promotion->pretty_amount(),
+						'promo_desc' 		=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
+						'promo_amount'		=> $promotion->pretty_amount(),
 						'promo_dates' 		=> $promotion->promotion_date_range(),
 						'promo_scopes'		=> $promotion->get_promo_applies_to_link_array( $scope_objects )
 					)
