@@ -80,6 +80,12 @@ class EED_Promotions extends EED_Module {
 		 add_filter( 'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total', array( 'EED_Promotions', 'transactions_list_table_total' ), 10, 2 );
 		 add_filter( 'FHEE__Transactions_Admin_Page___transaction_legend_items__items', array( 'EED_Promotions', 'transactions_list_table_legend' ), 10, 2 );
 		 add_filter( 'FHEE__EE_Export__report_registrations__reg_csv_array', array( 'EED_Promotions', 'add_promotions_column_to_reg_csv_report' ), 10, 2 );
+		 // when events are deleted
+		 add_action(
+			 'AHEE__EE_Base_Class__delete_permanently__before',
+			 array( 'EED_Promotions', 'delete_related_promotion_on_scope_item_delete' ),
+			 10, 1
+		 );
 	 }
 
 
@@ -941,6 +947,25 @@ class EED_Promotions extends EED_Module {
 		return $csv_row;
 	}
 
+
+
+	/**
+	 * Callback for AHEE__EE_Base_Class__delete_before hook so we can ensure
+	 * any promotion relationships for an item being deleted are also handled.
+	 *
+	 * @param EE_Base_Class $model_object
+	 **/
+	public static function delete_related_promotion_on_scope_item_delete( EE_Base_Class $model_object ) {
+		$OBJ_type = str_replace( 'EE_', '', get_class( $model_object ) );
+		EEM_Promotion::instance()->delete(
+			array(
+				array(
+					'Promotion_Object.OBJ_ID'   => $model_object->ID(),
+					'Promotion_Object.OBJ_type' => $OBJ_type,
+				)
+			)
+		);
+	}
 
 
 }
