@@ -82,7 +82,7 @@ class EED_Promotions extends EED_Module {
 		 add_filter( 'FHEE__EE_Export__report_registrations__reg_csv_array', array( 'EED_Promotions', 'add_promotions_column_to_reg_csv_report' ), 10, 2 );
 		 // when events are deleted
 		 add_action(
-			 'AHEE__EE_Base_Class__delete_permanently__before',
+			 'AHEE__EE_Base_Class__delete_permanently__end',
 			 array( 'EED_Promotions', 'delete_related_promotion_on_scope_item_delete' ),
 			 10, 1
 		 );
@@ -957,11 +957,11 @@ class EED_Promotions extends EED_Module {
 	 **/
 	public static function delete_related_promotion_on_scope_item_delete( EE_Base_Class $model_object ) {
 		$OBJ_type = str_replace( 'EE_', '', get_class( $model_object ) );
-		EEM_Promotion::instance()->delete(
+		EEM_Promotion_Object::instance()->delete(
 			array(
 				array(
-					'Promotion_Object.OBJ_ID'   => $model_object->ID(),
-					'Promotion_Object.OBJ_type' => $OBJ_type,
+					'OBJ_ID'   => $model_object->ID(),
+					'OBJ_type' => $OBJ_type,
 				)
 			)
 		);
