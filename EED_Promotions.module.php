@@ -84,7 +84,7 @@ class EED_Promotions extends EED_Module {
 		 add_action(
 			 'AHEE__EE_Base_Class__delete_permanently__end',
 			 array( 'EED_Promotions', 'delete_related_promotion_on_scope_item_delete' ),
-			 10, 1
+			 10, 2
 		 );
 	 }
 
@@ -955,7 +955,10 @@ class EED_Promotions extends EED_Module {
 	 *
 	 * @param EE_Base_Class $model_object
 	 **/
-	public static function delete_related_promotion_on_scope_item_delete( EE_Base_Class $model_object ) {
+	public static function delete_related_promotion_on_scope_item_delete( EE_Base_Class $model_object, $successfully_deleted ) {
+		if( ! $successfully_deleted ) {
+			return;
+		}
 		$OBJ_type = str_replace( 'EE_', '', get_class( $model_object ) );
 		EEM_Promotion_Object::instance()->delete(
 			array(
