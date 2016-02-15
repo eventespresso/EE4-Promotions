@@ -964,7 +964,7 @@ class EED_Promotions extends EED_Module {
 			array(
 				array(
 					'OBJ_ID'   => $model_object->ID(),
-					'OBJ_type' => $OBJ_type,
+					'POB_type' => $OBJ_type,
 				)
 			)
 		);
