@@ -19,7 +19,6 @@
  * @package			Event Espresso
  * @subpackage		espresso-promotions
  * @author 				Brent Christensen
- * @property EE_Promotions_Config $_config
  *
  * ------------------------------------------------------------------------
  */
@@ -105,9 +104,19 @@ class EED_Promotions extends EED_Module {
 
 
 
+	/**
+	 * @return EE_Promotions_Config
+	 */
+	public function config() {
+		if ( ! $this->_config instanceof EE_Promotions_Config ) {
+			$this->set_config();
+		}
+		return parent::config();
+	}
 
 
-	 /**
+
+	/**
 	  *    run - initial module setup
 	  *
 	  * @access    public
@@ -264,7 +273,7 @@ class EED_Promotions extends EED_Module {
 					apply_filters( 'FHEE__EED_Promotions___display_promotions__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . 'upcoming-promotions-grid.template.php' ),
 					array(
 						'PRO_ID' 					=> $promotion->ID(),
-						'promo_bg_color' 	=> ! empty( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : 'lite-blue', 		// lite-blue 		blue 	pink 	green 		red
+						'promo_bg_color' 	=> ! empty( $this->config()->ribbon_banner_color ) ? $this->config()->ribbon_banner_color : 'lite-blue', 		// lite-blue 		blue 	pink 	green 		red
 						'promo_header' 		=> $promotion->name(),
 						'promo_desc' 			=> $promotion->description() != '' ? $promotion->description() . '<br />' : '',
 						'promo_amount'	=> $promotion->pretty_amount(),
@@ -326,14 +335,14 @@ class EED_Promotions extends EED_Module {
 					}
 				}
 			}
-			if ( ! empty( $banner_text )  && ! empty( $this->_config->banner_template )) {
+			if ( ! empty( $banner_text )  && ! empty( $this->config()->banner_template )) {
 				EEH_Template::locate_template(
-					apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . $this->_config->banner_template ),
+					apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_template', EE_PROMOTIONS_PATH . 'templates' . DS . $this->config()->banner_template ),
 					array(
 						'EVT_ID' 					=> $event->ID(),
 						'banner_header' 	=> apply_filters( 'FHEE__EED_Promotions___display_event_promotions_banner__banner_header', __( 'Current Promotions', 'event_espresso' )),
 						'banner_text' 			=> implode( '<div class="ee-promo-separator-dv">+</div>', $banner_text ),
-						'ribbon_color' 		=> ! empty( $this->_config->ribbon_banner_color ) ? $this->_config->ribbon_banner_color : 'lite-blue' 		// lite-blue 		blue 		pink 	green 		red
+						'ribbon_color' 		=> ! empty( $this->config()->ribbon_banner_color ) ? $this->config()->ribbon_banner_color : 'lite-blue' 		// lite-blue 		blue 		pink 	green 		red
 					),
 					TRUE,
 					FALSE
@@ -379,7 +388,7 @@ class EED_Promotions extends EED_Module {
 				$applicable_items = $this->get_applicable_items( $promotion, $cart );
 				if ( ! empty( $applicable_items )) {
 					// add line item
-					if ( $this->generate_promotion_line_items( $promotion, $applicable_items, $this->_config->affects_tax() )) {
+					if ( $this->generate_promotion_line_items( $promotion, $applicable_items, $this->config()->affects_tax() )) {
 						$cart->get_grand_total()->recalculate_total_including_taxes();
 						$cart->save_cart( FALSE );
 					}
@@ -433,7 +442,7 @@ class EED_Promotions extends EED_Module {
 									'html_name' 			=> 'ee_promotion_code_input',
 									'html_label_text' 	=> apply_filters(
 										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_input__html_label_text',
-										EEH_HTML::h4( $this->_config->label->singular )
+										EEH_HTML::h4( $this->config()->label->singular )
 									)
 								)
 							),
@@ -443,7 +452,7 @@ class EED_Promotions extends EED_Module {
 									'html_name' 	=> 'ee_promotion_code_submit',
 									'default' 			=> apply_filters(
 										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_submit__default',
-										sprintf( __( 'Submit %s', 'event_espresso' ), $this->_config->label->singular )
+										sprintf( __( 'Submit %s', 'event_espresso' ), $this->config()->label->singular )
 									)
 								)
 							),
@@ -497,7 +506,7 @@ class EED_Promotions extends EED_Module {
 				$applicable_items = $this->get_applicable_items( $promotion, $cart, false, true );
 				if ( ! empty( $applicable_items )) {
 					// add line item
-					if ( $this->generate_promotion_line_items( $promotion, $applicable_items, $this->_config->affects_tax() )) {
+					if ( $this->generate_promotion_line_items( $promotion, $applicable_items, $this->config()->affects_tax() )) {
 						// ensure cart totals have been recalculated and saved
 						$cart->get_grand_total()->recalculate_total_including_taxes();
 						$cart->get_grand_total()->save();
@@ -520,7 +529,7 @@ class EED_Promotions extends EED_Module {
 						'FHEE__EED_Promotions___submit_promo_code__invalid_cart_notice',
 						__( 'We\'re sorry, but the %1$s could not be applied because the event cart could not be retrieved.', 'event_espresso' )
 					),
-					strtolower( $this->_config->label->singular )
+					strtolower( $this->config()->label->singular )
 				),
 				__FILE__, __FUNCTION__, __LINE__
 			);
@@ -552,7 +561,7 @@ class EED_Promotions extends EED_Module {
 						'FHEE__EED_Promotions__get_promotion_details_from_request__invalid_promotion_notice',
 						__( 'We\'re sorry, but the %1$s "%2$s" appears to be invalid.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' )
 					),
-					strtolower( $this->_config->label->singular ),
+					strtolower( $this->config()->label->singular ),
 					$promo_code,
 					'<br />'
 				),
@@ -603,7 +612,7 @@ class EED_Promotions extends EED_Module {
 						'FHEE__EED_Promotions__get_applicable_items__no_applicable_items_notice',
 						__( 'We\'re sorry, but the %1$s "%2$s" could not be applied to any %4$s.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' )
 					),
-					strtolower( $this->_config->label->singular ),
+					strtolower( $this->config()->label->singular ),
 					$promotion->code(),
 					'<br />',
 					$promotion->scope_obj()->label->plural
@@ -740,7 +749,7 @@ class EED_Promotions extends EED_Module {
 						),
 						$promotion->code() ? $promotion->code() . ' : ' : '',
 						$promotion->name(),
-						strtolower( $this->_config->label->plural )
+						strtolower( $this->config()->label->plural )
 					),
 					__FILE__, __FUNCTION__, __LINE__
 				);
@@ -760,7 +769,7 @@ class EED_Promotions extends EED_Module {
 								),
 								$existing_promotion->code() ? $existing_promotion->code() . ' : ' : '',
 								$existing_promotion->name(),
-								strtolower( $this->_config->label->singular )
+								strtolower( $this->config()->label->singular )
 							),
 							__FILE__, __FUNCTION__, __LINE__
 						);
@@ -790,7 +799,7 @@ class EED_Promotions extends EED_Module {
 						'FHEE__EED_Promotions__get_promotion_from_line_item__invalid_promotion_notice',
 						__( 'We\'re sorry, but the %1$s could not be applied because information pertaining to it could not be retrieved from the database.', 'event_espresso' )
 					),
-					strtolower( $this->_config->label->singular )
+					strtolower( $this->config()->label->singular )
 				),
 				__FILE__, __FUNCTION__, __LINE__
 			);
@@ -884,7 +893,7 @@ class EED_Promotions extends EED_Module {
 		if ( empty( $JSON_response ) && empty( $return_data )) {
 			$JSON_response['errors'] = sprintf(
 				__( 'The %1$s entered could not be processed for an unknown reason.%2$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.', 'event_espresso' ),
-				strtolower( $this->_config->label->singular ),
+				strtolower( $this->config()->label->singular ),
 				'<br />'
 			);
 		}
