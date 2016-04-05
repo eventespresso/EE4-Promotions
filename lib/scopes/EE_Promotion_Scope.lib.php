@@ -347,7 +347,7 @@ abstract class EE_Promotion_Scope {
 	 */
 	protected function _get_model_object( $OBJ_ID, $reset_cache = false ) {
 		//first check if in cache (and if cache reset not requested.)
-		if ( ! empty( $this->_model_objects[ $OBJ_ID ] ) && ! $reset_cache ) {
+		if ( ! $reset_cache && ! empty( $this->_model_objects[ $OBJ_ID ] ) ) {
 			return $this->_model_objects[ $OBJ_ID ];
 		}
 		//attempt to retrieve model object!
@@ -634,7 +634,7 @@ abstract class EE_Promotion_Scope {
 	private function _verify_properties_set() {
 		$classname = get_class( $this );
 		//verify label is set and is std_object with two properties, singular and plural.
-		if ( ! is_object( $this->label ) || ! isset( $this->label->singular ) || ! isset( $this->label->plural ) ) {
+		if ( ! is_object( $this->label ) || ! isset( $this->label->singular, $this->label->plural ) ) {
 			throw new EE_Error(
 				sprintf( __( 'The %s class has not set the $label property correctly.', 'event_espresso' ), $classname )
 			);
@@ -683,8 +683,8 @@ abstract class EE_Promotion_Scope {
 						foreach ( $promotion_objects as $promotion_object ) {
 							if (
 								$promotion_object instanceof EE_Promotion_Object
-								&& $promotion_object->type() == $this->slug
-								&& $promotion_object->OBJ_ID() == $object->ID()
+								&& $promotion_object->type() === $this->slug
+								&& $promotion_object->OBJ_ID() === $object->ID()
 							) {
 								return $promotion_objects;
 							}
@@ -731,17 +731,18 @@ abstract class EE_Promotion_Scope {
 		$promotion_objects = $this->get_promotion_objects( $promotion, $objects );
 		if ( ! empty( $promotion_objects ) ) {
 			foreach ( $promotion_objects as $promotion_object ) {
-				if ( $promotion_object instanceof EE_Promotion_Object ) {
-					// can the promotion still be be redeemed fro this scope object?
-					if ( $promotion->uses_left_for_scope_object( $promotion_object ) > 0 ) {
-						// make sure array exists for holding redeemable scope promos
-						if ( ! isset( $redeemable_scope_promos[ $this->slug ] ) ) {
-							$redeemable_scope_promos[ $this->slug ] = array();
-						}
-						$redeemable_scope_promos[ $this->slug ][] = $IDs_only
-							? $promotion_object->OBJ_ID()
-							: $promotion_object;
+				// can the promotion still be be redeemed fro this scope object?
+				if (
+					$promotion_object instanceof EE_Promotion_Object
+					&& $promotion->uses_left_for_scope_object( $promotion_object ) > 0
+				) {
+					// make sure array exists for holding redeemable scope promos
+					if ( ! isset( $redeemable_scope_promos[ $this->slug ] ) ) {
+						$redeemable_scope_promos[ $this->slug ] = array();
 					}
+					$redeemable_scope_promos[ $this->slug ][] = $IDs_only
+						? $promotion_object->OBJ_ID()
+						: $promotion_object;
 				}
 			}
 		}
@@ -910,7 +911,7 @@ abstract class EE_Promotion_Scope {
 		}
 		$promo_name = ! empty( $promo_name ) ? $promo_name : $promotion->name();
 		$promo_desc = $promotion->price()->desc();
-		$promo_desc .= $promotion->code() != '' ? ' ( ' . $promotion->code() . ' )' : '';
+		$promo_desc .= $promotion->code() !== '' ? ' ( ' . $promotion->code() . ' )' : '';
 		// generate promotion line_item
 		$line_item = EE_Line_Item::new_instance(
 			array(
