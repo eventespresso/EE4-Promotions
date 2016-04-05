@@ -152,7 +152,7 @@ class EED_Promotions extends EED_Module {
 		$this->set_config_section( 'addons' );
 		$this->set_config_class( 'EE_Promotions_Config' );
 		$this->set_config_name( 'promotions' );
-		return $this->config();
+		return parent::config();
 	}
 
 
@@ -162,9 +162,9 @@ class EED_Promotions extends EED_Module {
 	 */
 	public function config() {
 		if ( ! $this->_config instanceof EE_Promotions_Config ) {
-			$this->set_config();
+			return $this->set_config();
 		}
-		return parent::config();
+		return $this->_config;
 	}
 
 
