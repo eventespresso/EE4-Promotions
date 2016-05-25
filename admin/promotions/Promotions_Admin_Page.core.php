@@ -342,17 +342,25 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 			if ( $scope instanceof EE_Promotion_Scope ) {
 				$items[ $scope->slug ] = array(
 					'class' => $scope->get_scope_icon( true ),
-					'desc'  => $scope->label->singular
+					'desc'  => sprintf(
+						__( '%1$s Scope Promotion - applies to %2$s only', 'event_espresso' ),
+						$scope->label->singular,
+						$scope->label->plural
+					)
 				);
 			}
 		}
+		$items['global'] = array(
+			'class' => 'dashicons dashicons-admin-site',
+			'desc'  => __( 'Global Promotion - applies to ALL scope items', 'event_espresso' )
+		);
 		$items['exclusive'] = array(
 			'class' => 'dashicons dashicons-awards',
-			'desc'  => '' . __( 'Exclusive (can not be combined with other promotions)', 'event_espresso' )
+			'desc'  => __( 'Exclusive Promotion - can NOT be combined with others', 'event_espresso' )
 		);
 		$items['unlimited'] = array(
 			'class' => '<span class="ee-infinity-sign" style="margin-right: 0.5em;">&#8734;</span>',
-			'desc'  => '' . __( 'Unlimited', 'event_espresso' )
+			'desc'  => __( 'Unlimited', 'event_espresso' )
 		);
 		return $items;
 	}
