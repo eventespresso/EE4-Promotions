@@ -521,82 +521,106 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @throws \EE_Error
 	 */
 	protected function _insert_update_promotions( $new = FALSE ) {
-		$PRO_ID = ! empty( $this->_req_data['PRO_ID'] ) ? absint( $this->_req_data['PRO_ID'] ) : 0;
-		if ( $this->_req_action === 'update_settings' ) {
-			$promotion_values = array(
-				'PRO_ID'          => $PRO_ID,
-				'PRO_code'        => ! empty( $this->_req_data['PRO_code'] ) ? $this->_req_data['PRO_code'] : null,
-				'PRO_scope'       => ! empty( $this->_req_data['PRO_scope'] ) ? $this->_req_data['PRO_scope'] : 'Event',
-				'PRO_start'       => ! empty( $this->_req_data['PRO_start'] ) ? $this->_req_data['PRO_start'] : null,
-				'PRO_end'         => ! empty( $this->_req_data['PRO_end'] ) ? $this->_req_data['PRO_end'] : null,
-				'PRO_global'      => isset( $this->_req_data['PRO_global'] ) ? $this->_req_data['PRO_global'] : false,
-				'PRO_exclusive'   => isset( $this->_req_data['PRO_exclusive'] ) ? $this->_req_data['PRO_exclusive']
-					: true,
-				'PRO_uses'        => ! empty( $this->_req_data['PRO_uses'] ) ? $this->_req_data['PRO_uses']
-					: EE_INF_IN_DB,
-				'PRO_accept_msg'  => ! empty( $this->_req_data['PRO_accept_msg'] ) ? $this->_req_data['PRO_accept_msg']
-					: '',
-				'PRO_decline_msg' => ! empty( $this->_req_data['PRO_decline_msg'] )
-					? $this->_req_data['PRO_decline_msg'] : ''
+		$promotion_values = array(
+			'PRO_ID'          => ! empty( $this->_req_data['PRO_ID'] )
+				? absint( $this->_req_data['PRO_ID'] )
+				: 0,
+			'PRO_code'        => ! empty( $this->_req_data['PRO_code'] )
+				? $this->_req_data['PRO_code']
+				: null,
+			'PRO_scope'       => ! empty( $this->_req_data['PRO_scope'] )
+				? $this->_req_data['PRO_scope']
+				: 'Event',
+			'PRO_start'       => ! empty( $this->_req_data['PRO_start'] )
+				? $this->_req_data['PRO_start']
+				: null,
+			'PRO_end'         => ! empty( $this->_req_data['PRO_end'] )
+				? $this->_req_data['PRO_end']
+				: null,
+			'PRO_global'      => isset( $this->_req_data['PRO_global'] )
+				? $this->_req_data['PRO_global']
+				: false,
+			'PRO_exclusive'   => isset( $this->_req_data['PRO_exclusive'] )
+				? $this->_req_data['PRO_exclusive']
+				: true,
+			'PRO_uses'        => ! empty( $this->_req_data['PRO_uses'] )
+				? $this->_req_data['PRO_uses']
+				: EE_INF_IN_DB,
+			'PRO_accept_msg'  => ! empty( $this->_req_data['PRO_accept_msg'] )
+				? $this->_req_data['PRO_accept_msg']
+				: '',
+			'PRO_decline_msg' => ! empty( $this->_req_data['PRO_decline_msg'] )
+				? $this->_req_data['PRO_decline_msg']
+				: ''
+		);
+		$promo_price_values = array(
+			'PRC_ID'     => ! empty( $this->_req_data['PRC_ID'] )
+				? $this->_req_data['PRC_ID']
+				: 0,
+			'PRC_name'   => ! empty( $this->_req_data['PRC_name'] )
+				? $this->_req_data['PRC_name']
+				: __(
+					'Special Promotion',
+					'event_espresso'
+				),
+			'PRT_ID'     => ! empty( $this->_req_data['PRT_ID'] )
+				? $this->_req_data['PRT_ID']
+				: 0,
+			'PRC_amount' => ! empty( $this->_req_data['PRC_amount'] )
+				? $this->_req_data['PRC_amount']
+				: 0,
+			'PRC_desc'   => ! empty( $this->_req_data['PRC_desc'] )
+				? $this->_req_data['PRC_desc']
+				: ''
+		);
+		//first handle the price object
+		$price = empty( $promo_price_values['PRC_ID'] )
+			? EE_Price::new_instance( $promo_price_values )
+			: EEM_Price::instance()->get_one_by_ID( $promo_price_values['PRC_ID'] );
+		if ( ! empty( $promo_price_values['PRC_ID'] ) ) {
+			//PRE-EXISTING PRICE so let's update the values.
+			foreach ( $promo_price_values as $field => $value ) {
+				$price->set( $field, $value );
+			}
+		}
+		//save price
+		$price->save();
+		//next handle the promotions
+		if ( empty( $promotion_values['PRO_ID'] ) ) {
+			$promotion = EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' ) );
+		} else {
+			$promotion = EEM_Promotion::instance()->get_one_by_ID( $promotion_values['PRO_ID'] );
+		}
+		if ( ! empty( $promotion_values['PRO_ID'] ) ) {
+			$promotion->set_date_format( 'Y-m-d' );
+			$promotion->set_time_format( 'g:i a' );
+			//PRE-EXISTING promotion so let's update the values
+			foreach ( $promotion_values as $field => $value ) {
+				$promotion->set( $field, $value );
+			}
+		} else {
+			//new promotion so let's add the price id for the price relation
+			$promotion->set( 'PRC_ID', $price->ID() );
+		}
+		//save promotion
+		$promotion->save();
+		//hook for scopes and others to do their stuff.
+		do_action( 'AHEE__Promotions_Admin_Page___insert_update_promotion__after', $promotion, $this->_req_data );
+		if ( $promotion instanceof EE_Promotion ) {
+			$PRO_ID = $promotion->ID();
+			if ( $new ) {
+				EE_Error::add_success( __( 'Promotion has been successfully created.', 'event_espresso' ) );
+			} else {
+				EE_Error::add_success( __( 'Promotion has been successfully updated.', 'event_espresso' ) );
+			}
+		} else {
+			$PRO_ID = 0;
+			EE_Error::add_error(
+				__( 'Something went wrong with saving the promotion', 'event_espresso' ),
+				__FILE__,
+				__FUNCTION__,
+				__LINE__
 			);
-			$promo_price_values = array(
-				'PRC_ID'     => ! empty( $this->_req_data['PRC_ID'] ) ? $this->_req_data['PRC_ID'] : 0,
-				'PRC_name'   => ! empty( $this->_req_data['PRC_name'] )
-					? $this->_req_data['PRC_name']
-					: __(
-						'Special Promotion',
-						'event_espresso'
-					),
-				'PRT_ID'     => ! empty( $this->_req_data['PRT_ID'] ) ? $this->_req_data['PRT_ID'] : 0,
-				'PRC_amount' => ! empty( $this->_req_data['PRC_amount'] ) ? $this->_req_data['PRC_amount'] : 0,
-				'PRC_desc'   => ! empty( $this->_req_data['PRC_desc'] ) ? $this->_req_data['PRC_desc'] : ''
-			);
-			//first handle the price object
-			$price = empty( $promo_price_values['PRC_ID'] ) ? EE_Price::new_instance( $promo_price_values )
-				: EEM_Price::instance()->get_one_by_ID( $promo_price_values['PRC_ID'] );
-			if ( ! empty( $promo_price_values['PRC_ID'] ) ) {
-				//PRE-EXISTING PRICE so let's update the values.
-				foreach ( $promo_price_values as $field => $value ) {
-					$price->set( $field, $value );
-				}
-			}
-			//save price
-			$price->save();
-			//next handle the promotions
-			if ( empty( $promotion_values['PRO_ID'] ) ) {
-				$promotion = EE_Promotion::new_instance( $promotion_values, null, array( 'Y-m-d', 'g:i a' ) );
-			} else {
-				$promotion = EEM_Promotion::instance()->get_one_by_ID( $promotion_values['PRO_ID'] );
-			}
-			if ( ! empty( $promotion_values['PRO_ID'] ) ) {
-				$promotion->set_date_format( 'Y-m-d' );
-				$promotion->set_time_format( 'g:i a' );
-				//PRE-EXISTING promotion so let's update the values
-				foreach ( $promotion_values as $field => $value ) {
-					$promotion->set( $field, $value );
-				}
-			} else {
-				//new promotion so let's add the price id for the price relation
-				$promotion->set( 'PRC_ID', $price->ID() );
-			}
-			//save promotion
-			$promotion->save();
-			//hook for scopes and others to do their stuff.
-			do_action( 'AHEE__Promotions_Admin_Page___insert_update_promotion__after', $promotion, $this->_req_data );
-			if ( $promotion instanceof EE_Promotion && $new ) {
-				if ( $new ) {
-					EE_Error::add_success( __( 'Promotion has been successfully created.', 'event_espresso' ) );
-				} else {
-					EE_Error::add_success( __( 'Promotion has been successfully updated.', 'event_espresso' ) );
-				}
-			} else {
-				EE_Error::add_error(
-					__( 'Something went wrong with saving the promotion', 'event_espresso' ),
-					__FILE__,
-					__FUNCTION__,
-					__LINE__
-				);
-			}
 		}
 
 		$query_args = array(
@@ -954,36 +978,38 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 * @throws \EE_Error
 	 */
 	protected function _update_settings(){
-
-		EE_Registry::instance()->load_helper( 'Class_Tools' );
-
 		$count = 0;
-		$this->_config = $this->_get_config();
-		$promo_settings_form = $this->_generate_promo_settings_form();
-		if ( $promo_settings_form->was_submitted() ) {
-			// capture form data
-			$promo_settings_form->receive_form_submission();
-			// validate form data
-			if ( $promo_settings_form->is_valid() ) {
-				// grab validated data from form
-				$valid_data = $promo_settings_form->valid_data();
-				if ( isset( $valid_data[ 'reset_promotions' ] ) && $valid_data[ 'reset_promotions' ] === true ) {
-					$this->_config = new EE_Promotions_Config();
-					$count++;
-				} else {
-					foreach ( $valid_data as $property => $value ) {
-						$setter = 'set_' . $property;
-						if ( method_exists( $this->_config, $setter )) {
-							$this->_config->$setter( $value );
-						} else if ( property_exists( $this->_config, $property ) && $this->_config->{$property} !== $value ) {
-							$this->_config->$property = $value;
-							$count++;
+		if ( $this->_req_action === 'update_settings' ) {
+			$this->_config = $this->_get_config();
+			$promo_settings_form = $this->_generate_promo_settings_form();
+			if ( $promo_settings_form->was_submitted() ) {
+				// capture form data
+				$promo_settings_form->receive_form_submission();
+				// validate form data
+				if ( $promo_settings_form->is_valid() ) {
+					// grab validated data from form
+					$valid_data = $promo_settings_form->valid_data();
+					if ( isset( $valid_data['reset_promotions'] ) && $valid_data['reset_promotions'] === true ) {
+						$this->_config = new EE_Promotions_Config();
+						$count++;
+					} else {
+						foreach ( $valid_data as $property => $value ) {
+							$setter = 'set_' . $property;
+							if ( method_exists( $this->_config, $setter ) ) {
+								$this->_config->$setter( $value );
+							} else if ( property_exists( $this->_config, $property )
+							            && $this->_config->{$property}
+							               !== $value
+							) {
+								$this->_config->$property = $value;
+								$count++;
+							}
 						}
 					}
 				}
 			}
+			EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $this->_config );
 		}
-		EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $this->_config );
 		$this->_redirect_after_action( $count, 'Settings', 'updated', array( 'action' => 'promotions_settings' ) );
 	}
 
