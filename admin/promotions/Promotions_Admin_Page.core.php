@@ -979,36 +979,35 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	 */
 	protected function _update_settings(){
 		$count = 0;
-		if ( $this->_req_action === 'update_settings' ) {
-			$this->_config = $this->_get_config();
-			$promo_settings_form = $this->_generate_promo_settings_form();
-			if ( $promo_settings_form->was_submitted() ) {
-				// capture form data
-				$promo_settings_form->receive_form_submission();
-				// validate form data
-				if ( $promo_settings_form->is_valid() ) {
-					// grab validated data from form
-					$valid_data = $promo_settings_form->valid_data();
-					if ( isset( $valid_data['reset_promotions'] ) && $valid_data['reset_promotions'] === true ) {
-						$this->_config = new EE_Promotions_Config();
-						$count++;
-					} else {
-						foreach ( $valid_data as $property => $value ) {
-							$setter = 'set_' . $property;
-							if ( method_exists( $this->_config, $setter ) ) {
-								$this->_config->$setter( $value );
-							} else if ( property_exists( $this->_config, $property )
-							            && $this->_config->{$property}
-							               !== $value
-							) {
-								$this->_config->$property = $value;
-								$count++;
-							}
+		$this->_config = $this->_get_config();
+		$promo_settings_form = $this->_generate_promo_settings_form();
+		if ( $promo_settings_form->was_submitted() ) {
+			// capture form data
+			$promo_settings_form->receive_form_submission();
+			// validate form data
+			if ( $promo_settings_form->is_valid() ) {
+				// grab validated data from form
+				$valid_data = $promo_settings_form->valid_data();
+				if ( isset( $valid_data['reset_promotions'] ) && $valid_data['reset_promotions'] === true ) {
+					$this->_config = new EE_Promotions_Config();
+					$count++;
+				} else {
+					foreach ( $valid_data as $property => $value ) {
+						$setter = 'set_' . $property;
+						if ( method_exists( $this->_config, $setter ) ) {
+							$this->_config->$setter( $value );
+							$count++;
+						} else if ( property_exists( $this->_config, $property )
+						            && $this->_config->{$property}
+						               !== $value
+						) {
+							$this->_config->$property = $value;
+							$count++;
 						}
 					}
 				}
+				EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $this->_config );
 			}
-			EE_Registry::instance()->CFG->update_config( 'addons', 'promotions', $this->_config );
 		}
 		$this->_redirect_after_action( $count, 'Settings', 'updated', array( 'action' => 'promotions_settings' ) );
 	}
