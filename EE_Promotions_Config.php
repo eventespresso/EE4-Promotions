@@ -114,7 +114,10 @@ class EE_Promotions_Config extends EE_Config_Base {
 	 * @return boolean
 	 */
 	public function affects_tax() {
-		return $this->_affects_tax;
+		return apply_filters(
+			'FHEE__EE_Promotions_Config__affects_tax',
+			$this->_affects_tax
+		);
 	}
 
 
