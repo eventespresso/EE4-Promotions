@@ -27,6 +27,17 @@ Class  EE_Promotions extends EE_Addon {
 	 * register_addon
 	 */
 	public static function register_addon() {
+		$promotions_capabilities = array(
+			'ee_read_promotion',
+			'ee_read_promotions',
+			'ee_read_others_promotions',
+			'ee_edit_promotion',
+			'ee_edit_promotions',
+			'ee_edit_others_promotions',
+			'ee_delete_promotion',
+			'ee_delete_promotions',
+			'ee_delete_others_promotions',
+		);
 		// register addon via Plugin API
 		EE_Register_Addon::register(
 		'Promotions',
@@ -66,17 +77,8 @@ Class  EE_Promotions extends EE_Addon {
 				'model_extension_paths'	=> array( EE_PROMOTIONS_CORE . 'db_model_extensions' . DS ),
 				'class_extension_paths'		=> array( EE_PROMOTIONS_CORE . 'db_class_extensions'  . DS ),
 				'capabilities' => array(
-					'administrator' => array(
-						'ee_read_promotion',
-						'ee_read_promotions',
-						'ee_read_others_promotions',
-						'ee_edit_promotion',
-						'ee_edit_promotions',
-						'ee_edit_others_promotions',
-						'ee_delete_promotion',
-						'ee_delete_promotions',
-						'ee_delete_others_promotions',
-						)
+					'administrator' => $promotions_capabilities,
+					'ee_events_administrator' => $promotions_capabilities,
 					),
 				'capability_maps' => array(
 					0 => array( 'EE_Meta_Capability_Map_Read' => array(
