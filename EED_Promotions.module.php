@@ -821,7 +821,7 @@ class EED_Promotions extends EED_Module {
 	 * @since   1.0.0
 	 * @param EE_Line_Item $parent_line_item
 	 * @param EE_Promotion $promotion
-	 * @return EE_Line_Item
+	 * @return boolean
 	 */
 	public function verify_no_existing_promotion_line_items( EE_Line_Item $parent_line_item, EE_Promotion $promotion ) {
 		/** @type EEM_Line_Item $EEM_Line_Item */
@@ -844,8 +844,8 @@ class EED_Promotions extends EED_Module {
 						),
 						$existing_promotion_line_item->name(),
 						$parent_line_item->name(),
-						$parent_line_item->OBJ_type(),
-						$existing_promotion_line_item->OBJ_type()
+						$parent_line_item->OBJ_type_i18n(),
+						$existing_promotion_line_item->OBJ_type_i18n()
 					),
 					__FILE__,
 					__FUNCTION__,
