@@ -303,7 +303,12 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 	protected function _list_table() {
 		$this->_config = $this->_get_config();
 		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'esspresso_promotions_create_new_promotion' ) ) {
-			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+			$this->_admin_page_title .= ' ' . $this->get_action_link_or_button(
+			    'create_new',
+                'add',
+                array(),
+                'add-new-h2'
+            );
 		}
 		$this->_template_args['after_list_table'] = $this->_display_legend( $this->_promotion_legend_items() );
 		$this->display_admin_list_table_page_with_no_sidebar();
@@ -421,7 +426,12 @@ class Promotions_Admin_Page extends EE_Admin_Page {
 
 		/** add new button */
 		if ( EE_Registry::instance()->CAP->current_user_can( 'ee_edit_promotions', 'espresso_promotions_create_new_promotion' ) ) {
-			$this->_admin_page_title .= $this->get_action_link_or_button('create_new', 'add', array(), 'add-new-h2' );
+			$this->_admin_page_title .= ' ' . $this->get_action_link_or_button(
+			    'create_new',
+                'add',
+                array(),
+                'add-new-h2'
+            );
 		}
 
 		$this->_set_publish_post_box_vars( 'PRO_ID', $id, $route, $redirect );
