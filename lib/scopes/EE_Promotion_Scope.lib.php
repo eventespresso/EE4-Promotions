@@ -788,7 +788,7 @@ abstract class EE_Promotion_Scope {
 	) {
 		/** @type EEM_Line_Item $EEM_Line_Item */
 		$EEM_Line_Item = EE_Registry::instance()->load_model( 'Line_Item' );
-		$EEM_Line_Item->show_next_x_db_queries();
+		// $EEM_Line_Item->show_next_x_db_queries();
 		return $EEM_Line_Item->get_object_line_items_for_transaction(
 			$total_line_item->TXN_ID(),
 			empty( $OBJ_type ) ? $this->slug : $OBJ_type,
