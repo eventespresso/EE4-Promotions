@@ -1,8 +1,8 @@
 <?php
 /*
-  Plugin Name: Event Espresso - Promotions (EE 4.9.4+)
+  Plugin Name: Event Espresso - Promotions (EE 4.9.10+)
   Plugin URI: http://www.eventespresso.com
-  Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.8 or higher.
+  Description: Help promote your events with Event Espresso Promotions by offering discounts. Compatible with Event Espresso 4.9.10 or higher.
   Version: 1.0.10.rc.000
   Author: Event Espresso
   Author URI: http://www.eventespresso.com
@@ -37,7 +37,7 @@
  * ------------------------------------------------------------------------
  */
 
-define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.9.4.p' );
+define( 'EE_PROMOTIONS_CORE_VERSION_REQUIRED', '4.9.10.rc.004' );
 define( 'EE_PROMOTIONS_VERSION', '1.0.10.rc.000' );
 define( 'EE_PROMOTIONS_PLUGIN_FILE', __FILE__ );
 
