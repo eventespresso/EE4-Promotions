@@ -23,11 +23,9 @@ Class  EE_Promotions extends EE_Addon {
 
 
 
-    /**
-     * register_addon
-     *
-     * @throws \EE_Error
-     */
+	/**
+	 * register_addon
+	 */
 	public static function register_addon() {
 		// register addon via Plugin API
 		EE_Register_Addon::register(
@@ -96,7 +94,11 @@ Class  EE_Promotions extends EE_Addon {
 					)
 			)
 		);
+		//register promotion specific statuses
+		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( 'EE_Promotions', 'promotion_stati' ), 10 );
 	}
+
+
 
 
 
@@ -114,6 +116,46 @@ Class  EE_Promotions extends EE_Addon {
 				'description' 	=> 'To edit me, open up ' . __FILE__ . ' and find the ' . __METHOD__ . '() method',
 		);
 	}
+
+
+
+
+
+	/**
+	 * This registers the localization for the promotion statuses with the EEM_Status
+	 * translation array
+	 *
+	 * @param array  $stati_translation Current localized stati
+	 *
+	 * @return array  Current stati with promotion stati appended.
+	 */
+	public static function promotion_stati( $stati_translation ) {
+		$promotion_stati = array(
+			EE_Promotion::upcoming => array(
+				__('upcoming', 'event_espresso'),
+				__('upcoming', 'event_espresso')
+				),
+			EE_Promotion::active => array(
+				__('active', 'event_espresso'),
+				__('active', 'event_espresso')
+				),
+			EE_Promotion::expired => array(
+				__('expired', 'event_espresso'),
+				__('expired', 'event_espresso')
+				),
+			EE_Promotion::unavailable => array(
+				__('unavailable', 'event_espresso'),
+				__('unavailable', 'event_espresso')
+				)
+			);
+		return array_merge( $stati_translation, $promotion_stati );
+	}
+
+
+
+
+
+
 
 
 
