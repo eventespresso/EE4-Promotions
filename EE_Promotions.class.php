@@ -23,9 +23,11 @@ Class  EE_Promotions extends EE_Addon {
 
 
 
-	/**
-	 * register_addon
-	 */
+    /**
+     * register_addon
+     *
+     * @throws \EE_Error
+     */
 	public static function register_addon() {
 		// register addon via Plugin API
 		EE_Register_Addon::register(
@@ -94,15 +96,28 @@ Class  EE_Promotions extends EE_Addon {
 					)
 			)
 		);
-		//register promotion specific statuses
-		add_filter( 'FHEE__EEM_Status__localized_status__translation_array', array( 'EE_Promotions', 'promotion_stati' ), 10 );
 	}
 
 
 
+    /**
+     * a safe space for addons to add additional logic like setting hooks
+     * that will run immediately after addon registration
+     * making this a great place for code that needs to be "omnipresent"
+     */
+    public function after_registration()
+    {
+        //register promotion specific statuses
+        add_filter(
+            'FHEE__EEM_Status__localized_status__translation_array',
+            array('EE_Promotions', 'promotion_stati'),
+            10
+        );
+    }
 
 
-	/**
+
+    /**
 	 * plugins_page_row
 	 *
 	 * HTML to appear within a new table row on the WP Plugins page, below the promotions plugin row
