@@ -1,27 +1,22 @@
 <?php
 /**
- * Bootstrap for EE4 Promotions Unit Tests
- *
- * @since 		1.0.0
- * @package 		EE4 Promotions
- * @subpackage 	Tests
+ * Bootstrap for eea-people-addon tests
  */
 
-require( dirname( __FILE__ ) . '/includes/define-constants.php' );
-if ( ! is_readable( WP_TESTS_DIR . '/includes/functions.php' ) ) {
-	die( "The WordPress PHPUnit test suite could not be found.\n" );
-}
+use EETests\bootstrap\AddonLoader;
 
-require_once WP_TESTS_DIR . '/includes/functions.php';
+$core_tests_dir = dirname(dirname(dirname(__FILE__))) . '/event-espresso-core/tests/';
+require $core_tests_dir . 'includes/CoreLoader.php';
+require $core_tests_dir . 'includes/AddonLoader.php';
 
-function _install_and_load_core_and_ee_promos() {
-	require EE_TESTS_DIR . 'includes/loader.php';
-	require EEPRO_TESTS_DIR . 'includes/loader.php';
-}
-tests_add_filter( 'muplugins_loaded', '_install_and_load_core_and_ee_promos' );
+define('EEPRO_PLUGIN_DIR', dirname(dirname(__FILE__)) . '/');
+define('EEPRO_TESTS_DIR', EEPRO_PLUGIN_DIR . 'tests/');
 
-require WP_TESTS_DIR . '/includes/bootstrap.php';
 
-//Load the EE_specific testing tools
-require EE_TESTS_DIR . 'includes/EE_UnitTestCase.class.php';
+$addon_loader = new AddonLoader(
+    EEPRO_TESTS_DIR,
+    EEPRO_PLUGIN_DIR,
+    'eea-promotions.php'
+);
+$addon_loader->init();
 require EEPRO_TESTS_DIR . 'includes/EE_Promotions_UnitTestCase.class.php';
