@@ -1,7 +1,7 @@
 EE Promotions Add-on
 =========
 
-[![Latest Release](https://img.shields.io/github/tag/eventespresso/eea-promotions.svg?style=flat&label=Latest%20Release)](https://github.com/eventespresso/EE4-Promotions/releases)
+[![Latest Release](https://img.shields.io/github/tag/eventespresso/EE4-Promotions.svg?style=flat&label=Latest%20Release)](https://github.com/eventespresso/EE4-Promotions/releases)
 [![Travis](https://travis-ci.org/eventespresso/eea-promotions.svg?branch=master)](https://travis-ci.org/eventespresso/EE4-Promotions)
 [![License](https://img.shields.io/badge/License-GPLv2-blue.svg?style=flat)](https://www.gnu.org/licenses/gpl-2.0.html)
 [![Event Espresso Addon](https://img.shields.io/badge/Addon%20For-Event%20Espresso-blue.svg)](https://github.com/eventespresso/event-espresso-core)
