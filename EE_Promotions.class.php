@@ -185,7 +185,7 @@ Class  EE_Promotions extends EE_Addon
         if ($lib instanceof EE_Transaction_Shortcodes) {
             //Add shortcode to the shortcodes array.
             $shortcodes['[PROMOTIONS_USED]'] = esc_html__(
-                'This shortcode outputs any promotion codes used during registration.',
+                'This shortcode outputs all promotions used on the registration.',
                 'event_espresso'
             );
         }
