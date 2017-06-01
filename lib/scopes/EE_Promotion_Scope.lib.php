@@ -594,7 +594,7 @@ abstract class EE_Promotion_Scope {
 			$checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['
 			               . $id
 			               . ']">'
-			               . $this->name( $obj )
+			               . apply_filters('FHEE__EE_Promotion_Scope___get_applies_to_items_to_select__obj_name', $this->name( $obj ), $obj )
 			               . '</label>';
 		}
 		$checkboxes .= '</ul>';
