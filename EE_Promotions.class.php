@@ -184,8 +184,8 @@ Class  EE_Promotions extends EE_Addon
         //Check we have the EE_Transaction_Shortcodes library
         if ($lib instanceof EE_Transaction_Shortcodes) {
             //Add shortcode to the shortcodes array.
-            $shortcodes['[PROMO_CODES_USED]'] = esc_html__(
-                'This shortcode outputs any promotion codes used during registration.',
+            $shortcodes['[PROMOTIONS_USED]'] = esc_html__(
+                'This shortcode outputs all promotions used on the registration.',
                 'event_espresso'
             );
         }
@@ -211,7 +211,7 @@ Class  EE_Promotions extends EE_Addon
     public static function register_new_shortcode_parser($parsed, $shortcode, $data, $extra_data, EE_Shortcodes $lib)
     {
         //Check we have the EE_Transaction_Shortcodes and our the shortcode matches
-        if ($lib instanceof EE_Transaction_Shortcodes && $shortcode == '[PROMO_CODES_USED]') {
+        if ($lib instanceof EE_Transaction_Shortcodes && $shortcode == '[PROMOTIONS_USED]') {
             //Pull the transaction from the EE_Messages_Addressee object passed to parser.
             $transaction = $data instanceof EE_Messages_Addressee ? $data->txn : null;
             //Check we have an EE_Transaction object
