@@ -543,10 +543,10 @@ class EED_Promotions extends EED_Module {
 									'default'   => apply_filters(
 										'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_submit__default',
 										sprintf( 
-											__( 'Submit %s', 'event_espresso' ), 
+											esc_html__( 'Submit %s', 'event_espresso' ), 
 											$this->config()->label->singular ? 
 											$this->config()->label->singular : 
-											__( 'Promotion Code', 'event_espresso' )
+											esc_html__( 'Promotion Code', 'event_espresso' )
 										)
 									),
 								)
