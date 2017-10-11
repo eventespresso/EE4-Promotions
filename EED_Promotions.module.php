@@ -67,7 +67,7 @@ class EED_Promotions extends EED_Module {
 			10,
 			1
 		);
-		add_action(
+		add_filter(
 			'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options',
 			array( 'EED_Promotions', 'add_promotions_form_inputs' )
 		);
@@ -89,7 +89,7 @@ class EED_Promotions extends EED_Module {
 	 * @return    void
 	 */
 	public static function set_hooks_admin() {
-		add_action(
+		add_filter(
 			'FHEE__EE_SPCO_Reg_Step_Payment_Options___display_payment_options__before_payment_options',
 			array( 'EED_Promotions', 'add_promotions_form_inputs' )
 		);
