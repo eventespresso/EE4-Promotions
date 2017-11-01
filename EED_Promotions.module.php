@@ -242,13 +242,11 @@ class EED_Promotions extends EED_Module {
 		return
 			! is_admin()
 			&& (
-				is_singular( 'espresso_events' )
+                EED_Promotions::$shortcode_active
+                || is_singular( 'espresso_events' )
 				|| is_post_type_archive( 'espresso_events' )
 				|| apply_filters( 'EED_Single_Page_Checkout__SPCO_active', false )
-				|| EED_Promotions::$shortcode_active
-			)
-				? true
-				: false;
+			);
 	}
 
 
