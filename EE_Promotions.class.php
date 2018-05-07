@@ -1,5 +1,4 @@
 <?php
-defined('EVENT_ESPRESSO_VERSION') || exit('No direct access allowed.');
 
 // define the plugin directory path and URL
 define('EE_PROMOTIONS_BASENAME', plugin_basename(EE_PROMOTIONS_PLUGIN_FILE));
@@ -18,7 +17,7 @@ define('EE_PROMOTIONS_CORE', EE_PROMOTIONS_PATH . 'core' . DS);
  * @ version            1.0.0
  * ------------------------------------------------------------------------
  */
-Class  EE_Promotions extends EE_Addon
+class EE_Promotions extends EE_Addon
 {
 
 
@@ -40,7 +39,7 @@ Class  EE_Promotions extends EE_Addon
                 'plugin_slug'           => 'espresso_promotions',
                 'config_class'          => 'EE_Promotions_Config',
                 'config_name'           => 'promotions',
-                //'plugins_page_row'	=> EE_Promotions::plugins_page_row(),
+                // 'plugins_page_row'    => EE_Promotions::plugins_page_row(),
                 'dms_paths'             => array(EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS),
                 'module_paths'          => array(EE_PROMOTIONS_PATH . 'EED_Promotions.module.php'),
                 'shortcode_paths'       => array(EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php'),
@@ -113,14 +112,14 @@ Class  EE_Promotions extends EE_Addon
      */
     public function after_registration()
     {
-        //register promotion specific statuses
+        // register promotion specific statuses
         add_filter(
             'FHEE__EEM_Status__localized_status__translation_array',
             array('EE_Promotions', 'promotion_stati'),
             10
         );
 
-        //add promotion codes shortcode to messages
+        // add promotion codes shortcode to messages
         add_filter('FHEE__EE_Shortcodes__shortcodes', array('EE_Promotions', 'register_new_shortcodes'), 10, 2);
         add_filter('FHEE__EE_Shortcodes__parser_after', array('EE_Promotions', 'register_new_shortcode_parser'), 10, 5);
     }
@@ -181,15 +180,15 @@ Class  EE_Promotions extends EE_Addon
      */
     public static function register_new_shortcodes($shortcodes, EE_Shortcodes $lib)
     {
-        //Check we have the EE_Transaction_Shortcodes library
+        // Check we have the EE_Transaction_Shortcodes library
         if ($lib instanceof EE_Transaction_Shortcodes) {
-            //Add shortcode to the shortcodes array.
+            // Add shortcode to the shortcodes array.
             $shortcodes['[PROMOTIONS_USED]'] = esc_html__(
                 'This shortcode outputs all promotions used on the registration.',
                 'event_espresso'
             );
         }
-        //Return the shortcodes.
+        // Return the shortcodes.
         return $shortcodes;
     }
 
@@ -210,13 +209,13 @@ Class  EE_Promotions extends EE_Addon
      */
     public static function register_new_shortcode_parser($parsed, $shortcode, $data, $extra_data, EE_Shortcodes $lib)
     {
-        //Check we have the EE_Transaction_Shortcodes and our the shortcode matches
+        // Check we have the EE_Transaction_Shortcodes and our the shortcode matches
         if ($lib instanceof EE_Transaction_Shortcodes && $shortcode == '[PROMOTIONS_USED]') {
-            //Pull the transaction from the EE_Messages_Addressee object passed to parser.
+            // Pull the transaction from the EE_Messages_Addressee object passed to parser.
             $transaction = $data instanceof EE_Messages_Addressee ? $data->txn : null;
-            //Check we have an EE_Transaction object
+            // Check we have an EE_Transaction object
             if ($transaction instanceof EE_Transaction) {
-                //Pull in the promotion line items for this transaction
+                // Pull in the promotion line items for this transaction
                 $promo_rows = EEM_Price::instance()->get_all_wpdb_results(
                     array(
                         array(
@@ -224,9 +223,9 @@ Class  EE_Promotions extends EE_Addon
                         ),
                     )
                 );
-                //Setup an arrey to store all promo codes used on the transaction
+                // Setup an arrey to store all promo codes used on the transaction
                 $promo_codes = array();
-                //Loop through promo line items and build the promo_codes array using the Promocode name and code
+                // Loop through promo line items and build the promo_codes array using the Promocode name and code
                 // (if available)
                 foreach ($promo_rows as $promo_row) {
                     if ($promo_row['Promotion.PRO_code']) {
@@ -239,16 +238,14 @@ Class  EE_Promotions extends EE_Addon
                         $promo_codes[] = $promo_row['Price.PRC_name'];
                     }
                 }
-                //Implode the promo_codes array into a comma-delimited string.
+                // Implode the promo_codes array into a comma-delimited string.
                 $promo_codes = implode(', ', $promo_codes);
-                //Return a single string or promo codes used.
+                // Return a single string or promo codes used.
                 return $promo_codes;
             }
         }
-        //If not within the correct section, or parsing the correct shortcode,
-        //return the currently parsed content.
+        // If not within the correct section, or parsing the correct shortcode,
+        // return the currently parsed content.
         return $parsed;
     }
 }
-// End of file EE_Promotions.class.php
-// Location: wp-content/plugins/espresso-promotions/EE_Promotions.class.php
