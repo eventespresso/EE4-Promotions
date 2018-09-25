@@ -37,7 +37,6 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
 
     public function schema_changes_after_migration()
     {
-
     }
 
 
@@ -90,8 +89,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
 			PRIMARY KEY  (POB_ID),
 			KEY PRO_ID (PRO_ID),
 			KEY OBJ_ID (OBJ_ID)',
-            'ENGINE=InnoDB');
+            'ENGINE=InnoDB'
+        );
     }
 }
-
-// End of file EE_DMS_Promotions_1_0_0.dms.php
