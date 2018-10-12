@@ -112,13 +112,13 @@ class EED_Promotions extends EED_Module
             2
         );
         // the filter got renamed and the old one was deprecated.
-        if(version_compare(
+        if (version_compare(
             espresso_version(),
             '4.9.69.p',
             '>'
-        )){
+        )) {
             $filter_name = 'FHEE__EventEspressoBatchRequest__JobHandlers__RegistrationsReport__reg_csv_array';
-        } else{
+        } else {
             $filter_name = 'FHEE__EE_Export__report_registrations__reg_csv_array';
         }
         add_filter(
