@@ -1134,7 +1134,7 @@ class EED_Promotions extends EED_Module
         EventEspresso\core\services\payment_methods\gateways\GatewayDataFormatter $gateway,
         EE_Line_Item $line_item,
         EE_Payment $payment
-    ){
+    ) {
         // is this a promotion ?
         if ($line_item->OBJ_type() === 'Promotion') {
             $line_item_name = sprintf(
