@@ -98,6 +98,12 @@ class EED_Promotions extends EED_Module
             10,
             2
         );
+        add_filter(
+            'FHEE__EE_gateway___line_item_name',
+            array( 'EED_Promotions', 'adjust_promotion_line_item_gateway' ),
+            10,
+            4
+        );
         // TXN admin
         add_filter(
             'FHEE__EE_Admin_Transactions_List_Table__column_TXN_total__TXN_total',
@@ -1110,6 +1116,35 @@ class EED_Promotions extends EED_Module
         return $line_item_name;
     }
 
+
+
+    /**
+     *   adjust_promotion_line_item_gateway
+     *   allows promotions to adjust the line item name sent to gateway
+     *
+     * @access    public
+     * @param string        $line_item_name
+     * @param \EventEspresso\core\services\payment_methods\gateways\GatewayDataFormatter $gateway
+     * @param \EE_Line_Item $line_item
+     * @param \EE_Payment   $payment
+     * @return string
+     */
+    public static function adjust_promotion_line_item_gateway(
+        $line_item_name, 
+        EventEspresso\core\services\payment_methods\gateways\GatewayDataFormatter $gateway,
+        EE_Line_Item $line_item,
+        EE_Payment $payment
+    )
+    {
+        // is this a promotion ?
+        if ($line_item->OBJ_type() === 'Promotion') {
+            $line_item_name = sprintf(
+                esc_html__('Discount: %1$s', 'event_espresso'),
+                $line_item->name()
+            );
+        }
+        return $line_item_name;
+    }
 
 
     /**
