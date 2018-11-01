@@ -195,7 +195,7 @@ class EED_Promotions extends EED_Module
      */
     public static function translate_js_strings()
     {
-        EE_Registry::$i18n_js_strings['no_promotions_code'] = __(
+        EE_Registry::$i18n_js_strings['no_promotions_code'] = esc_html__(
             'Please enter a valid Promotion Code.',
             'event_espresso'
         );
@@ -281,7 +281,7 @@ class EED_Promotions extends EED_Module
             $TXN_total = '<a href="'
                          . $edit_link
                          . '" title="'
-                         . __(
+                         . esc_html__(
                              'A Promotion was redeemed during this Transaction. Click to View Promotion',
                              'event_espresso'
                          )
@@ -306,7 +306,7 @@ class EED_Promotions extends EED_Module
     {
         $legend_items['promotion_redeemed'] = array(
             'class' => 'dashicons dashicons-tag green-icon ee-icon-size-12',
-            'desc'  => __('Promotion was redeemed during Transaction', 'event_espresso'),
+            'desc'  => esc_html__('Promotion was redeemed during Transaction', 'event_espresso'),
         );
         return $legend_items;
     }
@@ -438,7 +438,7 @@ class EED_Promotions extends EED_Module
                         'EVT_ID'        => $event->ID(),
                         'banner_header' => apply_filters(
                             'FHEE__EED_Promotions___display_event_promotions_banner__banner_header',
-                            __('Current Promotions', 'event_espresso')
+                            esc_html__('Current Promotions', 'event_espresso')
                         ),
                         'banner_text'   => implode('<div class="ee-promo-separator-dv">+</div>', $banner_text),
                         'ribbon_color'  => ! empty($this->config()->ribbon_banner_color)
@@ -647,7 +647,7 @@ class EED_Promotions extends EED_Module
                 sprintf(
                     apply_filters(
                         'FHEE__EED_Promotions___submit_promo_code__invalid_cart_notice',
-                        __(
+                        esc_html__(
                             'We\'re sorry, but the %1$s could not be applied because the event cart could not be retrieved.',
                             'event_espresso'
                         )
@@ -684,7 +684,7 @@ class EED_Promotions extends EED_Module
                 sprintf(
                     apply_filters(
                         'FHEE__EED_Promotions__get_promotion_details_from_request__invalid_promotion_notice',
-                        __(
+                        esc_html__(
                             'We\'re sorry, but the %1$s "%2$s" appears to be invalid.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.',
                             'event_espresso'
                         )
@@ -744,7 +744,7 @@ class EED_Promotions extends EED_Module
                 sprintf(
                     apply_filters(
                         'FHEE__EED_Promotions__get_applicable_items__no_applicable_items_notice',
-                        __(
+                        esc_html__(
                             'We\'re sorry, but the %1$s "%2$s" could not be applied to any %4$s.%3$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.',
                             'event_espresso'
                         )
@@ -860,7 +860,7 @@ class EED_Promotions extends EED_Module
                     sprintf(
                         apply_filters(
                             'FHEE__EED_Promotions__verify_no_existing_promotion_line_items__existing_promotion_code_notice',
-                            __(
+                            esc_html__(
                                 'We\'re sorry, but the "%1$s" %4$s has already been applied to the "%2$s" %3$s, and can not be applied more than once per %3$s.',
                                 'event_espresso'
                             )
@@ -904,7 +904,7 @@ class EED_Promotions extends EED_Module
                     sprintf(
                         apply_filters(
                             'FHEE__EED_Promotions__verify_no_exclusive_promotions_combined__new_promotion_is_exclusive_notice',
-                            __(
+                            esc_html__(
                                 'We\'re sorry, but %3$s have already been added to the cart and the "%1$s%2$s" promotion can not be combined with others.',
                                 'event_espresso'
                             )
@@ -929,7 +929,7 @@ class EED_Promotions extends EED_Module
                             sprintf(
                                 apply_filters(
                                     'FHEE__EED_Promotions__verify_no_exclusive_promotions_combined__existing_promotion_is_exclusive_notice',
-                                    __(
+                                    esc_html__(
                                         'We\'re sorry, but the "%1$s%2$s" %3$s has already been added to the cart and can not be combined with others.',
                                         'event_espresso'
                                     )
@@ -967,7 +967,7 @@ class EED_Promotions extends EED_Module
                 sprintf(
                     apply_filters(
                         'FHEE__EED_Promotions__get_promotion_from_line_item__invalid_promotion_notice',
-                        __(
+                        esc_html__(
                             'We\'re sorry, but the %1$s could not be applied because information pertaining to it could not be retrieved from the database.',
                             'event_espresso'
                         )
@@ -1079,7 +1079,7 @@ class EED_Promotions extends EED_Module
         }
         if (empty($JSON_response) && empty($return_data)) {
             $JSON_response['errors'] = sprintf(
-                __(
+                esc_html__(
                     'The %1$s entered could not be processed for an unknown reason.%2$sYou are welcome to try a different %1$s or to try this one again to ensure it was entered correctly.',
                     'event_espresso'
                 ),
@@ -1111,7 +1111,7 @@ class EED_Promotions extends EED_Module
     {
         // is this a promotion ?
         if ($line_item->OBJ_type() === 'Promotion') {
-            $line_item_name = sprintf(__('Discount: %1$s', 'event_espresso'), $line_item->name());
+            $line_item_name = sprintf(esc_html__('Discount: %1$s', 'event_espresso'), $line_item->name());
         }
         return $line_item_name;
     }
@@ -1177,7 +1177,7 @@ class EED_Promotions extends EED_Module
                 $promos_for_csv_col[] = $promo_row['Price.PRC_name'];
             }
         }
-        $csv_row[ (string) __('Transaction Promotions', 'event_espresso') ] = implode(',', $promos_for_csv_col);
+        $csv_row[ (string) esc_html__('Transaction Promotions', 'event_espresso') ] = implode(',', $promos_for_csv_col);
         return $csv_row;
     }
 
