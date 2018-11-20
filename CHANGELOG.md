@@ -17,6 +17,8 @@ See [our documentation](https://github.com/eventespresso/event-espresso-core/blo
 
 ## [$VID:$]
 
+## [1.0.13.p]
+
 ### Changed
 
 - Changed Promotions DMS Table Schemas to Match Formatting Used in Core ([8](https://github.com/eventespresso/EE4-Promotions/pull/8))
