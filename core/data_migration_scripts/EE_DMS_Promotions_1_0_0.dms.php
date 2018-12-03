@@ -51,8 +51,6 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
         );
 
         // delete old tables (if empty)
-        $this->_delete_table_if_empty(self::TABLE_NAME_PROMOTION);
-        $this->_delete_table_if_empty(self::TABLE_NAME_PROMOTION_OBJECT);
         $this->_delete_table_if_empty('esp_promotion_applied');
         $this->_delete_table_if_empty('esp_promotion_rule');
 
