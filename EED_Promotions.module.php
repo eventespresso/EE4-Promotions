@@ -738,6 +738,14 @@ class EED_Promotions extends EED_Module
                 $cart->get_grand_total(),
                 $redeemable_scope_promos
             );
+            $applicable_items = apply_filters(
+                'FHEE__EED_Promotions__get_applicable_items__applicable_items',
+                $applicable_items,
+                $promotion,
+                $redeemable_scope_promos,
+                $events,
+                $cart
+            );
         }
         if (empty($applicable_items) && ! $suppress_notices) {
             EE_Error::add_attention(
@@ -1003,6 +1011,15 @@ class EED_Promotions extends EED_Module
         EE_Registry::instance()->load_helper('Line_Item');
         // add it to the cart
         if ($parent_line_item->add_child_line_item($promotion_line_item, false)) {
+            if (apply_filters(
+                'FHEE__EED_Promotions__add_promotion_line_item__bypass_increment_promotion_scope_uses',
+                false,
+                $parent_line_item,
+                $promotion,
+                $promotion_line_item
+            )) {
+                return true;
+            }
             try {
                 if ($promotion->scope_obj()->increment_promotion_scope_uses(
                     $promotion,
