@@ -922,29 +922,44 @@ abstract class EE_Promotion_Scope
         $promo_desc .= $promotion->code() !== '' ? ' ( ' . $promotion->code() . ' )' : '';
         // generate promotion line_item
         $line_item = EE_Line_Item::new_instance(
-            array(
-                'LIN_code'       => 'promotion-' . $promotion->ID(),
-                'TXN_ID'         => $parent_line_item->TXN_ID(),
-                'LIN_name'       => apply_filters(
-                    'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
-                    $promo_name,
-                    $promotion
+            /**
+             * Filters the initial properties of the discount line items.
+             * @param array new line item properties. Keys are field names, values are their new values.
+             * @param EE_Line_Item $parent_line_item
+             * @param EE_Promotion $promotion
+             * @param string $promo_name
+             * @param boolean $affects_tax
+             */
+            apply_filters(
+                'FHEE__EE_Promotion_Scope__generate_promotion_line_item',
+                array(
+                    'LIN_code'       => 'promotion-' . $promotion->ID(),
+                    'TXN_ID'         => $parent_line_item->TXN_ID(),
+                    'LIN_name'       => apply_filters(
+                        'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
+                        $promo_name,
+                        $promotion
+                    ),
+                    'LIN_desc'       => $promo_desc,
+                    'LIN_unit_price' => $promotion->is_percent() ? 0 : $promotion->amount(),
+                    'LIN_percent'    => $promotion->is_percent() ? $promotion->amount() : 0,
+                    'LIN_is_taxable' => $affects_tax,
+                    'LIN_order'      => $promotion->price()->order() + EE_Promotion_Scope::$_counter,
+                    // we want promotions to be applied AFTER other line items
+                    'LIN_total'      => $promotion->calculated_amount_on_value($parent_line_item->total()),
+                    'LIN_quantity'   => 1,
+                    'LIN_parent'     => $parent_line_item->ID(),
+                    // Parent ID (this item goes towards that Line Item's total)
+                    'LIN_type'       => $this->get_promotion_line_item_type(),
+                    'OBJ_ID'         => $promotion->ID(),
+                    // ID of Item purchased
+                    'OBJ_type'       => 'Promotion'
+                    // Model Name this Line Item is for
                 ),
-                'LIN_desc'       => $promo_desc,
-                'LIN_unit_price' => $promotion->is_percent() ? 0 : $promotion->amount(),
-                'LIN_percent'    => $promotion->is_percent() ? $promotion->amount() : 0,
-                'LIN_is_taxable' => $affects_tax,
-                'LIN_order'      => $promotion->price()->order() + EE_Promotion_Scope::$_counter,
-                // we want promotions to be applied AFTER other line items
-                'LIN_total'      => $promotion->calculated_amount_on_value($parent_line_item->total()),
-                'LIN_quantity'   => 1,
-                'LIN_parent'     => $parent_line_item->ID(),
-                // Parent ID (this item goes towards that Line Item's total)
-                'LIN_type'       => $this->get_promotion_line_item_type(),
-                'OBJ_ID'         => $promotion->ID(),
-                // ID of Item purchased
-                'OBJ_type'       => 'Promotion'
-                // Model Name this Line Item is for
+                $parent_line_item,
+                $promotion,
+                $promo_name,
+                $affects_tax
             )
         );
         EE_Promotion_Scope::$_counter++;
