@@ -73,7 +73,10 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
                 PRO_deleted tinyint(1) NOT NULL DEFAULT 0,
                 PRO_wp_user bigint(20) unsigned NOT NULL DEFAULT 1,
                 PRIMARY KEY  (PRO_ID),
-                KEY PRC_ID (PRC_ID)",
+                KEY PRC_ID (PRC_ID),
+                KEY PRO_code (PRO_code),
+                KEY PRO_start (PRO_start),
+                KEY PRO_end (PRO_end)",
             'ENGINE=InnoDB'
         );
 
