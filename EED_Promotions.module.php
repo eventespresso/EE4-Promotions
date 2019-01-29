@@ -738,6 +738,23 @@ class EED_Promotions extends EED_Module
                 $cart->get_grand_total(),
                 $redeemable_scope_promos
             );
+            /**
+             * Filters the $applicable_items array containing all of the line items that the promotion applies to
+             *
+             * @param array $applicable_items
+             * @param EE_Promotion $promotion
+             * @param array $redeemable_scope_promos multidimensional array with mixed values
+             * @param EE_Event[] $events
+             * @param EE_Cart $cart
+             */
+            $applicable_items = apply_filters(
+                'FHEE__EED_Promotions__get_applicable_items__applicable_items',
+                $applicable_items,
+                $promotion,
+                $redeemable_scope_promos,
+                $events,
+                $cart
+            );
         }
         if (empty($applicable_items) && ! $suppress_notices) {
             EE_Error::add_attention(
@@ -1003,6 +1020,23 @@ class EED_Promotions extends EED_Module
         EE_Registry::instance()->load_helper('Line_Item');
         // add it to the cart
         if ($parent_line_item->add_child_line_item($promotion_line_item, false)) {
+            if (/**
+                 * Filter switch for bypassing the incrementation of promotion scope uses
+                 *
+                 * @param boolean $bypass_increment_promotion_scope_uses
+                 * @param EE_Line_Item $parent_line_item
+                 * @param EE_Promotion $promotion
+                 * @param EE_Line_Item $promotion_line_item
+                 */
+            apply_filters(
+                'FHEE__EED_Promotions__add_promotion_line_item__bypass_increment_promotion_scope_uses',
+                false,
+                $parent_line_item,
+                $promotion,
+                $promotion_line_item
+            )) {
+                return true;
+            }
             try {
                 if ($promotion->scope_obj()->increment_promotion_scope_uses(
                     $promotion,
