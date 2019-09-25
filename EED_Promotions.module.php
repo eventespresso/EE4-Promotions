@@ -522,6 +522,70 @@ class EED_Promotions extends EED_Module
 
 
     /**
+     *    _has_active_promotions_at_cart
+     *
+     * @access private
+     * @return bool
+     */
+    private function _has_active_promotions_at_cart()
+    {
+        // controls how many active promotions we have for events in the Cart.
+        $has_active_promotions = false;
+        // get current Cart instance to get events from.
+        $cart = EE_Registry::instance()->SSN->cart();
+
+        if ($cart instanceof EE_Cart) {
+            // get all events.
+            $events = $this->get_events_from_cart($cart);
+
+            // if we got events...
+            if (!empty($events)) {
+                $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
+                $active_promotions = $EEM_Promotion->get_all_active_code_promotions();
+
+                // loop through all the events.
+                foreach ($events as $event) {
+                    // stop the loop if we already got a promotion.
+                    if ($has_active_promotions) {
+                        break;
+                    }
+
+                    foreach ($active_promotions as $promotion) {
+                        // stop the loop if we already got a promotion.
+                        if ($has_active_promotions) {
+                            break;
+                        }
+
+                        if ($promotion instanceof EE_Promotion) {
+                            // get all promotion objects that can still be redeemed
+                            $redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos(
+                                $promotion,
+                                true,
+                                $event
+                            );
+                            foreach ($redeemable_scope_promos as $scope => $promo_obj_IDs) {
+                                // stop the loop if we already got a promotion.
+                                if ($has_active_promotions) {
+                                    break;
+                                }
+
+                                // Check if the active promotion applies to the event.
+                                if ($scope === 'Event' && in_array($event->ID(), $promo_obj_IDs)) {
+                                    // We found an active promotion.
+                                    $has_active_promotions = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $has_active_promotions;
+    }
+
+
+    /**
      *    _add_promotions_form_inputs
      *
      * @access        private
@@ -530,6 +594,14 @@ class EED_Promotions extends EED_Module
      */
     private function _add_promotions_form_inputs($before_payment_options)
     {
+        // Checks if any promotion applies to current cart.
+        $has_active_promotions = $this->_has_active_promotions_at_cart();
+
+        // If no active promotions are found, we do not display the section field.
+        if (!$has_active_promotions) {
+            return $before_payment_options;
+        }
+
         add_action('wp_enqueue_scripts', array( $this, 'enqueue_scripts' ));
         EE_Registry::instance()->load_helper('HTML');
         $before_payment_options->add_subsections(
