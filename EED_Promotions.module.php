@@ -532,6 +532,11 @@ class EED_Promotions extends EED_Module
     {
         add_action('wp_enqueue_scripts', array( $this, 'enqueue_scripts' ));
         EE_Registry::instance()->load_helper('HTML');
+
+        $singular_label = isset($this->config()->label->singular) ?
+            $this->config()->label->singular :
+            esc_html__('Promotion Code', 'event_espresso');
+
         $before_payment_options->add_subsections(
             array(
                 'promotions_form' => new EE_Form_Section_Proper(
@@ -546,7 +551,7 @@ class EED_Promotions extends EED_Module
                                     'html_name'       => 'ee_promotion_code_input',
                                     'html_label_text' => apply_filters(
                                         'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_input__html_label_text',
-                                        EEH_HTML::h4($this->config()->label->singular)
+                                        EEH_HTML::h4($singular_label)
                                     ),
                                 )
                             ),
@@ -556,12 +561,7 @@ class EED_Promotions extends EED_Module
                                     'html_name' => 'ee_promotion_code_submit',
                                     'default'   => apply_filters(
                                         'FHEE__EED_Promotions___add_promotions_form_inputs__ee_promotion_code_submit__default',
-                                        sprintf(
-                                            esc_html__('Submit %s', 'event_espresso'),
-                                            $this->config()->label->singular ?
-                                            $this->config()->label->singular :
-                                            esc_html__('Promotion Code', 'event_espresso')
-                                        )
+                                        sprintf(esc_html__('Submit %s', 'event_espresso'), $singular_label)
                                     ),
                                 )
                             ),
