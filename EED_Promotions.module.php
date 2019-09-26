@@ -522,7 +522,7 @@ class EED_Promotions extends EED_Module
 
 
     /**
-     *    _has_active_promotions_at_cart
+     *    _hasActivePromotionsAtCart
      *
      * @access private
      * @return bool
