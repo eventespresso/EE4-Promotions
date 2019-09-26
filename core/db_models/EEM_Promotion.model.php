@@ -124,7 +124,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base
 
 
     /**
-     * get_all_active_code_promotions
+     * getAllActiveCodePromotions
      * retrieves all promotions that are currently active based on the current time and do
      * utilize a code
      *
@@ -133,7 +133,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base
      * @param array  $query_params
      * @return EE_Promotion[]
      */
-    public function get_all_active_code_promotions($query_params = array())
+    public function getAllActiveCodePromotions($query_params = array())
     {
 
         return $this->get_all(
