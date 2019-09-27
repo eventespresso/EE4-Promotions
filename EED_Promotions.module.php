@@ -522,45 +522,30 @@ class EED_Promotions extends EED_Module
 
 
     /**
-     *    _hasActivePromotionsAtCart
+     *    hasActivePromotionsAtCart
      *
-     * @access private
      * @return bool
      */
-    private function _hasActivePromotionsAtCart()
+    private function hasActivePromotionsAtCart()
     {
-        // controls how many active promotions we have for events in the Cart.
-        $has_active_promotions = false;
         // get current Cart instance to get events from.
         $cart = EE_Registry::instance()->SSN->cart();
-
         if ($cart instanceof EE_Cart) {
             // get all events.
             $events = $this->get_events_from_cart($cart);
-
-            // store the event IDs.
-            $event_ids = [];
-
             // if we got events...
-            if (!empty($events)) {
-                // loop through all the events.
-                foreach ($events as $event) {
-                    $event_ids[] = $event->ID();
-                }
-                
+            if (! empty($events)) {
                 $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
-                $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([[
-                    'PRO_scope'               => 'Event',
-                    'Promotion_Object.OBJ_ID' => [ 'in', $event_ids ],
-                ]]);
-
-                if (count($active_promotions) > 0) {
-                    $has_active_promotions = true;
-                }
+                $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
+                    [
+                        'PRO_scope'               => 'Event',
+                        'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                    ]
+                ]);
+                return ! empty($active_promotions);
             }
         }
-
-        return $has_active_promotions;
+        return false;
     }
 
 
@@ -581,7 +566,7 @@ class EED_Promotions extends EED_Module
 
         if ($check_for_active_promotions) {
             // checks if any promotion applies to current cart.
-            $has_active_promotions = $this->_hasActivePromotionsAtCart();
+            $has_active_promotions = $this->hasActivePromotionsAtCart();
 
             // if no active promotions are found, we do not display the section field.
             if (!$has_active_promotions) {
