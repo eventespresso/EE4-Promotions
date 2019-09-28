@@ -522,11 +522,11 @@ class EED_Promotions extends EED_Module
 
 
     /**
-     *    hasActivePromotionsAtCart
+     *    hasApplicablePromotionsAtCart
      *
      * @return bool
      */
-    private function hasActivePromotionsAtCart()
+    private function hasApplicablePromotionsAtCart()
     {
         // get current Cart instance to get events from.
         $cart = EE_Registry::instance()->SSN->cart();
@@ -540,7 +540,8 @@ class EED_Promotions extends EED_Module
                     [
                         'PRO_scope'               => 'Event',
                         'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
-                    ]
+                    ],
+                    'limit' => 1,
                 ]);
                 return ! empty($active_promotions);
             }
@@ -559,17 +560,17 @@ class EED_Promotions extends EED_Module
     private function _add_promotions_form_inputs($before_payment_options)
     {
         // flag controlling either active promos should be checked.
-        $check_for_active_promotions = apply_filters(
-            'FHEE__EED_Promotions___add_promotions_form_inputs__checkForActivePromotions',
+        $check_for_applicable_promotions = apply_filters(
+            'FHEE__EED_Promotions___add_promotions_form_inputs__checkForApplicablePromotions',
             true
         );
 
-        if ($check_for_active_promotions) {
+        if ($check_for_applicable_promotions) {
             // checks if any promotion applies to current cart.
-            $has_active_promotions = $this->hasActivePromotionsAtCart();
+            $has_applicable_promotions = $this->hasApplicablePromotionsAtCart();
 
             // if no active promotions are found, we do not display the section field.
-            if (!$has_active_promotions) {
+            if (!$has_applicable_promotions) {
                 return $before_payment_options;
             }
         }
