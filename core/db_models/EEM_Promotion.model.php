@@ -124,6 +124,37 @@ class EEM_Promotion extends EEM_Soft_Delete_Base
 
 
     /**
+     * getAllActiveCodePromotions
+     * retrieves all promotions that are currently active based on the current time and do
+     * utilize a code
+     *
+     * Note this DOES include promotions that have no dates set.
+     *
+     * @param array  $query_params
+     * @return EE_Promotion[]
+     */
+    public function getAllActiveCodePromotions($query_params = array())
+    {
+
+        return $this->get_all(
+            array_replace_recursive(
+                array(
+                    array(
+                        'PRO_code'      => [ '!=', null ],
+                        'PRO_deleted'   => false,
+                    )
+                ),
+                // query params for calendar controlled expiration
+                $this->_get_promotion_expiration_query_params(),
+                // incoming $query_params array filtered to remove null values and empty strings
+                array_filter((array) $query_params, 'EEM_Promotion::has_value')
+            )
+        );
+    }
+
+
+
+    /**
      * _get_promotion_expiration_query_params
      * query params for calendar controlled expiration
      *

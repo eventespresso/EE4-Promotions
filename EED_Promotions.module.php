@@ -522,6 +522,35 @@ class EED_Promotions extends EED_Module
 
 
     /**
+     *    hasApplicablePromotionsAtCart
+     *
+     * @return bool
+     */
+    private function hasApplicablePromotionsAtCart()
+    {
+        // get current Cart instance to get events from.
+        $cart = EE_Registry::instance()->SSN->cart();
+        if ($cart instanceof EE_Cart) {
+            // get all events.
+            $events = $this->get_events_from_cart($cart);
+            // if we got events...
+            if (! empty($events)) {
+                $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
+                $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
+                    [
+                        'PRO_scope'               => 'Event',
+                        'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                    ],
+                    'limit' => 1,
+                ]);
+                return ! empty($active_promotions);
+            }
+        }
+        return false;
+    }
+
+
+    /**
      *    _add_promotions_form_inputs
      *
      * @access        private
@@ -530,6 +559,22 @@ class EED_Promotions extends EED_Module
      */
     private function _add_promotions_form_inputs($before_payment_options)
     {
+        // flag controlling either active promos should be checked.
+        $check_for_applicable_promotions = apply_filters(
+            'FHEE__EED_Promotions___add_promotions_form_inputs__checkForApplicablePromotions',
+            true
+        );
+
+        if ($check_for_applicable_promotions) {
+            // checks if any promotion applies to current cart.
+            $has_applicable_promotions = $this->hasApplicablePromotionsAtCart();
+
+            // if no active promotions are found, we do not display the section field.
+            if (!$has_applicable_promotions) {
+                return $before_payment_options;
+            }
+        }
+
         add_action('wp_enqueue_scripts', array( $this, 'enqueue_scripts' ));
         EE_Registry::instance()->load_helper('HTML');
 
