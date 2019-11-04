@@ -63,13 +63,6 @@ class EED_Promotions extends EED_Module
             10,
             2
         );
-        // Display button at transactions actions area.
-        add_action(
-            'AHEE__txn_admin_details__after_actions_buttons',
-            array( 'EED_Promotions', 'displayApplyDiscountAtTransactions' ),
-            10,
-            1
-        );
     }
 
 
@@ -146,6 +139,13 @@ class EED_Promotions extends EED_Module
             array( 'EED_Promotions', 'delete_related_promotion_on_scope_item_delete' ),
             10,
             2
+        );
+        // Display button at transactions actions area.
+        add_action(
+            'AHEE__txn_admin_details__after_actions_buttons',
+            array( 'EED_Promotions', 'displayApplyDiscountAtTransactions' ),
+            10,
+            1
         );
     }
 
