@@ -381,6 +381,27 @@ class EED_Promotions extends EED_Module
 
 
 
+    /**
+     *    displayApplyDiscountAtTransactions
+     *
+     * @access    public
+     * @return    void
+     */
+    public static function displayApplyDiscountAtTransactions()
+    {
+        ?>
+            <li>
+                <input type="text" placeholder="Discount Code">
+                <a id="display-txn-admin-apply-discount-code" class="button-secondary no-icon no-hide"
+                    rel="txn-admin-apply-payment"> <!--display-the-hidden -->
+                    <?php esc_html_e('Apply Discount Code', 'event_espresso'); ?>
+                </a>
+            </li>
+        <?php
+    }
+
+
+
     /********************************** DISPLAY PROMOTIONS BANNER ***********************************/
 
 
