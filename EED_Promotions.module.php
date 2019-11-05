@@ -389,15 +389,14 @@ class EED_Promotions extends EED_Module
      */
     public static function displayApplyDiscountAtTransactions()
     {
-        ?>
-            <li>
-                <input type="text" placeholder="Discount Code">
-                <a id="display-txn-admin-apply-discount-code" class="button-secondary no-icon no-hide"
-                    rel="txn-admin-apply-payment"> <!--display-the-hidden -->
-                    <?php esc_html_e('Apply Discount Code', 'event_espresso'); ?>
-                </a>
-            </li>
-        <?php
+        // Load template.
+        EE_Registry::instance()->load_helper('Template');
+        
+        $html = EEH_Template::locate_template(
+            apply_filters('FHEE__EED_Promotions__displayApplyDiscountAtTransactions', EE_PROMOTIONS_PATH . 'templates' . DS . 'txn-apply-discount.template.php'),
+            array()
+        );
+        echo $html;
     }
 
 
