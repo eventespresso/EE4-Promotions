@@ -85,6 +85,8 @@ class EED_Promotions extends EED_Module
             10,
             1
         );
+        // Enqueue scripts at Transactions page.
+        add_action('admin_enqueue_scripts', array( 'EED_Promotions', 'enqueueAdminScripts' ));
         // _get_promotions
         add_action('wp_ajax_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
         add_action('wp_ajax_nopriv_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
@@ -216,6 +218,31 @@ class EED_Promotions extends EED_Module
      * @access    public
      * @return    void
      */
+    public static function enqueueAdminScripts()
+    {
+        // Enqueue specific code to Transactions page.
+        wp_register_script(
+            'espresso_promotions_admin',
+            EE_PROMOTIONS_URL . 'scripts' . DS . 'promotions.admin.js',
+            array(),
+            EE_PROMOTIONS_VERSION,
+            true
+        );
+
+        if (EED_Promotions::loadAdminAssets()) {
+            // load the assets.
+            wp_enqueue_script('espresso_promotions_admin');
+        }
+    }
+
+
+
+    /**
+     *    enqueue_scripts - Load the scripts and css
+     *
+     * @access    public
+     * @return    void
+     */
     public static function enqueue_scripts()
     {
         // Check to see if the promotions css file exists in the '/uploads/espresso/' directory
@@ -242,6 +269,20 @@ class EED_Promotions extends EED_Module
             wp_enqueue_style('espresso_promotions');
             wp_enqueue_script('espresso_promotions');
         }
+    }
+
+
+
+    /**
+     *    loadAdminAssets
+     *
+     * @access        public
+     * @return        bool
+     */
+    public static function loadAdminAssets()
+    {
+        // @TODO: ensure to enqueue only at single transaction page.
+        return is_admin();
     }
 
 
