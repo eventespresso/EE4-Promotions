@@ -144,7 +144,7 @@ class EED_Promotions extends EED_Module
         );
         // Display button at transactions actions area.
         add_action(
-            'AHEE__txn_admin_details__after_actions_buttons',
+            'AHEE__txn_admin_details_main_meta_box_txn_details__after_actions_buttons',
             array( 'EED_Promotions', 'displayApplyDiscountAtTransactions' ),
             10,
             1
