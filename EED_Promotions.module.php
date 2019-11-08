@@ -93,6 +93,9 @@ class EED_Promotions extends EED_Module
         // submit_promo_code
         add_action('wp_ajax_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
         add_action('wp_ajax_nopriv_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+        // submit_txn_promo_code
+        add_action('wp_ajax_espresso_submit_txn_promo_code', array( 'EED_Promotions', 'submitTxnPromoCode' ));
+        add_action('wp_ajax_nopriv_espresso_submit_txn_promo_code', array( 'EED_Promotions', 'submitTxnPromoCode' ));
         // adjust SPCO
         add_filter(
             'FHEE__EE_SPCO_Line_Item_Display_Strategy__item_row__name',
@@ -715,6 +718,91 @@ class EED_Promotions extends EED_Module
      * @throws \EE_Error
      */
     private function _submit_promo_code()
+    {
+        $return_data = array();
+        // get the EE_Cart object being used for the current transaction
+        /** @type EE_Cart $cart */
+        $cart = EE_Registry::instance()->SSN->cart();
+        if ($cart instanceof EE_Cart) {
+            // and make sure the model cache is
+            $cart->get_grand_total()->get_model()->refresh_entity_map_with(
+                $cart->get_grand_total()->ID(),
+                $cart->get_grand_total()
+            );
+            $promotion = $this->get_promotion_details_from_request();
+            if ($promotion instanceof EE_Promotion) {
+                // determine if the promotion can be applied to an item in the current cart
+                $applicable_items = $this->get_applicable_items($promotion, $cart, false, true);
+                if (! empty($applicable_items)) {
+                    // add line item
+                    if ($this->generate_promotion_line_items(
+                        $promotion,
+                        $applicable_items,
+                        $this->config()->affects_tax()
+                    )
+                    ) {
+                        // ensure cart totals have been recalculated and saved
+                        $cart->get_grand_total()->recalculate_total_including_taxes();
+                        $cart->get_grand_total()->save_this_and_descendants();
+                        /** @type EE_Registration_Processor $registration_processor */
+                        $registration_processor = EE_Registry::instance()->load_class('Registration_Processor');
+                        $registration_processor->update_registration_final_prices(
+                            $cart->get_grand_total()->transaction()
+                        );
+                        $cart->save_cart(false);
+                        $return_data = $this->_get_payment_info($cart);
+                        $return_data['success'] = $promotion->accept_message();
+                        EED_Single_Page_Checkout::update_checkout();
+                    } else {
+                        EE_Error::add_attention($promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__);
+                    }
+                }
+            }
+        } else {
+            EE_Error::add_error(
+                sprintf(
+                    apply_filters(
+                        'FHEE__EED_Promotions___submit_promo_code__invalid_cart_notice',
+                        esc_html__(
+                            'We\'re sorry, but the %1$s could not be applied because the event cart could not be retrieved.',
+                            'event_espresso'
+                        )
+                    ),
+                    strtolower($this->config()->label->singular)
+                ),
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
+        }
+        $this->generate_JSON_response($return_data);
+    }
+    
+    
+    /********************************** SUBMIT TRANSACTION PROMO CODE ***********************************/
+    /**
+     *    submitTxnPromoCode
+     *
+     * @access    public
+     * @return    void
+     * @throws \EE_Error
+     */
+    public static function submitTxnPromoCode()
+    {
+        EED_Promotions::instance()->set_config();
+        EED_Promotions::instance()->_submitTxnPromoCode();
+    }
+
+
+
+    /**
+     *    _submitTxnPromoCode
+     *
+     * @access        private
+     * @return        void
+     * @throws \EE_Error
+     */
+    private function _submitTxnPromoCode()
     {
         $return_data = array();
         // get the EE_Cart object being used for the current transaction

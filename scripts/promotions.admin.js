@@ -119,7 +119,7 @@ jQuery(document).ready(function($) {
                 console.log(JSON.stringify('@PROMO.submit_promo_code()', null, 4));
             }
             PROMO.form_data            = {};
-            PROMO.form_data.action     = 'submit_promo_code';
+            PROMO.form_data.action     = 'submit_txn_promo_code';
             PROMO.form_data.promo_code = promo_code;
             PROMO.submit_ajax_request();
         },
