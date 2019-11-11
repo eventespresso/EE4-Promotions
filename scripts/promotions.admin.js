@@ -120,7 +120,8 @@ jQuery(document).ready(function($) {
             }
             PROMO.form_data            = {};
             PROMO.form_data.action     = 'submit_txn_promo_code';
-            PROMO.form_data.promo_code = promo_code;
+			PROMO.form_data.promo_code = promo_code;
+			$('#ee-promotion-code-submit').addClass('disabled');
             PROMO.submit_ajax_request();
         },
 
@@ -152,12 +153,14 @@ jQuery(document).ready(function($) {
                 data:       PROMO.form_data,
                 dataType:   'json',
                 success:    function(response) {
-                    PROMO.process_response(response);
+					PROMO.process_response(response);
+					$('#ee-promotion-code-submit').removeClass('disabled');
                 },
                 error:      function() {
 					/*
 					@TODO error
 					*/
+					$('#ee-promotion-code-submit').removeClass('disabled');
                 },
             });
         },
