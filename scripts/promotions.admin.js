@@ -121,7 +121,7 @@ jQuery(document).ready(function($) {
             PROMO.form_data            = {};
             PROMO.form_data.action     = 'submit_txn_promo_code';
 			PROMO.form_data.promo_code = promo_code;
-			$('#ee-promotion-code-submit').addClass('disabled');
+			PROMO.disable_button();
             PROMO.submit_ajax_request();
         },
 
@@ -131,6 +131,7 @@ jQuery(document).ready(function($) {
         submit_ajax_request: function() {
             // no form_data ?
             if (typeof PROMO.form_data.action === 'undefined' || PROMO.form_data.action === '') {
+				PROMO.enable_button();
                 return;
             }
             if (PROMO.display_debug) {
@@ -154,13 +155,13 @@ jQuery(document).ready(function($) {
                 dataType:   'json',
                 success:    function(response) {
 					PROMO.process_response(response);
-					$('#ee-promotion-code-submit').removeClass('disabled');
+					PROMO.enable_button();
                 },
                 error:      function() {
 					/*
 					@TODO error
 					*/
-					$('#ee-promotion-code-submit').removeClass('disabled');
+					PROMO.enable_button();
                 },
             });
         },
@@ -207,6 +208,20 @@ jQuery(document).ready(function($) {
 				SPCO.ajax_request_server_error();
 				*/
             }
+		},
+		
+		/**
+         * @function
+         */
+        enable_button: function() {
+            $('#ee-promotion-code-submit').removeClass('disabled');
+        },
+		
+		/**
+         * @function
+         */
+        disable_button: function() {
+            $('#ee-promotion-code-submit').addClass('disabled');
         },
 
         // end of PROMO object
