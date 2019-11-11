@@ -180,19 +180,14 @@ jQuery(document).ready(function($) {
             if (typeof response !== 'undefined' && response !== null) {
 
                 if (typeof response.errors !== 'undefined') {
-                    // no response...
-                    //SPCO.hide_notices();
-                    // @TODO (SPCO.main_container, response, true);
+                    // something wrong happened.
+                    alert(response.errors);
                 } else if (typeof response.attention !== 'undefined') {
                     // Achtung Baby!!!
-                    // @TODO SPCO.scroll_to_top_and_display_messages(SPCO.main_container, response, true);
-                } else if (typeof response.success !== 'undefined') {
-                    // @TODO SPCO.scroll_to_top_and_display_messages(SPCO.main_container, response, true);
-                } else if (typeof response.return_data !== 'undefined') {
-
-                    if (typeof response.return_data.payment_info !== 'undefined') {
-                        // @TODO => success!!!
-                    }
+                    alert(response.attention);
+                } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
+					// Success!
+					location.reload();
 
                 } else {
 					// oh noes...
