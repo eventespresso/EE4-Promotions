@@ -806,23 +806,28 @@ class EED_Promotions extends EED_Module
     {
         $return_data = array();
 
-        // @TODO: Apply code to promotion.
-        // $return_data['success'] = 'OK';
-        EE_Error::add_error(
-            sprintf(
-                apply_filters(
-                    'FHEE__EED_Promotions___submit_promo_code__invalid_cart_notice',
-                    esc_html__(
-                        'We\'re sorry, but the %1$s could not be applied because the event cart could not be retrieved.',
-                        'event_espresso'
-                    )
+        $promotion = $this->get_promotion_details_from_request();
+
+        if ($promotion instanceof EE_Promotion) {
+            // @TODO: apply the promotion to the transaction.
+            $applied = false;
+
+            if ($applied) {
+                $return_data['success'] = 'OK';
+            } else {
+                EE_Error::add_attention($promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__);
+            }
+        } else {
+            EE_Error::add_error(
+                esc_html__(
+                    'Sorry, but the discount code could not be applied because the promotion could not be retrieved.',
+                    'event_espresso'
                 ),
-                strtolower($this->config()->label->singular)
-            ),
-            __FILE__,
-            __FUNCTION__,
-            __LINE__
-        );
+                __FILE__,
+                __FUNCTION__,
+                __LINE__
+            );
+        }
         
         $this->generate_JSON_response($return_data);
     }
