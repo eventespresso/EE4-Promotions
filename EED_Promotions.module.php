@@ -428,11 +428,16 @@ class EED_Promotions extends EED_Module
     /**
      *    displayApplyDiscountAtTransactions
      *
+     * @param     bool   $can_edit_payments Flag to tell us if user can edit payments.
      * @access    public
      * @return    void
      */
-    public static function displayApplyDiscountAtTransactions()
+    public static function displayApplyDiscountAtTransactions($can_edit_payments)
     {
+        if (!$can_edit_payments) {
+            return;
+        }
+
         // Load template.
         EE_Registry::instance()->load_helper('Template');
         
