@@ -814,8 +814,13 @@ class EED_Promotions extends EED_Module
         $promotion = $this->get_promotion_details_from_request();
 
         if ($promotion instanceof EE_Promotion) {
-            // @TODO: apply the promotion to the transaction.
             $applied = false;
+
+            // Determine if the promotion can be applied to an item in the current txn.
+            $applicable_items = $this->get_applicable_items($promotion, $cart, false, true);
+            if (! empty($applicable_items)) {
+
+            }
 
             if ($applied) {
                 $return_data['success'] = 'OK';
@@ -875,6 +880,61 @@ class EED_Promotions extends EED_Module
             return null;
         }
         return $promo;
+    }
+
+
+
+    /**
+     *    getApplicableItemsFromTransaction
+     *    determine if the promotion has global uses left and can be applied to a valid item in the transaction
+     *
+     * @access    public
+     * @param \EE_Promotion   $promotion
+     * @param \EE_Transaction $txn
+     * @return \EE_Line_Item[]
+     * @throws \EE_Error
+     */
+    public function getApplicableItemsFromTransaction(
+        EE_Promotion $promotion,
+        EE_Transaction $txn,
+    ) {
+        $applicable_items = array();
+        // verify EE_Promotion
+        if ($promotion instanceof EE_Promotion) {
+            EE_Registry::instance()->load_helper('Line_Item');
+            $events = $this->get_events_from_cart($cart);
+            // get all promotion objects that can still be redeemed
+            $redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos(
+                $promotion,
+                true,
+                $events
+            );
+            // then find line items in the cart that match the above
+            $applicable_items = $promotion->scope_obj()->get_object_line_items_from_cart(
+                $cart->get_grand_total(),
+                $redeemable_scope_promos
+            );
+
+            /**
+             * Filters the $applicable_items array containing all of the line items that the promotion applies to
+             *
+             * @param array $applicable_items
+             * @param EE_Promotion $promotion
+             * @param array $redeemable_scope_promos multidimensional array with mixed values
+             * @param EE_Event[] $events
+             * @param EE_Transaction $txn
+             */
+            $applicable_items = apply_filters(
+                'FHEE__EED_Promotions__getApplicableItemsFromTransaction__applicable_items',
+                $applicable_items,
+                $promotion,
+                $redeemable_scope_promos,
+                $events,
+                $txn
+            );
+        }
+
+        return $applicable_items;
     }
 
 
