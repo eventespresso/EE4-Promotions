@@ -890,19 +890,21 @@ class EED_Promotions extends EED_Module
      *
      * @access    public
      * @param \EE_Promotion   $promotion
-     * @param \EE_Transaction $txn
+     * @param \EE_Transaction $transaction
      * @return \EE_Line_Item[]
      * @throws \EE_Error
      */
     public function getApplicableItemsFromTransaction(
         EE_Promotion $promotion,
-        EE_Transaction $txn,
+        EE_Transaction $transaction
     ) {
         $applicable_items = array();
         // verify EE_Promotion
         if ($promotion instanceof EE_Promotion) {
             EE_Registry::instance()->load_helper('Line_Item');
-            $events = $this->get_events_from_cart($cart);
+
+            // Get events from transaction.
+            $events = $this->getEventsFromTransaction($transaction);
             // get all promotion objects that can still be redeemed
             $redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos(
                 $promotion,
@@ -1029,6 +1031,28 @@ class EED_Promotions extends EED_Module
     public function get_events_from_cart(EE_Cart $cart)
     {
         $event_line_items = $object_type_line_items = EEH_Line_Item::get_event_subtotals($cart->get_grand_total());
+        $events = array();
+        foreach ($event_line_items as $event_line_item) {
+            if ($event_line_item instanceof EE_Line_Item) {
+                $events[ $event_line_item->OBJ_ID() ] = $event_line_item->get_object();
+            }
+        }
+        return $events;
+    }
+
+
+
+    /**
+     * Get events from a specific Transaction
+     *
+     * @since     1.0.4
+     * @access    public
+     * @param     \EE_Transaction $transaction
+     * @return    \EE_Event[]
+     */
+    public function getEventsFromTransaction(EE_Transaction $transaction)
+    {
+        $event_line_items = $object_type_line_items = EEH_Line_Item::get_event_subtotals($transaction->total_line_item());
         $events = array();
         foreach ($event_line_items as $event_line_item) {
             if ($event_line_item instanceof EE_Line_Item) {
