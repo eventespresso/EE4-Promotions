@@ -822,16 +822,20 @@ class EED_Promotions extends EED_Module
             // Determine if the promotion can be applied to an item in the current txn.
             $applicable_items = $this->getApplicableItemsFromTransaction($promotion, $transaction);
             if (! empty($applicable_items)) {
+                // add line item
+                if ($this->generate_promotion_line_items(
+                    $promotion,
+                    $applicable_items,
+                    $this->config()->affects_tax()
+                )
+                ) {
+                    // @TOOD: recalculate the transaction value.
 
-                // Successfully applied the promotion.
-                $applied = true;
-            }
-
-            // Evaluate and return the proper message to user.
-            if ($applied) {
-                $return_data['success'] = 'OK';
-            } else {
-                EE_Error::add_attention($promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__);
+                    // Add success message.
+                    $return_data['success'] = 'OK';
+                } else {
+                    EE_Error::add_attention($promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__);
+                }
             }
         } else {
             EE_Error::add_error(
