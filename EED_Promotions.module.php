@@ -816,8 +816,10 @@ class EED_Promotions extends EED_Module
         if ($promotion instanceof EE_Promotion) {
             $applied = false;
 
-            // @TODO: get the current transaction.
-            $transaction = null;
+            // get the current transaction.
+            $transaction_id = absint(EE_Registry::instance()->REQ->get('txn_id', 0));
+            $EEM_Transaction = EE_Registry::instance()->load_model('Transaction');
+            $transaction = $EEM_Transaction->get_one_by_ID($transaction_id);
 
             // Determine if the promotion can be applied to an item in the current txn.
             $applicable_items = $this->getApplicableItemsFromTransaction($promotion, $transaction);

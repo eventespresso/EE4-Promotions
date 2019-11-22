@@ -121,6 +121,10 @@ jQuery(document).ready(function($) {
             PROMO.form_data            = {};
             PROMO.form_data.action     = 'submit_txn_promo_code';
 			PROMO.form_data.promo_code = promo_code;
+			// get transaction ID.
+			var url = new URL(window.location.href);
+			var txn_id = url.searchParams.get('TXN_ID');
+			PROMO.form_data.txn_id = txn_id;
 			PROMO.disable_button();
             PROMO.submit_ajax_request();
         },
