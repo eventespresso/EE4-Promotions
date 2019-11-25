@@ -831,23 +831,29 @@ class EED_Promotions extends EED_Module
                     $this->config()->affects_tax()
                 )
                 ) {
-                    // @TOOD: recalculate the transaction value.
+                    // ensure cart totals have been recalculated and saved
+                    $cart->get_grand_total()->recalculate_total_including_taxes();
+                    $cart->get_grand_total()->save_this_and_descendants();
+                    /** @type EE_Registration_Processor $registration_processor */
+                    $registration_processor = EE_Registry::instance()->load_class('Registration_Processor');
+                    $registration_processor->update_registration_final_prices(
+                        $cart->get_grand_total()->transaction()
+                    );
+                    $cart->save_cart(false);
+                    $return_data = $this->_get_payment_info($cart);
+                    $return_data['success'] = $promotion->accept_message();
+                    EED_Single_Page_Checkout::update_checkout();
 
                     // Add success message.
                     $return_data['success'] = 'OK';
                 } else {
-                    EE_Error::add_attention($promotion->decline_message(), __FILE__, __FUNCTION__, __LINE__);
+                    $return_data['warning'] = $promotion->decline_message();
                 }
             }
         } else {
-            EE_Error::add_error(
-                esc_html__(
-                    'Sorry, but the discount code could not be applied because the promotion could not be retrieved.',
-                    'event_espresso'
-                ),
-                __FILE__,
-                __FUNCTION__,
-                __LINE__
+            $return_data['error'] = esc_html__(
+                'Sorry, but the discount code could not be applied because the promotion could not be retrieved.',
+                'event_espresso'
             );
         }
         
