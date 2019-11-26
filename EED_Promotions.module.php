@@ -284,7 +284,6 @@ class EED_Promotions extends EED_Module
      */
     public static function loadAdminAssets()
     {
-        // @TODO: ensure to enqueue only at single transaction page.
         return is_admin();
     }
 
@@ -831,21 +830,11 @@ class EED_Promotions extends EED_Module
                     $this->config()->affects_tax()
                 )
                 ) {
-                    // ensure cart totals have been recalculated and saved
-                    $cart->get_grand_total()->recalculate_total_including_taxes();
-                    $cart->get_grand_total()->save_this_and_descendants();
-                    /** @type EE_Registration_Processor $registration_processor */
-                    $registration_processor = EE_Registry::instance()->load_class('Registration_Processor');
-                    $registration_processor->update_registration_final_prices(
-                        $cart->get_grand_total()->transaction()
-                    );
-                    $cart->save_cart(false);
-                    $return_data = $this->_get_payment_info($cart);
-                    $return_data['success'] = $promotion->accept_message();
-                    EED_Single_Page_Checkout::update_checkout();
-
                     // Add success message.
-                    $return_data['success'] = 'OK';
+                    $return_data['success'] = esc_html__(
+                        'Discount applied successfully!',
+                        'event_espresso'
+                    );
                 } else {
                     $return_data['warning'] = $promotion->decline_message();
                 }
