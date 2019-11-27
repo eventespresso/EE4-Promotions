@@ -191,8 +191,9 @@ jQuery(document).ready(function($) {
                     alert(response.attention);
                 } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
 					// Success!
-					location.reload();
-
+					if (alert(response.return_data.success)) {
+						location.reload();
+					}
                 } else {
 					// oh noes...
 					/*
