@@ -538,8 +538,11 @@ class EED_Promotions extends EED_Module
                 $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
                 $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
                     [
-                        'PRO_scope'               => 'Event',
-                        'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                        'PRO_scope' => 'Event',
+                        'OR' => [
+                            'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                            'PRO_global'              => true,
+                        ],
                     ],
                     'limit' => 1,
                 ]);
