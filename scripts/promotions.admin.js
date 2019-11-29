@@ -185,13 +185,13 @@ jQuery(document).ready(function($) {
 
                 if (typeof response.errors !== 'undefined') {
                     // something wrong happened.
-                    alert(response.errors);
+                    PROMO.alert(response.errors);
                 } else if (typeof response.attention !== 'undefined') {
                     // Achtung Baby!!!
-                    alert(response.attention);
+                    PROMO.alert(response.attention);
                 } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
 					// Success!
-					if (alert(response.return_data.success)) {
+					if (PROMO.alert(response.return_data.success)) {
 						location.reload();
 					}
                 } else {
@@ -222,6 +222,20 @@ jQuery(document).ready(function($) {
          */
         disable_button: function() {
             $('#ee-promotion-code-submit').addClass('disabled');
+        },
+
+		/**
+         * @function
+         */
+        replace_all: function(str, find, replace) {
+			return str.replace(new RegExp(find, 'g'), replace);
+        },
+
+		/**
+         * @function
+         */
+        alert: function(str) {
+			alert(PROMO.replace_all( PROMO.replace_all(str, /&#039;/, "'"), /&quot;/, '"'));
         },
 
         // end of PROMO object
