@@ -93,14 +93,6 @@ jQuery(document).ready(function($) {
                         console.log(JSON.stringify('promo_code: ' + promo_code, null, 4));
                     }
                     PROMO.submit_promo_code(promo_code);
-                } else {
-					/*
-					@TODO: no promo code
-                    var msg = SPCO.generate_message_object('',
-                        SPCO.tag_message_for_debugging('Promotions: set_listener_for_form_input',
-                            eei18n.no_promotions_code), '');
-					SPCO.scroll_to_top_and_display_messages(SPCO.main_container, msg, true);
-					*/
                 }
             });
         },
@@ -162,9 +154,6 @@ jQuery(document).ready(function($) {
 					PROMO.enable_button();
                 },
                 error:      function() {
-					/*
-					@TODO error
-					*/
 					PROMO.enable_button();
                 },
             });
@@ -194,19 +183,8 @@ jQuery(document).ready(function($) {
 					if (PROMO.alert(response.return_data.success)) {
 						location.reload();
 					}
-                } else {
-					// oh noes...
-					/*
-					@TODO AJAX errors
-					SPCO.ajax_request_server_error();
-					*/
                 }
 
-            } else {
-                /*
-				@TODO AJAX errors
-				SPCO.ajax_request_server_error();
-				*/
             }
 		},
 		
