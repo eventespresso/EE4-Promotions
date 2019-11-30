@@ -180,9 +180,8 @@ jQuery(document).ready(function($) {
                     PROMO.alert(response.attention);
                 } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
 					// Success!
-					if (PROMO.alert(response.return_data.success)) {
-						location.reload();
-					}
+					PROMO.alert(response.return_data.success);
+					location.reload();
                 }
 
             }
@@ -213,7 +212,7 @@ jQuery(document).ready(function($) {
          * @function
          */
         alert: function(str) {
-			alert(PROMO.replace_all( PROMO.replace_all(str, /&#039;/, "'"), /&quot;/, '"'));
+			alert(PROMO.replace_all( PROMO.replace_all( PROMO.replace_all(str, /&#039;/, "'"), /&quot;/, '"'), /<br \/>/, "\n"));
         },
 
         // end of PROMO object
