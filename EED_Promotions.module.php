@@ -533,39 +533,29 @@ class EED_Promotions extends EED_Module
         if ($cart instanceof EE_Cart) {
             // get all events.
             $events = $this->get_events_from_cart($cart);
-            // if we got any global event...
+            // if we got events...
             if (! empty($events)) {
                 $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
-                // check if we got any global event.
+                // check if any promotions apply to the events or any global promotions.
                 $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
                     [
-                        'PRO_scope'  => 'Event',
-                        'PRO_global' => true,
+                        'OR' => [
+                            'PRO_global' => true,
+                            'AND' => 
+                                [
+                                    'PRO_scope'               => 'Event',
+                                    'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                                ],
+                        ],
                     ],
                     'limit' => 1,
                 ]);
 
-                $has_active_promotions = ! empty($active_promotions);
-
-                // if not, we check if we have for that specific event.
-                if (! $has_active_promotions) {
-                    $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
-                        [
-                            'PRO_scope' => 'Event',
-                            'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
-                        ],
-                        'limit' => 1,
-                    ]);
-
-                    $has_active_promotions = ! empty($active_promotions);
-                }
-
-                return $has_active_promotions;
+                return ! empty($active_promotions);
             }
         }
         return false;
     }
-
 
     /**
      *    _add_promotions_form_inputs
