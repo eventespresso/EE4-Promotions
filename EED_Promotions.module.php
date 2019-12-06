@@ -539,13 +539,10 @@ class EED_Promotions extends EED_Module
                 // check if any promotions apply to the events or any global promotions.
                 $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
                     [
+                        'PRO_scope' => 'Event',
                         'OR' => [
-                            'PRO_global' => true,
-                            'AND' => 
-                                [
-                                    'PRO_scope'               => 'Event',
-                                    'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
-                                ],
+                            'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                            'PRO_global'              => true,
                         ],
                     ],
                     'limit' => 1,
