@@ -530,6 +530,10 @@ class EED_Promotions extends EED_Module
     {
         // get current Cart instance to get events from.
         $cart = EE_Registry::instance()->SSN->cart();
+        // if we didn't get an instance ofEE_Cart from SSN, try pulling it from EE_Checkout.
+        if (!$cart instanceof EE_Cart) {
+            $cart = EE_Registry::instance()->SSN->checkout()->cart;
+        }
         if ($cart instanceof EE_Cart) {
             // get all events.
             $events = $this->get_events_from_cart($cart);
