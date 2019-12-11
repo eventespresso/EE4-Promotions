@@ -166,7 +166,7 @@ class EEM_Promotion extends EEM_Soft_Delete_Base
         $promo_end_date = $this->current_time_for_query('PRO_end');
         return array(
             array(
-                'OR' => array(
+                'OR*' => array(
                     'AND'    => array(
                         'PRO_start' => array( '<=', $promo_start_date ),
                         'PRO_end'   => array( '>=', $promo_end_date ),
