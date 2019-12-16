@@ -284,7 +284,7 @@ class EED_Promotions extends EED_Module
      */
     public static function loadAdminAssets()
     {
-        return is_admin();
+        return is_admin() && !empty( EE_Registry::instance()->REQ->get('TXN_ID', null));
     }
 
 
