@@ -1,6 +1,8 @@
 <?php
 
 use \EventEspresso\core\services\loaders\LoaderFactory;
+use \EventEspresso\core\exceptions\InvalidDataTypeException;
+use \EventEspresso\core\exceptions\InvalidInterfaceException;
 
 /**
  * Class  EED_Promotions
@@ -281,8 +283,8 @@ class EED_Promotions extends EED_Module
     /**
      * @return bool
      * @throws InvalidArgumentException
-     * @throws \EventEspresso\core\exceptions\InvalidDataTypeException
-     * @throws \EventEspresso\core\exceptions\InvalidInterfaceException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
      * @since $VID:$
      */
     public static function loadAdminAssets()
