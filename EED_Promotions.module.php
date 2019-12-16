@@ -605,25 +605,33 @@ class EED_Promotions extends EED_Module
     {
         // get current Cart instance to get events from.
         $cart = EE_Registry::instance()->SSN->cart();
+        // if we didn't get an instance ofEE_Cart from SSN, try pulling it from EE_Checkout.
+        if (!$cart instanceof EE_Cart) {
+            $cart = EE_Registry::instance()->SSN->checkout()->cart;
+        }
         if ($cart instanceof EE_Cart) {
             // get all events.
             $events = $this->get_events_from_cart($cart);
             // if we got events...
             if (! empty($events)) {
                 $EEM_Promotion = EE_Registry::instance()->load_model('Promotion');
+                // check if any promotions apply to the events or any global promotions.
                 $active_promotions = $EEM_Promotion->getAllActiveCodePromotions([
                     [
-                        'PRO_scope'               => 'Event',
-                        'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                        'PRO_scope' => 'Event',
+                        'OR' => [
+                            'Promotion_Object.OBJ_ID' => ['in', array_keys($events)],
+                            'PRO_global'              => true,
+                        ],
                     ],
                     'limit' => 1,
                 ]);
+
                 return ! empty($active_promotions);
             }
         }
         return false;
     }
-
 
     /**
      *    _add_promotions_form_inputs
