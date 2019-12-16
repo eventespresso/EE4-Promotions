@@ -295,7 +295,7 @@ class EED_Promotions extends EED_Module
                 'EventEspresso\core\services\request\RequestInterface'
             );
             return $request->getRequestParam('page') === 'espresso_transactions'
-            	&& $request->getRequestParam('TXN_ID') !== null;
+                && $request->getRequestParam('TXN_ID') !== null;
         }
         return false;
     }
