@@ -1,5 +1,7 @@
 <?php
 
+use \EventEspresso\core\services\loaders\LoaderFactory;
+
 /**
  * Class  EED_Promotions
  *
@@ -277,14 +279,23 @@ class EED_Promotions extends EED_Module
 
 
     /**
-     *    loadAdminAssets
-     *
-     * @access        public
-     * @return        bool
+     * @return bool
+     * @throws InvalidArgumentException
+     * @throws \EventEspresso\core\exceptions\InvalidDataTypeException
+     * @throws \EventEspresso\core\exceptions\InvalidInterfaceException
+     * @since $VID:$
      */
     public static function loadAdminAssets()
     {
-        return is_admin() && !empty( EE_Registry::instance()->REQ->get('TXN_ID', null));
+        if (is_admin()) {
+            /** @var EventEspresso\core\services\request\RequestInterface $request */
+            $request = LoaderFactory::getLoader()->getShared(
+                'EventEspresso\core\services\request\RequestInterface'
+            );
+            return $request->getRequestParam('page') === 'espresso_transactions'
+            	&& $request->getRequestParam('TXN_ID') !== null;
+        }
+        return false;
     }
 
 
