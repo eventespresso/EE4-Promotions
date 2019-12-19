@@ -229,8 +229,8 @@ class EED_Promotions extends EED_Module
     {
         // Enqueue specific code to Transactions page.
         wp_register_script(
-            'espresso_promotions_admin',
-            EE_PROMOTIONS_URL . 'scripts' . DS . 'promotions.admin.js',
+            'eventespresso-txn-promotions-admin',
+            EE_PROMOTIONS_URL . 'scripts' . DS . 'txn-promotions.admin.js',
             array(),
             EE_PROMOTIONS_VERSION,
             true
@@ -238,7 +238,7 @@ class EED_Promotions extends EED_Module
 
         if (EED_Promotions::loadAdminAssets()) {
             // load the assets.
-            wp_enqueue_script('espresso_promotions_admin');
+            wp_enqueue_script('eventespresso-txn-promotions-admin');
         }
     }
 
