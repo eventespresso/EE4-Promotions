@@ -4,41 +4,41 @@ jQuery(document).ready(function($) {
     /**
      * @namespace PROMO
      * @type {{
-		 *     container: object,
-		 *     form_input: object,
-		 *     form_data: object,
-		 *     entered_codes: object,
-		 *     display_debug: number,
-	 * }}
+         *     container: object,
+         *     form_input: object,
+         *     form_data: object,
+         *     entered_codes: object,
+         *     display_debug: number,
+     * }}
      * @namespace form_data
      * @type {{
-		 *     action: string,
-		 *     promo_code: string,
-		 *     noheader: boolean,
-		 *     ee_front_ajax: boolean,
-		 *     EESID: string,
-	 * }}
+         *     action: string,
+         *     promo_code: string,
+         *     noheader: boolean,
+         *     ee_front_ajax: boolean,
+         *     EESID: string,
+     * }}
      * @namespace eei18n
      * @type {{
-		 *     EESID: string,
-		 *     ajax_url: string,
-		 *     wp_debug: boolean,
-		 *     no_promotions_code: string
-		 * }}
+         *     EESID: string,
+         *     ajax_url: string,
+         *     wp_debug: boolean,
+         *     no_promotions_code: string
+         * }}
      * @namespace response
      * @type {{
-		 *     errors: string,
-		 *     attention: string,
-		 *     success: string,
-		 *     return_data: object,
-		 *     payment_info: string,
-		 *     promo_accepted: boolean
-		 * }}
+         *     errors: string,
+         *     attention: string,
+         *     success: string,
+         *     return_data: object,
+         *     payment_info: string,
+         *     promo_accepted: boolean
+         * }}
      * @namespace return_data
      * @type {{
-		 *     payment_info: string,
-		 *     cart_total: number
-		 * }}
+         *     payment_info: string,
+         *     cart_total: number
+         * }}
      */
     PROMO = {
 
@@ -69,8 +69,8 @@ jQuery(document).ready(function($) {
                 console.log();
                 console.log(JSON.stringify('@PROMO.initialize()', null, 4));
             }
-            
-			PROMO.set_listener_for_form_input();
+
+            PROMO.set_listener_for_form_input();
         },
 
         /**
@@ -112,12 +112,12 @@ jQuery(document).ready(function($) {
             }
             PROMO.form_data            = {};
             PROMO.form_data.action     = 'submit_txn_promo_code';
-			PROMO.form_data.promo_code = promo_code;
-			// get transaction ID.
-			var url = new URL(window.location.href);
-			var txn_id = url.searchParams.get('TXN_ID');
-			PROMO.form_data.txn_id = txn_id;
-			PROMO.disable_button();
+            PROMO.form_data.promo_code = promo_code;
+            // get transaction ID.
+            var url = new URL(window.location.href);
+            var txn_id = url.searchParams.get('TXN_ID');
+            PROMO.form_data.txn_id = txn_id;
+            PROMO.disable_button();
             PROMO.submit_ajax_request();
         },
 
@@ -127,7 +127,7 @@ jQuery(document).ready(function($) {
         submit_ajax_request: function() {
             // no form_data ?
             if (typeof PROMO.form_data.action === 'undefined' || PROMO.form_data.action === '') {
-				PROMO.enable_button();
+                PROMO.enable_button();
                 return;
             }
             if (PROMO.display_debug) {
@@ -150,11 +150,11 @@ jQuery(document).ready(function($) {
                 data:       PROMO.form_data,
                 dataType:   'json',
                 success:    function(response) {
-					PROMO.process_response(response);
-					PROMO.enable_button();
+                    PROMO.process_response(response);
+                    PROMO.enable_button();
                 },
                 error:      function() {
-					PROMO.enable_button();
+                    PROMO.enable_button();
                 },
             });
         },
@@ -179,41 +179,41 @@ jQuery(document).ready(function($) {
                     // Achtung Baby!!!
                     PROMO.alert(response.attention);
                 } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
-					// Success!
-					PROMO.alert(response.return_data.success);
+                    // Success!
+                    PROMO.alert(response.return_data.success);
                     // Follow link to recalculate line items and total
                     window.location.href = $('#recalculate-taxes-and-total').attr('href');
                 }
 
             }
-		},
-		
-		/**
+        },
+
+        /**
          * @function
          */
         enable_button: function() {
             $('#ee-promotion-code-submit').removeClass('disabled');
         },
-		
-		/**
+
+        /**
          * @function
          */
         disable_button: function() {
             $('#ee-promotion-code-submit').addClass('disabled');
         },
 
-		/**
+        /**
          * @function
          */
         replace_all: function(str, find, replace) {
-			return str.replace(new RegExp(find, 'g'), replace);
+            return str.replace(new RegExp(find, 'g'), replace);
         },
 
-		/**
+        /**
          * @function
          */
         alert: function(str) {
-			alert(PROMO.replace_all( PROMO.replace_all( PROMO.replace_all(str, /&#039;/, "'"), /&quot;/, '"'), /<br \/>/, "\n"));
+            alert(PROMO.replace_all( PROMO.replace_all( PROMO.replace_all(str, /&#039;/, "'"), /&quot;/, '"'), /<br \/>/, "\n"));
         },
 
         // end of PROMO object

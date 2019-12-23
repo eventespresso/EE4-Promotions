@@ -866,7 +866,9 @@ class EED_Promotions extends EED_Module
                 'event_espresso'
             );
         }
-        
+
+
+
         $this->generate_JSON_response($return_data);
     }
 
