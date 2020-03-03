@@ -851,11 +851,25 @@ class EED_Promotions extends EED_Module
                     $this->config()->affects_tax()
                 )
                 ) {
+                    $success = $transaction->recalculateLineItems();
                     // Add success message.
-                    $return_data['success'] = esc_html__(
-                        'Discount applied successfully!',
-                        'event_espresso'
-                    );
+                    if ($success) {
+                        $return_data['success'] = esc_html__(
+                            'Discount applied successfully!',
+                            'event_espresso'
+                        );
+                    } else {
+                        // recalulateLineItems failed.
+                        EE_Error::add_attention(
+                            esc_html__(
+                                'Recalculating line items failed, please re-check transaction total after the page reloads.',
+                                'event_espresso'
+                            ),
+                            __FILE__,
+                            __FUNCTION__,
+                            __LINE__
+                        );
+                    }
                 } else {
                     $return_data['warning'] = $promotion->decline_message();
                 }
