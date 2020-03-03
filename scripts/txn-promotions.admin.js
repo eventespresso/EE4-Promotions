@@ -181,8 +181,8 @@ jQuery(document).ready(function($) {
                 } else if (typeof response.return_data !== 'undefined' && typeof response.return_data.success !== 'undefined') {
                     // Success!
                     PROMO.alert(response.return_data.success);
-                    // Follow link to recalculate line items and total
-                    window.location.href = $('#recalculate-taxes-and-total').attr('href');
+                    // Reload the window to show updated line items
+                    location.reload();
                 }
 
             }
