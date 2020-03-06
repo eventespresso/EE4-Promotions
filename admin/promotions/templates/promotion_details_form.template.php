@@ -71,7 +71,7 @@
     </tr>
     <tr>
         <th scope="row">
-            <label for="PRO_uses"><?php _e('Apply Promo to ALL Scope Items', 'event_espresso'); ?></label>
+            <label for="PRO_global"><?php _e('Apply Promo to ALL Scope Items', 'event_espresso'); ?></label>
         </th>
         <td class="field-column">
             <?php echo $promotion_global; ?>
@@ -80,7 +80,7 @@
     </tr>
     <tr>
         <th scope="row">
-            <label for="PRO_uses"><?php _e('Promo Is Exclusive', 'event_espresso'); ?></label>
+            <label for="PRO_exclusive"><?php _e('Promo Is Exclusive', 'event_espresso'); ?></label>
         </th>
         <td class="field-column">
             <?php echo $promotion_exclusive; ?>
