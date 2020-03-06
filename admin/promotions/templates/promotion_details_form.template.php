@@ -80,6 +80,15 @@
     </tr>
     <tr>
         <th scope="row">
+            <label for="PRO_global_uses"><?php _e('Global number of Uses', 'event_espresso'); ?></label>
+        </th>
+        <td class="field-column">
+            <input type="text" class="regular-text ee-numeric" id="PRO_global_uses" name="PRO_global_uses" value="<?php echo $promotion_global_uses; ?>">
+            <p class="description"><?php _e('This determines how many times this promotion code can be applied across all scopes, this value overrides the scope uses field if set at a lower value - leave blank for no limit', 'event_espresso'); ?></p>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row">
             <label for="PRO_exclusive"><?php _e('Promo Is Exclusive', 'event_espresso'); ?></label>
         </th>
         <td class="field-column">
@@ -94,15 +103,6 @@
         <td class="field-column">
             <input type="text" class="regular-text ee-numeric" id="PRO_uses" name="PRO_uses" value="<?php echo $promotion_uses; ?>">
             <p class="description"><?php _e('per scope item (see above) - leave blank for no limit', 'event_espresso'); ?></p>
-        </td>
-    </tr>
-    <tr>
-        <th scope="row">
-            <label for="PRO_global_uses"><?php _e('Global number of Uses', 'event_espresso'); ?></label>
-        </th>
-        <td class="field-column">
-            <input type="text" class="regular-text ee-numeric" id="PRO_global_uses" name="PRO_global_uses" value="<?php echo $promotion_global_uses; ?>">
-            <p class="description"><?php _e('This determines how many times this promotion code can be applied across all scopes, this value overrides the scope uses field if set at a lower value - leave blank for no limit', 'event_espresso'); ?></p>
         </td>
     </tr>
     <tr>
