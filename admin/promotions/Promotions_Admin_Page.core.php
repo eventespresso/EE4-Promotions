@@ -578,6 +578,9 @@ class Promotions_Admin_Page extends EE_Admin_Page
             'PRO_uses'        => ! empty($this->_req_data['PRO_uses'])
                 ? $this->_req_data['PRO_uses']
                 : EE_INF_IN_DB,
+            'PRO_global_uses'        => ! empty($this->_req_data['PRO_global_uses'])
+                ? $this->_req_data['PRO_global_uses']
+                : EE_INF_IN_DB,
             'PRO_accept_msg'  => ! empty($this->_req_data['PRO_accept_msg'])
                 ? $this->_req_data['PRO_accept_msg']
                 : '',
