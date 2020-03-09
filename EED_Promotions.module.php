@@ -1,5 +1,9 @@
 <?php
 
+use \EventEspresso\core\services\loaders\LoaderFactory;
+use \EventEspresso\core\exceptions\InvalidDataTypeException;
+use \EventEspresso\core\exceptions\InvalidInterfaceException;
+
 /**
  * Class  EED_Promotions
  *
@@ -85,12 +89,17 @@ class EED_Promotions extends EED_Module
             10,
             1
         );
+        // Enqueue scripts at Transactions page.
+        add_action('admin_enqueue_scripts', array( 'EED_Promotions', 'enqueueAdminScripts' ));
         // _get_promotions
         add_action('wp_ajax_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
         add_action('wp_ajax_nopriv_espresso_get_promotions', array( 'EED_Promotions', '_get_promotions' ));
         // submit_promo_code
         add_action('wp_ajax_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
         add_action('wp_ajax_nopriv_espresso_submit_promo_code', array( 'EED_Promotions', 'submit_promo_code' ));
+        // submit_txn_promo_code
+        add_action('wp_ajax_espresso_submit_txn_promo_code', array( 'EED_Promotions', 'submitTxnPromoCode' ));
+        add_action('wp_ajax_nopriv_espresso_submit_txn_promo_code', array( 'EED_Promotions', 'submitTxnPromoCode' ));
         // adjust SPCO
         add_filter(
             'FHEE__EE_SPCO_Line_Item_Display_Strategy__item_row__name',
@@ -139,6 +148,13 @@ class EED_Promotions extends EED_Module
             array( 'EED_Promotions', 'delete_related_promotion_on_scope_item_delete' ),
             10,
             2
+        );
+        // Display button at transactions actions area.
+        add_action(
+            'AHEE__txn_admin_details_main_meta_box_txn_details__after_actions_buttons',
+            array( 'EED_Promotions', 'displayApplyDiscountAtTransactions' ),
+            10,
+            1
         );
     }
 
@@ -209,6 +225,31 @@ class EED_Promotions extends EED_Module
      * @access    public
      * @return    void
      */
+    public static function enqueueAdminScripts()
+    {
+        // Enqueue specific code to Transactions page.
+        wp_register_script(
+            'eventespresso-txn-promotions-admin',
+            EE_PROMOTIONS_URL . 'scripts' . DS . 'txn-promotions.admin.js',
+            array(),
+            EE_PROMOTIONS_VERSION,
+            true
+        );
+
+        if (EED_Promotions::loadAdminAssets()) {
+            // load the assets.
+            wp_enqueue_script('eventespresso-txn-promotions-admin');
+        }
+    }
+
+
+
+    /**
+     *    enqueue_scripts - Load the scripts and css
+     *
+     * @access    public
+     * @return    void
+     */
     public static function enqueue_scripts()
     {
         // Check to see if the promotions css file exists in the '/uploads/espresso/' directory
@@ -235,6 +276,28 @@ class EED_Promotions extends EED_Module
             wp_enqueue_style('espresso_promotions');
             wp_enqueue_script('espresso_promotions');
         }
+    }
+
+
+
+    /**
+     * @return bool
+     * @throws InvalidArgumentException
+     * @throws InvalidDataTypeException
+     * @throws InvalidInterfaceException
+     * @since $VID:$
+     */
+    public static function loadAdminAssets()
+    {
+        if (is_admin()) {
+            /** @var EventEspresso\core\services\request\RequestInterface $request */
+            $request = LoaderFactory::getLoader()->getShared(
+                'EventEspresso\core\services\request\RequestInterface'
+            );
+            return $request->getRequestParam('page') === 'espresso_transactions'
+                && $request->getRequestParam('TXN_ID') !== null;
+        }
+        return false;
     }
 
 
@@ -370,6 +433,31 @@ class EED_Promotions extends EED_Module
             }
         }
         return $html;
+    }
+
+
+
+    /**
+     *    displayApplyDiscountAtTransactions
+     *
+     * @param     bool   $can_edit_payments Flag to tell us if user can edit payments.
+     * @access    public
+     * @return    void
+     */
+    public static function displayApplyDiscountAtTransactions($can_edit_payments)
+    {
+        if (!$can_edit_payments) {
+            return;
+        }
+
+        // Load template.
+        EE_Registry::instance()->load_helper('Template');
+        
+        $html = EEH_Template::locate_template(
+            apply_filters('FHEE__EED_Promotions__displayApplyDiscountAtTransactions', EE_PROMOTIONS_PATH . 'templates' . DS . 'txn-apply-discount.template.php'),
+            array()
+        );
+        echo $html;
     }
 
 
@@ -714,6 +802,89 @@ class EED_Promotions extends EED_Module
         }
         $this->generate_JSON_response($return_data);
     }
+    
+    
+    /********************************** SUBMIT TRANSACTION PROMO CODE ***********************************/
+    /**
+     *    submitTxnPromoCode
+     *
+     * @access    public
+     * @return    void
+     * @throws \EE_Error
+     */
+    public static function submitTxnPromoCode()
+    {
+        EED_Promotions::instance()->set_config();
+        EED_Promotions::instance()->applyPromoCodeToTransaction();
+    }
+
+
+
+    /**
+     *    applyPromoCodeToTransaction
+     *
+     * @access        private
+     * @return        void
+     * @throws \EE_Error
+     */
+    private function applyPromoCodeToTransaction()
+    {
+        $return_data = array();
+
+        $promotion = $this->get_promotion_details_from_request();
+
+        if ($promotion instanceof EE_Promotion) {
+            $applied = false;
+
+            // get the current transaction.
+            $transaction_id = absint(EE_Registry::instance()->REQ->get('txn_id', 0));
+            $EEM_Transaction = EE_Registry::instance()->load_model('Transaction');
+            $transaction = $EEM_Transaction->get_one_by_ID($transaction_id);
+
+            // Determine if the promotion can be applied to an item in the current txn.
+            $applicable_items = $this->getApplicableItemsFromTransaction($promotion, $transaction);
+            if (! empty($applicable_items)) {
+                // add line item
+                if ($this->generate_promotion_line_items(
+                    $promotion,
+                    $applicable_items,
+                    $this->config()->affects_tax()
+                )
+                ) {
+                    $success = $transaction->recalculateLineItems();
+                    // Add success message.
+                    if ($success) {
+                        $return_data['success'] = esc_html__(
+                            'Discount applied successfully!',
+                            'event_espresso'
+                        );
+                    } else {
+                        // recalulateLineItems failed.
+                        EE_Error::add_attention(
+                            esc_html__(
+                                'Recalculating line items failed, please re-check transaction total after the page reloads.',
+                                'event_espresso'
+                            ),
+                            __FILE__,
+                            __FUNCTION__,
+                            __LINE__
+                        );
+                    }
+                } else {
+                    $return_data['warning'] = $promotion->decline_message();
+                }
+            }
+        } else {
+            $return_data['error'] = esc_html__(
+                'Sorry, but the discount code could not be applied because the promotion could not be retrieved.',
+                'event_espresso'
+            );
+        }
+
+
+
+        $this->generate_JSON_response($return_data);
+    }
 
 
 
@@ -753,6 +924,65 @@ class EED_Promotions extends EED_Module
             return null;
         }
         return $promo;
+    }
+
+
+
+    /**
+     *    getApplicableItemsFromTransaction
+     *    determine if the promotion has global uses left and can be applied to a valid item in the transaction
+     *
+     * @access    public
+     * @param \EE_Promotion   $promotion
+     * @param \EE_Transaction $transaction
+     * @return \EE_Line_Item[]
+     * @throws \EE_Error
+     */
+    public function getApplicableItemsFromTransaction(
+        EE_Promotion $promotion,
+        EE_Transaction $transaction
+    ) {
+        $applicable_items = array();
+        // verify EE_Promotion
+        if ($promotion instanceof EE_Promotion) {
+            EE_Registry::instance()->load_helper('Line_Item');
+
+            // get events from transaction.
+            $events = $this->getEventsFromTransaction($transaction);
+
+            // get all promotion objects that can still be redeemed
+            $redeemable_scope_promos = $promotion->scope_obj()->get_redeemable_scope_promos(
+                $promotion,
+                true,
+                $events
+            );
+
+            // then find line items in the cart that match the above
+            $applicable_items = $promotion->scope_obj()->get_object_line_items_from_cart(
+                $transaction->total_line_item(),
+                $redeemable_scope_promos
+            );
+
+            /**
+             * Filters the $applicable_items array containing all of the line items that the promotion applies to
+             *
+             * @param array $applicable_items
+             * @param EE_Promotion $promotion
+             * @param array $redeemable_scope_promos multidimensional array with mixed values
+             * @param EE_Event[] $events
+             * @param EE_Transaction $transaction
+             */
+            $applicable_items = apply_filters(
+                'FHEE__EED_Promotions__getApplicableItemsFromTransaction__applicable_items',
+                $applicable_items,
+                $promotion,
+                $redeemable_scope_promos,
+                $events,
+                $transaction
+            );
+        }
+
+        return $applicable_items;
     }
 
 
@@ -847,6 +1077,28 @@ class EED_Promotions extends EED_Module
     public function get_events_from_cart(EE_Cart $cart)
     {
         $event_line_items = $object_type_line_items = EEH_Line_Item::get_event_subtotals($cart->get_grand_total());
+        $events = array();
+        foreach ($event_line_items as $event_line_item) {
+            if ($event_line_item instanceof EE_Line_Item) {
+                $events[ $event_line_item->OBJ_ID() ] = $event_line_item->get_object();
+            }
+        }
+        return $events;
+    }
+
+
+
+    /**
+     * Get events from a specific Transaction
+     *
+     * @since     1.0.4
+     * @access    public
+     * @param     \EE_Transaction $transaction
+     * @return    \EE_Event[]
+     */
+    public function getEventsFromTransaction(EE_Transaction $transaction)
+    {
+        $event_line_items = $object_type_line_items = EEH_Line_Item::get_event_subtotals($transaction->total_line_item());
         $events = array();
         foreach ($event_line_items as $event_line_item) {
             if ($event_line_item instanceof EE_Line_Item) {
