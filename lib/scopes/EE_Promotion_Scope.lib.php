@@ -687,26 +687,31 @@ abstract class EE_Promotion_Scope
                     && $promotion instanceof EE_Promotion
                     && $promotion->is_global()
                 ) {
+                    $has_promotion_object = false;
                     if (! empty($promotion_objects)) {
                         foreach ($promotion_objects as $promotion_object) {
                             if ($promotion_object instanceof EE_Promotion_Object
                                 && $promotion_object->type() === $this->slug
                                 && $promotion_object->OBJ_ID() === $object->ID()
                             ) {
-                                return $promotion_objects;
+                                $has_promotion_object = true;
+                                break;
                             }
                         }
                     }
-                    $promotion_obj = EE_Promotion_Object::new_instance(
-                        array(
-                            'PRO_ID'   => $promotion->ID(),
-                            'OBJ_ID'   => $object->ID(),
-                            'POB_type' => $this->slug,
-                            'POB_used' => 0,
-                        )
-                    );
-                    if ($promotion_obj->save()) {
-                        $promotion_objects[ $promotion_obj->ID() ] = $promotion_obj;
+                    // Object has a promotion object already.
+                    if (!$has_promotion_object) {
+                        $promotion_obj = EE_Promotion_Object::new_instance(
+                            array(
+                                'PRO_ID'   => $promotion->ID(),
+                                'OBJ_ID'   => $object->ID(),
+                                'POB_type' => $this->slug,
+                                'POB_used' => 0,
+                            )
+                        );
+                        if ($promotion_obj->save()) {
+                            $promotion_objects[ $promotion_obj->ID() ] = $promotion_obj;
+                        }
                     }
                 }
             }
