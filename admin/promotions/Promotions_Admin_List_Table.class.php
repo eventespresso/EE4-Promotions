@@ -168,7 +168,22 @@ class Promotions_Admin_List_Table extends EE_Admin_List_Table
 
     public function column_redeemed(EE_Promotion $item)
     {
-        echo $item->uses() === EE_INF_IN_DB ? $item->redeemed() . ' /<span class="ee-infinity-sign">&#8734;</span>' : $item->redeemed() . ' / ' . $item->uses_available();
+        // $uses or $global_uses will either be EE_INF or a set value.
+        $uses = $item->uses() === EE_INF_IN_DB ? EE_INF : $item->uses();
+        $global_uses = $item->global_uses() === EE_INF_IN_DB ? EE_INF : $item->global_uses();
+
+        // We always need the number of redeemed uses first.
+        $uses_available = $item->redeemed();
+
+        if ($uses === EE_INF && $global_uses === EE_INF) {
+            // If both $uses and $global_uses equal EE_INF we have infinite uses.
+            $uses_available .= ' /<span class="ee-infinity-sign">&#8734;</span>';
+        } else {
+            // Otherwise the uses available will be $global_uses (if less than $uses) or calculated using uses_available().
+            $uses_available .= ' / ';
+            $uses_available .= $global_uses < $uses ? $global_uses : $item->uses_available();
+        }
+        echo $uses_available;
     }
 
 
