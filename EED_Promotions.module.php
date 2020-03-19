@@ -882,7 +882,7 @@ class EED_Promotions extends EED_Module
                 if ($applicable_item instanceof EE_Line_Item
                     && $this->verify_no_existing_promotion_line_items($applicable_item, $promotion)
                     && $this->verify_no_exclusive_promotions_combined($applicable_item, $promotion)
-                    && filter_var($promotion->global_uses_left(), FILTER_VALIDATE_BOOLEAN)
+                    && $promotion->global_uses_left()
                 ) {
                     $promotion_line_item = $promotion->scope_obj()->generate_promotion_line_item(
                         $applicable_item,
