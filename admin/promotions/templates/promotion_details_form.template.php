@@ -89,7 +89,7 @@
     </tr>
     <tr>
         <th scope="row">
-            <label for="PRO_uses"><?php esc_html_e('Number of Uses per scope item', 'event_espresso'); ?></label>
+            <label for="PRO_uses"><?php esc_html_e('Number of Uses Per Scope Item', 'event_espresso'); ?></label>
         </th>
         <td class="field-column">
             <input type="text" class="regular-text ee-numeric" id="PRO_uses" name="PRO_uses" value="<?php echo $promotion_uses; ?>">
@@ -98,7 +98,7 @@
     </tr>
     <tr>
         <th scope="row">
-            <label for="PRO_global_uses"><?php esc_html_e('Total number of Uses', 'event_espresso'); ?></label>
+            <label for="PRO_global_uses"><?php esc_html_e('Total Number of Uses', 'event_espresso'); ?></label>
         </th>
         <td class="field-column">
             <input type="text" class="regular-text ee-numeric" id="PRO_global_uses" name="PRO_global_uses" value="<?php echo $promotion_global_uses; ?>">
