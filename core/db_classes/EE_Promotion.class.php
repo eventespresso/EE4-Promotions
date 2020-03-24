@@ -605,7 +605,7 @@ class EE_Promotion extends EE_Soft_Delete_Base_Class implements
     public function status()
     {
         // check uses first... if uses has none left then expired.
-        $uses = $this->uses();
+        $uses = $this->uses_available();
         if ($uses !== EE_INF_IN_DB && $uses <= $this->redeemed()) {
             return self::unavailable;
         }
