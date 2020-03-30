@@ -461,11 +461,13 @@ class Promotions_Admin_Page extends EE_Admin_Page
     public function promotion_details_metabox()
     {
         $promotion_uses = $this->_promotion->uses();
+        $promotion_global_uses = $this->_promotion->global_uses();
         $form_args = array(
             'promotion' => $this->_promotion,
             'promotion_global' => EEH_Form_Fields::select_input('PRO_global', $this->_yes_no_values, $this->_promotion->is_global()),
             'promotion_exclusive' => EEH_Form_Fields::select_input('PRO_exclusive', $this->_yes_no_values, $this->_promotion->is_exclusive()),
             'promotion_uses' => $promotion_uses !== EE_INF_IN_DB ? $promotion_uses : '',
+            'promotion_global_uses' => $promotion_global_uses !== EE_INF_IN_DB ? $promotion_global_uses : '',
             'price_type_selector' => $this->_get_price_type_selector(),
             'scope_selector' => $this->_get_promotion_scope_selector()
             );
@@ -575,6 +577,9 @@ class Promotions_Admin_Page extends EE_Admin_Page
                 : true,
             'PRO_uses'        => ! empty($this->_req_data['PRO_uses'])
                 ? $this->_req_data['PRO_uses']
+                : EE_INF_IN_DB,
+            'PRO_global_uses'        => ! empty($this->_req_data['PRO_global_uses'])
+                ? $this->_req_data['PRO_global_uses']
                 : EE_INF_IN_DB,
             'PRO_accept_msg'  => ! empty($this->_req_data['PRO_accept_msg'])
                 ? $this->_req_data['PRO_accept_msg']
