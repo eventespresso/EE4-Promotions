@@ -285,7 +285,7 @@ class EED_Promotions extends EED_Module
      * @throws InvalidArgumentException
      * @throws InvalidDataTypeException
      * @throws InvalidInterfaceException
-     * @since $VID:$
+     * @since 1.0.15.p
      */
     public static function loadAdminAssets()
     {
