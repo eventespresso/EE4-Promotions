@@ -81,7 +81,7 @@ function espresso_promotions_activation_error()
                 ),
                 EE_PROMOTIONS_CORE_VERSION_REQUIRED
             );
-        ?></p>
+            ?></p>
     </div>
     <?php
 }
