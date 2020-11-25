@@ -25,7 +25,7 @@
  *
  * Event Espresso
  *
- * Event Registration and Management Plugin for WordPress
+ * Event Registration and Management Plugin for WordPress.
  *
  * @ package		Event Espresso
  * @ author			Event Espresso
