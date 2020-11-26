@@ -25,7 +25,7 @@
  *
  * Event Espresso
  *
- * Event Registration and Management Plugin for WordPress
+ * Event Registration and Management Plugin for WordPress.
  *
  * @ package		Event Espresso
  * @ author			Event Espresso
@@ -81,7 +81,7 @@ function espresso_promotions_activation_error()
                 ),
                 EE_PROMOTIONS_CORE_VERSION_REQUIRED
             );
-        ?></p>
+            ?></p>
     </div>
     <?php
 }
