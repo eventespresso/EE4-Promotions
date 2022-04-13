@@ -15,7 +15,7 @@ if (! defined('EVENT_ESPRESSO_VERSION')) {
             </p>
             <?php endif; ?>
             <p class="ee-promo-upcoming-promotions-additional-details-pg">
-                <span class="smaller-text"><?php _e('Discount Amount: ', 'event_espresso'); ?></span><?php echo $promo_amount; ?><br />
+                <span class="smaller-text"><?php esc_html_e('Discount Amount: ', 'event_espresso'); ?></span><?php echo $promo_amount; ?><br />
             </p>
             <?php foreach ($promo_scopes as $promo_scope => $objects) : ?>
                 <b class="smaller-text"><?php printf(__('Applies to the following %1$s(s):', 'event_espresso'), $promo_scope); ?></b><br />

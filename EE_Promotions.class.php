@@ -151,20 +151,20 @@ class EE_Promotions extends EE_Addon
     {
         $promotion_stati = array(
             EE_Promotion::upcoming    => array(
-                __('upcoming', 'event_espresso'),
-                __('upcoming', 'event_espresso'),
+                esc_html__('upcoming', 'event_espresso'),
+                esc_html__('upcoming', 'event_espresso'),
             ),
             EE_Promotion::active      => array(
-                __('active', 'event_espresso'),
-                __('active', 'event_espresso'),
+                esc_html__('active', 'event_espresso'),
+                esc_html__('active', 'event_espresso'),
             ),
             EE_Promotion::expired     => array(
-                __('expired', 'event_espresso'),
-                __('expired', 'event_espresso'),
+                esc_html__('expired', 'event_espresso'),
+                esc_html__('expired', 'event_espresso'),
             ),
             EE_Promotion::unavailable => array(
-                __('unavailable', 'event_espresso'),
-                __('unavailable', 'event_espresso'),
+                esc_html__('unavailable', 'event_espresso'),
+                esc_html__('unavailable', 'event_espresso'),
             ),
         );
         return array_merge($stati_translation, $promotion_stati);

@@ -266,7 +266,7 @@ abstract class EE_Promotion_Scope
         return $class_only
             ? 'dashicons dashicons-megaphone'
             : '<span class="dashicons dashicons-megaphone" title="'
-              . __('Promotion', 'event_espresso')
+              . esc_html__('Promotion', 'event_espresso')
               . '"></span>';
     }
 
@@ -301,7 +301,7 @@ abstract class EE_Promotion_Scope
         if (! $model instanceof $expected_model_class) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'The loading of a corresponding model for %s failed because there is not a %s instance available.',
                         'event_espresso'
                     ),
@@ -355,7 +355,7 @@ abstract class EE_Promotion_Scope
         if (! $obj instanceof $expected_class) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'Unable to retrieve the model object related to the %s class with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.',
                         'event_espresso'
                     ),
@@ -528,9 +528,9 @@ abstract class EE_Promotion_Scope
                 $PRO_ID
             )
             : sprintf(
-                __('%sNo results for the given query%s', 'event_espresso'),
-                '<ul class="promotion-applies-to-items-ul"><li>',
-                '</li></ul>'
+                esc_html__('%sNo results for the given query%s', 'event_espresso'),
+                '<div class="promotion-applies-to-items-ul">',
+                '</div>'
             );
         // paging list
         $total_items = $this->_get_total_items();
@@ -570,14 +570,14 @@ abstract class EE_Promotion_Scope
              ) ] instanceof EE_Base_Class
         ) {
             return sprintf(
-                __(
+                esc_html__(
                     'There are no active %s to assign to this scope.  You will need to create some first.',
                     'event_espresso'
                 ),
                 $this->label->plural
             );
         }
-        $checkboxes = '<ul class="promotion-applies-to-items-ul">';
+        $checkboxes = '<div class="promotion-applies-to-items-ul">';
         foreach ($items_to_select as $id => $obj) {
             $checked = in_array($id, $selected_items) ? ' checked=checked' : '';
             // disabled check
@@ -588,23 +588,24 @@ abstract class EE_Promotion_Scope
                 $disabled = $promo_obj instanceof EE_Promotion_Object && $promo_obj->used() > 0 ? ' disabled="disabled"'
                     : '';
             }
-            $checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['
-                           . $id
-                           . ']" name="PRO_applied_to_selected['
-                           . $id
-                           . ']" value="'
-                           . $id
-                           . '" '
-                           . $checked
-                           . $disabled
-                           . '>';
-            $checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['
-                           . $id
-                           . ']">'
-                           . apply_filters('FHEE__EE_Promotion_Scope___get_applies_to_items_to_select__obj_name', $this->name($obj), $obj)
-                           . '</label>';
+            $checkboxes .= "
+                <label class='pro-applied-to-selector-checkbox-label' 
+                       for='PRO_applied_to_selected[$id]'
+                >
+                    <input type='checkbox' 
+                           class='ee-input-size--small'
+                           id='PRO_applied_to_selected[$id]' 
+                           name='PRO_applied_to_selected[$id]' 
+                           value='$id' $checked $disabled 
+                    >
+                    " . apply_filters(
+                        'FHEE__EE_Promotion_Scope___get_applies_to_items_to_select__obj_name',
+                        $this->name($obj),
+                        $obj
+                    ) . '
+                </label>';
         }
-        $checkboxes .= '</ul>';
+        $checkboxes .= '</div>';
         return $checkboxes;
     }
 
@@ -619,16 +620,16 @@ abstract class EE_Promotion_Scope
      */
     protected function _get_applies_to_items_paging($total_items)
     {
-        EE_Registry::instance()->load_helper('Template');
-        $current_page = isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1;
-        $perpage = isset($_REQUEST['perpage']) ? $_REQUEST['perpage'] : $this->_per_page;
-        $url = isset($_REQUEST['redirect_url']) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-        return '<span class="spinner"></span>&nbsp;' . EEH_Template::get_paging_html(
+        $current_page = isset($_REQUEST['paged']) ? absint($_REQUEST['paged']) : 1;
+        $perpage = isset($_REQUEST['perpage']) ? absint($_REQUEST['perpage']) : $this->_per_page;
+        $url = isset($_REQUEST['redirect_url']) ? esc_url_raw($_REQUEST['redirect_url']) : $_SERVER['REQUEST_URI'];
+        return EEH_Template::get_paging_html(
             $total_items,
             $current_page,
             $perpage,
             $url
-        );
+        )
+        . '<span class="spinner"></span> ';
     }
 
 
@@ -651,7 +652,7 @@ abstract class EE_Promotion_Scope
         if (empty($this->slug)) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.',
                         'event_espresso'
                     ),
@@ -913,13 +914,13 @@ abstract class EE_Promotion_Scope
         // verify EE_Line_Item
         if (! $parent_line_item instanceof EE_Line_Item) {
             throw new EE_Error(
-                __('A valid EE_Line_Item object is required to generate a promotion line item.', 'event_espresso')
+                esc_html__('A valid EE_Line_Item object is required to generate a promotion line item.', 'event_espresso')
             );
         }
         // verify EE_Promotion
         if (! $promotion instanceof EE_Promotion) {
             throw new EE_Error(
-                __('A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso')
+                esc_html__('A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso')
             );
         }
         $promo_name = ! empty($promo_name) ? $promo_name : $promotion->name();
