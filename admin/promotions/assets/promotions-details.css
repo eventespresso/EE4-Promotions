@@ -17,7 +17,8 @@
 #update_promotion_event_form .ee-input-sidebar {
     align-items: center;
     display: flex;
-    height: var(--ee-button-height);
+    height: calc(var(--ee-button-height) + 1px);
+    margin-block: 0.25rem;
 }
 
 #update_promotion_event_form .ee-input-sidebar.ee-input-sidebar--after input {
