@@ -14,7 +14,6 @@
  * @var EE_Promotion_Scope $scope                  The EE_Promotion_Scope object for labels etc.
  * @var string             $header_content         Any header content for this template and scope.
  * @var string             $filters                Any filters this selector might use
- * @var bool               $show_filters           Whether to show the filters container by default.
  * @var string             $items_to_select        All the selectable items for this page view.
  * @var string             $items_paging           This  will be the html string for the paging of items.
  * @var array              $selected_items         Array of IDs for the selected items
@@ -23,7 +22,6 @@
  * @var int                $number_of_selected_items
  * @var string             $footer_content
  */
-$show_filters = ! $show_filters ? ' style="display:none"' : '';
 ?>
 <div class="ee-promotions-applies-to-main-container" id="ee-promotions-applies-to-<?php echo $scope_slug; ?>">
     <div class="ee-promotions-selected-count-container">

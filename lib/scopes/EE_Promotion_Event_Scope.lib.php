@@ -263,7 +263,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      */
     public function get_admin_applies_to_selector($PRO_ID)
     {
-        $applied_filters = $this->_maybe_overload_request_with_saved_filters($PRO_ID);
+        $show_filters = $this->_maybe_overload_request_with_saved_filters($PRO_ID);
         $total_items     = $this->_get_total_items();
         $items_to_select = $this->get_scope_items();
         $selected_items  = $this->_get_applied_to_item_ids($PRO_ID);
@@ -275,8 +275,8 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
                 '<p>',
                 '</p>'
             ),
-            'filters'                  => $this->_get_applies_to_filters(),
-            'show_filters'             => $applied_filters,
+            'filters'                  => $this->_get_applies_to_filters($show_filters),
+            'show_filters'             => $show_filters,
             'items_to_select'          => $this->_get_applies_to_items_to_select(
                 $items_to_select,
                 $selected_items,
@@ -362,9 +362,9 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      * @return string
      * @since 1.0.0
      */
-    protected function _get_applies_to_filters()
+    protected function _get_applies_to_filters($show_filters)
     {
-        $template_args = [];
+        $template_args = ['show_filters' => $show_filters];
 
         // categories
         $categories = get_terms('espresso_event_categories', ['hide_empty' => false, 'fields' => 'id=>name']);
