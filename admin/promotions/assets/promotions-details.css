@@ -203,7 +203,9 @@
 
 .ee-promotions-applies-to-items-container {
     border-block-start: 2px solid var(--ee-border-color);
-    height: clamp(180px, 32vh, 640px);
+    height: auto;
+    min-height: 5rem;
+    max-height: 40rem;
     margin-top: .25rem;
     padding-block-start: .5rem;
     overflow-y: scroll;
