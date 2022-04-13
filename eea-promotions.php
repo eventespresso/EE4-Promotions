@@ -75,7 +75,7 @@ function espresso_promotions_activation_error()
     <div class="error">
         <p><?php
             printf(
-                __(
+                esc_html__(
                     'Event Espresso Promotions could not be activated. Please ensure that Event Espresso version %s or higher is running',
                     'event_espresso'
                 ),

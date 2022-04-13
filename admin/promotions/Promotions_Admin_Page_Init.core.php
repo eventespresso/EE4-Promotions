@@ -27,7 +27,7 @@ class Promotions_Admin_Page_Init extends EE_Admin_Page_Init
         do_action('AHEE_log', __FILE__, __FUNCTION__, '');
 
         define('PROMOTIONS_PG_SLUG', 'espresso_promotions');
-        define('PROMOTIONS_LABEL', __('Promotions', 'event_espresso'));
+        define('PROMOTIONS_LABEL', esc_html__('Promotions', 'event_espresso'));
         define('EE_PROMOTIONS_ADMIN_URL', admin_url('admin.php?page=' . PROMOTIONS_PG_SLUG));
         define('EE_PROMOTIONS_ADMIN_ASSETS_PATH', EE_PROMOTIONS_ADMIN . 'assets' . DS);
         define('EE_PROMOTIONS_ADMIN_ASSETS_URL', EE_PROMOTIONS_URL . 'admin/promotions/assets/');

@@ -17,7 +17,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
 
     public function __construct()
     {
-        $this->_pretty_name = __('Create Promotions Addon table', 'event_espresso');
+        $this->_pretty_name = esc_html__('Create Promotions Addon table', 'event_espresso');
         $this->_migration_stages = array();
         parent::__construct();
     }

@@ -1,9 +1,13 @@
 jQuery(document).ready(function($){
 
+	const $postBody = $('#post-body');
+	const $promosAppliedToMbox = $('#promotions-applied-to-mbox');
+	const $promoDetailsForm = $('#promotion-details-form');
+
 	/**
 	 * Object that has all the helper methods for the promotions admin requirements.
 	*/
-	var eePromotionsHelper = {
+	const eePromotionsHelper = {
 
 		/**
 		 * cache for scope slug current lin use.
@@ -35,10 +39,10 @@ jQuery(document).ready(function($){
 		 *
 		 * @param {string} codefield The class or id selector for the field referencing the
 		 * code.
-		 * @return {eePromotionsHelper}
+		 * @return {eePromotionsHelper|void}
 		*/
 		generate_code: function( codefield ) {
-			var code = '';
+			let code = '';
 			//make sure we have a selector
 			if ( typeof(codefield) === 'undefined' ) {
 				console.log( eei18n.codefieldEmptyError );
@@ -46,18 +50,18 @@ jQuery(document).ready(function($){
 			}
 
 			//make sure selector exists
-			var field = $(codefield);
+			const field = $(codefield);
 			if ( field.length === 0 ) {
 				console.log( eei18n.codefieldInvalidError );
 				return;
 			}
 
 			//made it here?  K let's generate the code if we have a prefix we'll use it.
-			var prefix = $('#PRO_code_prefix' );
+			const prefix = $('#PRO_code_prefix' );
 			if ( prefix.val() === '' && field.val().length > 0 ) {
 				prefix.val( field.val() + '_' );
 			}
-			code = prefix.val() + this.uniqid();
+			code = prefix.val() + this.uniqID();
 			field.val(code);
 			return this;
 		},
@@ -69,9 +73,12 @@ jQuery(document).ready(function($){
 		 *
 		 * @return {string}
 		 */
-		uniqid: function() {
-			var ts=String(new Date().getTime()), i = 0, out = '',num=0;
-			var host = window.location.host;
+		uniqID: function() {
+			const host = window.location.host;
+			let i = 0;
+			let num = 0;
+			let out = '';
+			let ts=String(new Date().getTime());
 			//convert host to num.
 			for ( c=0; c < host.length; c++ ) {
 				num += host.charCodeAt(c);
@@ -90,32 +97,33 @@ jQuery(document).ready(function($){
 		 *
 		 * @param {string} selected the checkbox toggled
 		 *
-		 * @return {eePromotionsHelper}
+		 * @return {eePromotionsHelper|void}
 		 */
 		scopeItemToggle: function (selected) {
 			if ( typeof(selected) === 'undefined' ) {
 				console.log(eei18n.toggledScopeItemMissingParam);
-				return false;
+				return;
 			}
 
-			var checkeditem = $(selected), curItems, itemsInput;
-			var currentcount = $('.ee-promotions-selected-count','.ee-promotions-selected-count-container').text();
+			let curItems;
+			let itemsInput;
+			let currentCount = $('.ee-promotions-selected-count','.ee-promotions-selected-count-container').text();
 
 			//selected or deselected?
-			var isSelected = $(selected).is(':checked');
+			const isSelected = $(selected).is(':checked');
 			itemsInput = $('#ee-selected-items-' + this.getScope() );
 			curItems = itemsInput.val().split(',');
 			if ( isSelected ) {
 				//adding item to hidden elements
 				curItems.push($(selected).val());
-				currentcount = parseInt( currentcount, 10) + 1;
+				currentCount = parseInt( currentCount, 10) + 1;
 			} else {
 				curItems = $().removeFromArray(curItems, $(selected).val());
-				currentcount = parseInt( currentcount, 10 ) - 1;
+				currentCount = parseInt( currentCount, 10 ) - 1;
 			}
 
 			itemsInput.val( curItems.join(',').replace(/^,|,$/,'') );
-			$('.ee-promotions-selected-count', '.ee-promotions-selected-count-container').text(currentcount);
+			$('.ee-promotions-selected-count', '.ee-promotions-selected-count-container').text(currentCount);
 			return this;
 		},
 
@@ -128,13 +136,14 @@ jQuery(document).ready(function($){
 		 * @return {eePromotionsHelper}
 		 */
 		toggleSort: function() {
-			var sortClass, sortOrder, classReplace, current_sort = $('#ee-promotion-items-sort-order').text();
-			sortOrder = current_sort == 'ASC' ? 'DESC' : 'ASC';
-			sortClass = current_sort == 'ASC' ? 'dashicons-arrow-down' : 'dashicons-arrow-up';
-			classReplace = current_sort == 'ASC' ? 'dashicons-arrow-up' : 'dashicons-arrow-down';
+			const $promoSortOrder = $('#ee-promotion-items-sort-order');
+			const current_sort = $promoSortOrder.text();
+			const sortOrder = current_sort === 'ASC' ? 'DESC' : 'ASC';
+			const sortClass = current_sort === 'ASC' ? 'dashicons-arrow-down' : 'dashicons-arrow-up';
+			let classReplace = current_sort === 'ASC' ? 'dashicons-arrow-up' : 'dashicons-arrow-down';
 
 			//modify sort.
-			$('#ee-promotion-items-sort-order').text(sortOrder);
+			$promoSortOrder.text(sortOrder);
 			classReplace = $('.dashicons', '.ee-sort-container').attr('class').replace(classReplace, sortClass);
 			$('.dashicons', '.ee-sort-container').attr('class', classReplace);
 			return this;
@@ -151,7 +160,7 @@ jQuery(document).ready(function($){
 		 * @return {eePromotionsHelper}
 		 */
 		getScopeSelectionItems: function(page) {
-			var data={};
+			const data={};
 
 			//make sure the select all box is unchecked
 			$('.ee-select-all-trigger', '.ee-promotions-applies-to-selector').prop('checked', false);
@@ -161,7 +170,7 @@ jQuery(document).ready(function($){
 			});
 			$('input', '.ee-promotions-applies-to-filters').each( function(i) {
 				//if item is a checkbox and its not checked, then don't include.
-				if ( $(this).attr('type') == 'checkbox' && ! $(this).prop('checked') ) {
+				if ( $(this).attr('type') === 'checkbox' && ! $(this).prop('checked') ) {
 					return;
 				}
 				data[$(this).attr('name')] = $(this).val();
@@ -185,10 +194,9 @@ jQuery(document).ready(function($){
 			//alright all the data is setup now let's set what we want to do on ajax success.
 			$(document).ajaxSuccess( function(event, xhr, ajaxoptions )  {
 				//we can get the response from xhr
-				var ct = xhr.getResponseHeader( "content-type" ) || "";
+				const ct = xhr.getResponseHeader( "content-type" ) || "";
 				if ( ct.indexOf('json') > -1 ) {
-					var resp = xhr.responseText;
-					resp = $.parseJSON(resp);
+					const resp = $.parseJSON(xhr.responseText);
 					//let's replace the current items in the selected items window.
 					$('.ee-promotions-applies-to-items-container', '.ee-promotions-applies-to-selector').html(resp.items_content);
 					//update the current page
@@ -238,7 +246,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for resetting coupon code prefix.
 	 */
-	$('#promotion-details-form').on('click', '#reset-promo-code-prefix', function(e) {
+	$promoDetailsForm.on('click', '#reset-promo-code-prefix', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		$('#PRO_code_prefix' ).val('');
@@ -249,7 +257,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for generating coupon code.
 	 */
-	$('#promotion-details-form').on('click', '#generate-promo-code', function(e) {
+	$promoDetailsForm.on('click', '#generate-promo-code', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		eePromotionsHelper.generate_code('#PRO_code');
@@ -269,15 +277,15 @@ jQuery(document).ready(function($){
 	/**
 	 * Date and time picker trigger
 	 */
-	$('#post-body').on('focusin', '.ee-datepicker', function(e) {
+	$postBody.on('focusin', '.ee-datepicker', function(e) {
 		e.preventDefault();
-		var data= $(this).data();
-		var container = data.container == 'main' ? '#promotion-details-mbox' : '#promotions-applied-to-mbox';
-		var start = data.context == 'start' ? $(this, container) : $('[data-context="start"]', container);
-		var end = data.context == 'end' ? $(this, container) : $('[data-context="end"]', container );
-		var next = $(data.nextField, 'container');
-		var doingstart = data.context == 'start' ? true : false;
-		dttPickerHelper.resetpicker().setDefaultDateRange('months', 1).picker(start, end, next, doingstart);
+		const data= $(this).data();
+		// const container = data.container === 'main' ? '#promotion-details-mbox' : '#promotions-applied-to-mbox';
+		const start = data.context === 'start' ? $(this, data.container) : $('[data-context="start"]', data.container);
+		const end = data.context === 'end' ? $(this, data.container) : $('[data-context="end"]', data.container );
+		const next = $(data.nextField, 'container');
+		const doingStart = data.context === 'start';
+		dttPickerHelper.resetpicker().setDefaultDateRange('months', 1).picker(start, end, next, doingStart);
 	});
 
 
@@ -285,7 +293,7 @@ jQuery(document).ready(function($){
 	 * trigger for toggling the selection of ALL promotion applies to items.
 	 */
 	$('.ee-promotions-applies-to-selector').on('click', '.ee-select-all-trigger', function(e) {
-		selecting = $(this).prop('checked');
+		const selecting = $(this).prop('checked');
 		$(':checkbox', '.ee-promotions-applies-to-items-container').each( function(i) {
 			if ( $(this).prop('checked') === false && selecting )
 				$(this).trigger('click');
@@ -311,7 +319,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for display only selected items filter.
 	 */
-	$('#promotions-applied-to-mbox').on('click', '.ee-display-selected-only-trigger', function(e) {
+	$promosAppliedToMbox.on('click', '.ee-display-selected-only-trigger', function(e) {
 		e.stopPropagation();
 		eePromotionsHelper.getScopeSelectionItems();
 	});
@@ -321,7 +329,7 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for sorts
 	 */
-	$('#promotions-applied-to-mbox').on('click', '.ee-sort-trigger', function(e) {
+	$promosAppliedToMbox.on('click', '.ee-sort-trigger', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
 		eePromotionsHelper.toggleSort().getScopeSelectionItems();
@@ -331,11 +339,11 @@ jQuery(document).ready(function($){
 	/**
 	 * trigger for paging!
 	 */
-	$('#promotions-applied-to-mbox').on('click', '.pagination-links>a', function(e) {
+	$promosAppliedToMbox.on('click', '.pagination-links>a', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var data = parseUri( $(this).attr('href') );
-		var paged = typeof( data.queryKey.paged ) !== 'undefined' ? data.queryKey.paged : 1;
+		const data = parseUri( $(this).attr('href') );
+		const paged = typeof( data.queryKey.paged ) !== 'undefined' ? data.queryKey.paged : 1;
 		eePromotionsHelper.getScopeSelectionItems(paged);
 	});
 
@@ -343,11 +351,11 @@ jQuery(document).ready(function($){
 	/**
 	 * capture enter keypress in paging input
 	 */
-	$('#promotions-applied-to-mbox').on('keypress', '.current-page', function(e) {
-		if ( e.which == 13 ) {
+	$promosAppliedToMbox.on('keypress', '.current-page', function(e) {
+		if ( e.which === 13 ) {
 			e.preventDefault();
 			e.stopPropagation();
-			var paged = $(this).val();
+			const paged = $(this).val();
 			eePromotionsHelper.getScopeSelectionItems(paged);
 		}
 	});
@@ -357,8 +365,8 @@ jQuery(document).ready(function($){
 	 * capture enter keypress in any of the scope filter inputs
 	 *
 	 */
-	$('#post-body').on('keypress', '.ee-promotions-applies-to-filters>input', function(e){
-		if ( e.which == 13 ) {
+	$postBody.on('keypress', '.ee-promotions-applies-to-filters>input', function(e){
+		if ( e.which === 13 ) {
 			e.preventDefault();
 			e.stopPropagation();
 			eePromotionsHelper.getScopeSelectionItems();
@@ -369,25 +377,32 @@ jQuery(document).ready(function($){
 	/**
 	 * clear calendar field
 	 */
-	$('#post-body').on('click', '.clear-dtt', function(e) {
+	$postBody.on('click', '.clear-dtt', function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		var data = $(this).data();
+		const data = $(this).data();
 		$(data.field).val('');
 	});
 
-    $('#post-body').on( 'click', '.ee-clear-field', function(e) {
+    $postBody.on( 'click', '.ee-clear-field', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        var data = $(this).data();
+		const data = $(this).data();
         $(data.clearfield).val('');
     });
 
-    $('#post-body').on( 'click', '.ee-toggle-filters', function(e) {
+    $postBody.on( 'click', '.ee-toggle-filters', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        var data = $(this).data();
+		const data = $(this).data();
         $(data.filterContainer).slideToggle();
+    });
+
+    $postBody.on( 'click', '.ee-toggle-datepicker', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+		const data = $(this).data();
+        $(data.target).trigger('click').focus();
     });
 
 });

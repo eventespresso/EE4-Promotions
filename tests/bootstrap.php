@@ -1,9 +1,6 @@
 <?php
-/**
- * Bootstrap for eea-people-addon tests
- */
 
-use EETests\bootstrap\AddonLoader;
+use EventEspresso\tests\bootstrap\AddonLoader;
 
 $core_tests_dir = dirname(dirname(dirname(__FILE__))) . '/event-espresso-core/tests/';
 //if still don't have $core_tests_dir, then let's check tmp folder.

@@ -46,14 +46,9 @@ class EE_Promotions_Config extends EE_Config_Base
     protected $_affects_tax = false;
 
 
-    /**
-     *    constructor
-     *
-     * @return EE_Promotions_Config
-     */
     public function __construct()
     {
-        add_action('AHEE__EE_Config___load_core_config__end', array($this, 'init'));
+        add_action('AHEE__EE_Config___load_core_config__end', array($this, 'init'), 99);
     }
 
 
@@ -68,15 +63,16 @@ class EE_Promotions_Config extends EE_Config_Base
         if ($initialized) {
             return;
         }
+        $initialized = true;
         $this->scopes = $this->_get_scopes();
         $this->label = new stdClass();
         $this->label->singular = apply_filters(
             'FHEE__EE_Promotions_Config____construct__label_singular',
-            __('Promotion Code', 'event_espresso')
+            esc_html__('Promotion Code', 'event_espresso')
         );
         $this->label->plural = apply_filters(
             'FHEE__EE_Promotions_Config____construct__label_plural',
-            __('Promotion Codes', 'event_espresso')
+            esc_html__('Promotion Codes', 'event_espresso')
         );
     }
 
