@@ -364,7 +364,10 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      */
     protected function _get_applies_to_filters($show_filters)
     {
-        $template_args = ['show_filters' => $show_filters];
+        $template_args = [
+            'scope' => $this,
+            'show_filters' => $show_filters,
+        ];
 
         // categories
         $categories = get_terms('espresso_event_categories', ['hide_empty' => false, 'fields' => 'id=>name']);
