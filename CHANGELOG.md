@@ -17,6 +17,8 @@ See [our documentation](https://github.com/eventespresso/event-espresso-core/blo
 
 ## [$VID:$]
 
+## [1.0.16.p]
+
 ## [1.0.15.p]
 
 ## [1.0.14.p]
