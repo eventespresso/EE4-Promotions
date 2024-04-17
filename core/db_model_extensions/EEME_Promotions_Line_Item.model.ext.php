@@ -16,7 +16,7 @@ class EEME_Promotions_Line_Item extends EEME_Base
         add_filter('FHEE__EEM_Line_Item__line_items_can_be_for', array( $this, 'register_promotion' ));
         $this->_model_name_extended = 'Line_Item';
         $this->_extra_relations = array(
-            'Promotion'=>new EE_Belongs_To_Any_Relation()
+            'Promotion' => new EE_Belongs_To_Any_Relation()
         );
         parent::__construct();
     }
@@ -24,11 +24,10 @@ class EEME_Promotions_Line_Item extends EEME_Base
 
     /**
      * Callback for FHEE__EEM_Line_Item__line_items_can_be_for filter.
-     * @param $line_items_can_be_registered_for
-     *
+     * @param array $line_items_can_be_registered_for
      * @return array
      */
-    public function register_promotion($line_items_can_be_registered_for)
+    public function register_promotion(array $line_items_can_be_registered_for): array
     {
         $line_items_can_be_registered_for[] = 'Promotion';
         return $line_items_can_be_registered_for;

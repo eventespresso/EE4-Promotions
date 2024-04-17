@@ -9,16 +9,15 @@
  */
 class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
 {
-
-    const TABLE_NAME_PROMOTION = 'esp_promotion';
+    const TABLE_NAME_PROMOTION        = 'esp_promotion';
 
     const TABLE_NAME_PROMOTION_OBJECT = 'esp_promotion_object';
 
 
     public function __construct()
     {
-        $this->_pretty_name = __('Create Promotions Addon table', 'event_espresso');
-        $this->_migration_stages = array();
+        $this->_pretty_name      = esc_html__('Create Promotions Addon table', 'event_espresso');
+        $this->_migration_stages = [];
         parent::__construct();
     }
 
@@ -27,9 +26,9 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
      * Returns whether or not this data migration script can operate on the given version of the database.
      *
      * @param array $versions
-     * @return boolean
+     * @return bool
      */
-    public function can_migrate_from_version($versions)
+    public function can_migrate_from_version($versions): bool
     {
         return false;
     }
@@ -40,6 +39,10 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
     }
 
 
+    /**
+     * @throws EE_Error
+     * @throws ReflectionException
+     */
     public function schema_changes_before_migration()
     {
         // set promotions_exclusive_default as either 0 or 1
@@ -76,8 +79,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
                 KEY PRC_ID (PRC_ID),
                 KEY PRO_code (PRO_code),
                 KEY PRO_start (PRO_start),
-                KEY PRO_end (PRO_end)",
-            'ENGINE=InnoDB'
+                KEY PRO_end (PRO_end)"
         );
 
         $this->_table_should_exist_previously(
@@ -89,8 +91,7 @@ class EE_DMS_Promotions_1_0_0 extends EE_Data_Migration_Script_Base
 			POB_used smallint(6) NULL,
 			PRIMARY KEY  (POB_ID),
 			KEY PRO_ID (PRO_ID),
-			KEY OBJ_ID (OBJ_ID)',
-            'ENGINE=InnoDB'
+			KEY OBJ_ID (OBJ_ID)'
         );
     }
 }

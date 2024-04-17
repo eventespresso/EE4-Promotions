@@ -1,7 +1,7 @@
-<?php if (! defined('EVENT_ESPRESSO_VERSION')) {
-    exit('No direct script access allowed');
-}
+<?php
+
 /** @type int $EVT_ID */
+
 /** @type string $ribbon_color */
 /** @type string $banner_text */
 ?>

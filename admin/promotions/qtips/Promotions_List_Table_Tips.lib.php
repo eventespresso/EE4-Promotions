@@ -14,7 +14,6 @@
  */
 class Promotions_List_Table_Tips extends EE_Qtip_Config
 {
-
     protected function _set_tips_array()
     {
         $this->_qtipsa = array(

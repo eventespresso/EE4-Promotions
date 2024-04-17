@@ -16,62 +16,43 @@ General Styles
 	margin:0;
 }
 
+
 /* Media Query for screens larger than 480px
 ---------------------------------------------------------------------------------------------------- */
 @media only screen and (min-width: 481px) {
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options {
-		padding-bottom: 50px;
-	}
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input,
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-submit {
-		box-sizing: border-box;
-		vertical-align: middle;
-		min-height: 32px;
-	}
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-input {
-		margin: 0 0 1em;
-		background:#FFF;
-	}
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-input,
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-submit {
-		position : absolute;
-		display: inline-block;
-		margin: 0;
-	}
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-input {
-		top: 24px;
-		left: 0;
-		border-bottom-right-radius: 0;
-		border-top-right-radius: 0;
-		border-right: 0;
-	}
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options .ee-promo-combo-submit {
-		top: 24px;
-		right: 0;
-		border-bottom-left-radius: 0;
-		border-top-left-radius: 0;
-		border-left: 0;
-	}
+
+    .ee-promotion-code-input__wrapper {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        min-height: 3em;
+    }
+
+    #ee-promotion-code-input,
+    #ee-promotion-code-submit {
+        box-sizing: border-box;
+        height: clamp(3rem, 100%, 5rem) !important;
+        line-height: 1;
+        margin: unset !important;
+        min-height: unset !important;
+        padding-block: clamp(0.25rem, 100%, 0.5rem) !important;
+        padding-inline: clamp(0.375rem, 100%, 0.75rem) !important;
+    }
+    #ee-promotion-code-input {
+        border-inline-end: none !important;
+        border-start-end-radius: 0 !important;
+        border-end-end-radius: 0 !important;
+    }
+    #ee-promotion-code-submit {
+        border-start-start-radius: 0 !important;
+        border-end-start-radius: 0 !important;
+        border-width: 1px;
+        min-width: 12rem;
+        white-space: nowrap;
+    }
+
 }
 
-
-/* Media Query for screens smaller then 768px (iPad portrait)
----------------------------------------------------------------------------------------------------- */
-
-@media only screen and (max-width: 767px) {
-}
-
-@media only screen and (max-width: 600px) and (min-width: 481px) {
-}
-
-@media only screen and (max-width: 540px) and (min-width: 480px) {
-}
-
-@media only screen and (max-width: 480px) {
-	#ee-spco-payment_options-reg-step-form-payment-options-before-payment-options #ee-promotion-code-submit {
-		margin: 1em 0;
-	}
-}
 
 
 
@@ -79,10 +60,10 @@ General Styles
 
 
 .ee-promo-banner-ribbon-dv {
-	width: 100%;
-	height: 90px;
+    height: 90px;
 	margin: 2em auto 0 ;
 	position: relative;
+	width: 100%;
 }
 
 .ee-promo-banner-ribbon-dv div {
@@ -106,12 +87,13 @@ General Styles
 }
 
 .ee-promo-banner-ribbon-main-dv .ee-promo-banner-text-dv {
+    align-items: center;
 	border: 1px dashed rgba(255, 255, 255, 0.5);
-	min-height: 40px;
-	height: auto !important;;
 	color: #FFF;
-	text-align: center;
-	vertical-align: middle;
+    display: flex;
+	height: auto !important;
+    justify-content: center;
+	min-height: 40px;
 }
 
 /*  BACK RIBBONS  */
@@ -183,50 +165,148 @@ General Styles
 }
 
 
-/* lite-blue */
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-main-dv { background : #00B1CA; }
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-dv { background: #0096AB; }
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #0096AB; }
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #0096AB; }
-.ee-promo-banner-ribbon-lite-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #007484; }
+.ee-promo-banner-ribbon-dv,
+.ee-upcoming-promotions-container-dv {
+    --ee-promo-banner-ribbon-color--currency-code: hsl(0, 0%, 100%);
+}
 
-/* blue */
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-main-dv { background : #005B9E; }
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-dv { background: #004679; }
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #004679; }
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #004679; }
-.ee-promo-banner-ribbon-blue-dv .ee-promo-banner-ribbon-skew-dv { background: #002F52; }
+.ee-promo-banner-ribbon-red-dv,
+.ee-promo-upcoming-promotions-main-dv.red {
+    --ee-promo-banner-ribbon__main: hsl(3, 78%, 38%);
+    --ee-promo-banner-ribbon__back: hsl(3, 73%, 33%);
+    --ee-promo-banner-ribbon__dark: hsl(3, 68%, 23%);
+    --ee-promo-banner-ribbon__text: hsl(3, 78%, 100%);
+    --ee-promo-banner-ribbon__link: hsl(3, 78%, 90%);
+    --ee-promo-banner-ribbon__link--hover: hsl(3, 78%, 80%);
+}
 
-/* green */
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-main-dv { background : #70CC50; }
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-dv { background: #5BA641; }
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #5BA641; }
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #5BA641; }
-.ee-promo-banner-ribbon-green-dv .ee-promo-banner-ribbon-skew-dv { background: #457E31; }
+.ee-promo-banner-ribbon-orange-dv,
+.ee-promo-upcoming-promotions-main-dv.orange {
+    --ee-promo-banner-ribbon__main: hsl(23, 90%, 59%);
+    --ee-promo-banner-ribbon__back: hsl(23, 85%, 54%);
+    --ee-promo-banner-ribbon__dark: hsl(23, 80%, 44%);
+    --ee-promo-banner-ribbon__text: hsl(23, 90%, 0%);
+    --ee-promo-banner-ribbon__link: hsl(23, 90%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(23, 90%, 90%);
+}
 
-/* pink */
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-main-dv { background : #E44064; }
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-dv { background: #B83451; }
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #B83451; }
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #B83451; }
-.ee-promo-banner-ribbon-pink-dv .ee-promo-banner-ribbon-skew-dv { background: #932940; }
+.ee-promo-banner-ribbon-yellow-dv,
+.ee-promo-upcoming-promotions-main-dv.yellow {
+    --ee-promo-banner-ribbon__main: hsl(45, 76%, 59%);
+    --ee-promo-banner-ribbon__back: hsl(45, 71%, 54%);
+    --ee-promo-banner-ribbon__dark: hsl(45, 66%, 44%);
+    --ee-promo-banner-ribbon__text: hsl(45, 76%, 0%);
+    --ee-promo-banner-ribbon__link: hsl(45, 76%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(45, 76%, 90%);
+}
 
-/* red */
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-main-dv { background : #B4113F; }
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-dv { background: #880D30; }
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-right: 30px solid #880D30; }
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv { border-left: 30px solid #880D30; }
-.ee-promo-banner-ribbon-red-dv .ee-promo-banner-ribbon-skew-dv { background: #5E0921; }
+.ee-promo-banner-ribbon-olive-dv,
+.ee-promo-upcoming-promotions-main-dv.olive {
+    --ee-promo-banner-ribbon__main: hsl(73, 26%, 58%);
+    --ee-promo-banner-ribbon__back: hsl(73, 21%, 53%);
+    --ee-promo-banner-ribbon__dark: hsl(73, 16%, 43%);
+    --ee-promo-banner-ribbon__text: hsl(73, 26%, 0%);
+    --ee-promo-banner-ribbon__link: hsl(73, 26%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(73, 26%, 90%);
+}
+
+.ee-promo-banner-ribbon-green-dv,
+.ee-promo-upcoming-promotions-main-dv.green {
+    --ee-promo-banner-ribbon__main: hsl(162, 100%, 36%);
+    --ee-promo-banner-ribbon__back: hsl(162, 95%, 31%);
+    --ee-promo-banner-ribbon__dark: hsl(162, 90%, 21%);
+    --ee-promo-banner-ribbon__text: hsl(162, 100%, 0%);
+    --ee-promo-banner-ribbon__link: hsl(162, 100%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(162, 100%, 90%);
+}
+
+.ee-promo-banner-ribbon-aqua-dv,
+.ee-promo-upcoming-promotions-main-dv.aqua {
+    --ee-promo-banner-ribbon__main: hsl(181, 61%, 42%);
+    --ee-promo-banner-ribbon__back: hsl(181, 56%, 37%);
+    --ee-promo-banner-ribbon__dark: hsl(181, 51%, 27%);
+    --ee-promo-banner-ribbon__text: hsl(181, 51%, 0%);
+    --ee-promo-banner-ribbon__link: hsl(181, 51%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(181, 51%, 90%);
+}
+
+.ee-promo-banner-ribbon-lite-blue-dv,
+.ee-promo-upcoming-promotions-main-dv.lite-blue {
+    --ee-promo-banner-ribbon__main: hsl(206, 61%, 70%);
+    --ee-promo-banner-ribbon__back: hsl(206, 56%, 65%);
+    --ee-promo-banner-ribbon__dark: hsl(206, 51%, 55%);
+    --ee-promo-banner-ribbon__text: hsl(206, 61%, 5%);
+    --ee-promo-banner-ribbon__link: hsl(206, 61%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(206, 61%, 90%);
+}
+
+.ee-promo-banner-ribbon-blue-dv,
+.ee-promo-upcoming-promotions-main-dv.blue {
+    --ee-promo-banner-ribbon__main: hsl(211, 67%, 36%);
+    --ee-promo-banner-ribbon__back: hsl(211, 62%, 31%);
+    --ee-promo-banner-ribbon__dark: hsl(211, 57%, 21%);
+    --ee-promo-banner-ribbon__text: hsl(211, 67%, 100%);
+    --ee-promo-banner-ribbon__link: hsl(211, 67%, 90%);
+    --ee-promo-banner-ribbon__link--hover: hsl(211, 67%, 80%);
+}
+
+.ee-promo-banner-ribbon-violet-dv,
+.ee-promo-upcoming-promotions-main-dv.violet {
+    --ee-promo-banner-ribbon__main: hsl(253, 22%, 38%);
+    --ee-promo-banner-ribbon__back: hsl(253, 17%, 33%);
+    --ee-promo-banner-ribbon__dark: hsl(253, 12%, 23%);
+    --ee-promo-banner-ribbon__text: hsl(253, 22%, 100%);
+    --ee-promo-banner-ribbon__link: hsl(253, 22%, 90%);
+    --ee-promo-banner-ribbon__link--hover: hsl(253, 22%, 80%);
+}
+
+.ee-promo-banner-ribbon-purple-dv,
+.ee-promo-upcoming-promotions-main-dv.purple {
+    --ee-promo-banner-ribbon__main: hsl(311, 40%, 29%);
+    --ee-promo-banner-ribbon__back: hsl(311, 35%, 24%);
+    --ee-promo-banner-ribbon__dark: hsl(311, 30%, 14%);
+    --ee-promo-banner-ribbon__text: hsl(311, 40%, 100%);
+    --ee-promo-banner-ribbon__link: hsl(311, 40%, 90%);
+    --ee-promo-banner-ribbon__link--hover: hsl(311, 40%, 80%);
+}
+
+.ee-promo-banner-ribbon-pink-dv,
+.ee-promo-upcoming-promotions-main-dv.pink {
+    --ee-promo-banner-ribbon__main: hsl(349, 77%, 81%);
+    --ee-promo-banner-ribbon__back: hsl(349, 72%, 76%);
+    --ee-promo-banner-ribbon__dark: hsl(349, 67%, 66%);
+    --ee-promo-banner-ribbon__text: hsl(349, 77%, 5%);
+    --ee-promo-banner-ribbon__link: hsl(349, 77%, 10%);
+    --ee-promo-banner-ribbon__link--hover: hsl(349, 77%, 90%);
+}
+
+
+
+.ee-promo-banner-ribbon-main-dv {
+    background: var(--ee-promo-banner-ribbon__main);
+}
+
+.ee-promo-banner-ribbon-back-dv {
+    background: var(--ee-promo-banner-ribbon__back);
+}
+
+.ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-arrow-bottom-dv {
+    border-right: 30px solid var(--ee-promo-banner-ribbon__back);
+}
+
+.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-top-dv,
+.ee-promo-banner-ribbon-back-right-dv .ee-promo-banner-ribbon-arrow-bottom-dv {
+    border-left: 30px solid var(--ee-promo-banner-ribbon__back);
+}
+
+.ee-promo-banner-ribbon-skew-dv {
+    background: var(--ee-promo-banner-ribbon__dark);
+}
+
+.ee-promo-banner-ribbon-main-dv .ee-promo-banner-text-dv {
+    color: var(--ee-promo-banner-ribbon__text);
+}
 
 
 
@@ -240,23 +320,10 @@ General Styles
 /* UPCOMING PROMOTIONS */
 
 #ee-upcoming-promotions-dv{
-	-moz-column-count: 2;
-	-webkit-column-count: 2;
-	column-count: 2;
-	-moz-column-gap: 20px;
-	-webkit-column-gap: 20px;
-	column-gap: 20px;
+	display: grid;
+    min-width: 360px;
 }
-@media only screen and (max-width : 600px) {
-	#ee-upcoming-promotions-dv{
-		-moz-column-count: 1;
-		-webkit-column-count: 1;
-		column-count: 1;
-		-moz-column-gap: 0;
-		-webkit-column-gap: 0;
-		column-gap: 0;
-	}
-}
+
 .ee-upcoming-promotions-container-dv {
 	display: inline-block;
 	padding: 0;
@@ -264,7 +331,7 @@ General Styles
 	width: 100%;
 }
 .ee-promo-upcoming-promotions-main-dv {
-	padding: 1em 1.5em .5em;
+	padding: 2rem 2rem 1.5rem;
 	background: #EEEEEE;
 	margin:.5em 0;
 }
@@ -276,30 +343,29 @@ General Styles
 	word-wrap: break-word;
 }
 
-.ee-promo-upcoming-promotions-main-dv.lite-blue {
-	background-color:#00B1CA;
-	color: #FFFFFF;
+
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv {
+	background-color: var(--ee-promo-banner-ribbon__main);
+	color: var(--ee-promo-banner-ribbon__text);
 }
-.ee-promo-upcoming-promotions-main-dv.blue {
-	background-color:#005B9E;
-	color: #FFFFFF;
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv p,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv ul li {
+	color: var(--ee-promo-banner-ribbon__text);
+    margin-block-end: 1rem;
 }
-.ee-promo-upcoming-promotions-main-dv.green {
-	background-color:#70CC50;
-	color: #FFFFFF;
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv ul li a {
+	color: var(--ee-promo-banner-ribbon__link);
+    text-decoration: underline;
+    text-underline-offset: .25rem;
 }
-.ee-promo-upcoming-promotions-main-dv.pink {
-	background-color:#E44064;
-	color: #FFFFFF;
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv ul li a:hover,
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv ul li a:active {
+	color: var(--ee-promo-banner-ribbon__link--hover);
+    text-decoration: none;
 }
-.ee-promo-upcoming-promotions-main-dv.red {
-	background-color:#B4113F;
-	color: #FFFFFF;
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-main-dv .currency-code {
+	color: var(--ee-promo-banner-ribbon-color--currency-code);
 }
-.ee-promo-upcoming-promotions-main-dv.lite-blue .currency-code,
-.ee-promo-upcoming-promotions-main-dv.blue .currency-code,
-.ee-promo-upcoming-promotions-main-dv.green .currency-code,
-.ee-promo-upcoming-promotions-main-dv.pink .currency-code,
-.ee-promo-upcoming-promotions-main-dv.red .currency-code {
-	color: #FFFFFF;
+.ee-upcoming-promotions-container-dv .ee-promo-upcoming-promotions-dates-dv.smaller-text {
+	color: hsla(0, 0%, 50%, .75);
 }

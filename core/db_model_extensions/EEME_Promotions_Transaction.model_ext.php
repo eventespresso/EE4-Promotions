@@ -4,10 +4,9 @@
  *
  * EEM_Promotions_Transaction
  *
- * @package         Event Espresso
+ * @package     Event Espresso
  * @subpackage
- * @author              Mike Nelson
- *
+ * @author      Mike Nelson
  */
 class EEME_Promotions_Transaction extends EEME_Base
 {
@@ -15,7 +14,7 @@ class EEME_Promotions_Transaction extends EEME_Base
     {
         $this->_model_name_extended = 'Transaction';
         $this->_extra_relations = array(
-            'Promotion_Object'=>new EE_Has_Many_Any_Relation(false)
+            'Promotion_Object' => new EE_Has_Many_Any_Relation(false)
         );
         parent::__construct();
     }

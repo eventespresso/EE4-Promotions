@@ -1,30 +1,36 @@
-# Event Espresso Promotions Add-on Changelog
-
+# Changelog
 All notable changes to this project will be documented in this file.
 
-The format of this file is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Headings should be (only add headings as needed):
+## Releases
 
-- Added (new features)
-- Changed (changes in existing functionality)
-- Deprecated (soon to be removed features)
-- Removed (removed features)
-- Fixed (bug fixes)
-- Security (vulnerability fixes)
+### [1.0.17]
 
-See [our documentation](https://github.com/eventespresso/event-espresso-core/blob/master/docs/A--Best-Practices/change-log.md) for more details.
+#### Added
+ - [New Feature: Promo Code Links (#966)](https://github.com/eventespresso/cafe/pull/966)
+ - NEW
 
-## [$VID:$]
+#### Fixed
+ - [Fix Negative Sign Displayed in Amount Input of Promotion Editor (#803)](https://github.com/eventespresso/cafe/pull/803)
+ - [Fixed a CSS Positioning Issue (#845)](https://github.com/eventespresso/cafe/pull/845)
+ - [Fix or Suppress PHP 8.2 Warnings (#936)](https://github.com/eventespresso/cafe/pull/936)
+ - [Fix Promotions Tax Line Items (#851)](https://github.com/eventespresso/cafe/pull/851)
+ - [Fix Promotions Property Types (#1002)](https://github.com/eventespresso/cafe/pull/1002)
+ - [Fix Undefined Constant and Uninitialized Properties (#1030)](https://github.com/eventespresso/cafe/pull/1030)
+ - [Fix Non-Code Promotions (#1112)](https://github.com/eventespresso/cafe/pull/1112)
+ - FIX
 
-## [1.0.16.p]
+#### Changed
+ - [Refactor Add-on Model Declarations (#822)](https://github.com/eventespresso/cafe/pull/822)
+ - MOD
 
-## [1.0.15.p]
+#### Deprecated
+ - DEP
 
-## [1.0.14.p]
+#### Removed
+ - RMV
 
-## [1.0.13.p]
-
-### Changed
-
-- Changed Promotions DMS Table Schemas to Match Formatting Used in Core ([8](https://github.com/eventespresso/EE4-Promotions/pull/8))
+#### Security
+ - SEC

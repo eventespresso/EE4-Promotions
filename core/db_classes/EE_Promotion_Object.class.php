@@ -1,168 +1,167 @@
 <?php
+
 /**
  * EE_Promotion_Object class
  *
- * @package         Event Espresso
- * @subpackage      includes/classes/EE_Answer.class.php
- * @author              Mike Nelson
- *
- * ------------------------------------------------------------------------
+ * @package     Event Espresso
+ * @subpackage  includes/classes/EE_Answer.class.php
+ * @author      Mike Nelson
  */
 class EE_Promotion_Object extends EE_Base_Class
 {
-
-    /** Price-to-Object ID", "event_espresso @var $_POB_ID*/
-    protected $_POB_ID = null;
-    /** Promotion Object", "event_espresso @var $_PRO_ID*/
-    protected $_PRO_ID = null;
-    /** ID of the Related Object", "event_espresso @var $_OBJ_ID*/
-    protected $_OBJ_ID = null;
-    /** Model of Related Object", "event_espresso @var $_POB_type*/
-    protected $_POB_type = null;
-    /** Times the promotion has been used for this object", "event_espresso @var $_POB_used*/
-    protected $_POB_used = null;
-
     /**
-     *
-     * @var EE_Promotion
-     */
-    protected $_Promotion = null;
-    /**
-     *
-     * @var EE_Event
-     */
-    protected $_Event = null;
-
-    /**
-     *
-     * @var EE_Venue
-     */
-    protected $_Venue = null;
-    /**
-     *
-     * @var EE_Ticket
-     */
-    protected $_Ticket = null;
-    /**
-     *
-     * @var EE_Datetime
-     */
-    protected $_Datetime = null;
-
-    /**
-     *
      * @param array $props_n_values
      * @return EE_Promotion_Object
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public static function new_instance($props_n_values = array())
+    public static function new_instance(array $props_n_values = array()): EE_Promotion_Object
     {
-        $classname = __CLASS__;
-        $has_object = parent::_check_for_object($props_n_values, $classname);
-        return $has_object ? $has_object : new self($props_n_values);
+        $has_object = parent::_check_for_object($props_n_values, __CLASS__);
+        return $has_object ?: new EE_Promotion_Object($props_n_values);
     }
 
+
     /**
-     *
      * @param array $props_n_values
      * @return EE_Promotion_Object
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public static function new_instance_from_db($props_n_values = array())
+    public static function new_instance_from_db(array $props_n_values = array()): EE_Promotion_Object
     {
-        return new self($props_n_values, true);
+        return new EE_Promotion_Object($props_n_values, true);
     }
+
 
     /**
      * Gets promotion_ID
+     *
      * @return int
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function promotion_ID()
+    public function promotion_ID(): int
     {
-        return $this->get('PRO_ID');
+        return (int) $this->get('PRO_ID');
     }
+
 
     /**
      * Sets promotion_ID
+     *
      * @param int $promotion_ID
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function set_promotion_ID($promotion_ID)
+    public function set_promotion_ID(int $promotion_ID)
     {
         $this->set('PRO_ID', $promotion_ID);
     }
 
+
     /**
      * Gets OBJ_ID
+     *
      * @return int
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function OBJ_ID()
+    public function OBJ_ID(): int
     {
-        return $this->get('OBJ_ID');
+        return (int) $this->get('OBJ_ID');
     }
+
 
     /**
      * Sets OBJ_ID
+     *
      * @param int $OBJ_ID
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function set_OBJ_ID($OBJ_ID)
+    public function set_OBJ_ID(int $OBJ_ID)
     {
         $this->set('OBJ_ID', $OBJ_ID);
     }
+
+
     /**
      * Gets type
      * @return string
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function type()
+    public function type(): string
     {
-        return $this->get('POB_type');
+        return (string) $this->get('POB_type');
     }
+
 
     /**
      * Sets type
+     *
      * @param string $type
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function set_type($type)
+    public function set_type(string $type)
     {
         $this->set('POB_type', $type);
     }
+
+
     /**
      * Gets used
      * @return int
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function used()
+    public function used(): int
     {
-        return $this->get('POB_used');
+        return (int) $this->get('POB_used');
     }
+
 
     /**
      * Sets used
+     *
      * @param int $used
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function set_used($used)
+    public function set_used(int $used)
     {
         $this->set('POB_used', $used);
     }
 
+
     /**
      * increment_used used
+     *
      * @param int $amount
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function increment_used($amount = 1)
+    public function increment_used(int $amount = 1)
     {
         $this->set_used($this->used() + $amount);
     }
 
+
     /**
      * Gets the object that this model-joins-to. Eg, if this promotion-object join model object
-     * applies the promotion to an event (ie, has POB_type=='Event'), then it will return an EE_Event
+     * applies the promotion to an event (ie, has POB_type==EE_Promotion_Scope::SCOPE_EVENT), then it will return an EE_Event
      * @return EE_Base_Class (one of the model objects that the field OBJ_ID can point to... see the 'OBJ_ID' field on EEM_Promotion_Object)
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function object()
+    public function object(): ?EE_Base_Class
     {
-        $model_name_of_related_obj = $this->type();
-        $is_model_name = EE_Registry::instance()->is_model_name($model_name_of_related_obj);
-        if (! $is_model_name) {
-            return null;
-        } else {
+        $model_name_of_related_obj = $this->type() ?? '';
+        if (EE_Registry::instance()->is_model_name($model_name_of_related_obj)) {
             return $this->get_first_related($model_name_of_related_obj);
         }
+        return null;
     }
 }

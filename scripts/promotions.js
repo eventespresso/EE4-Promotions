@@ -94,10 +94,9 @@ jQuery(document).ready(function($) {
                 var form_label = PROMO.form_label.position();
                 PROMO.form_input.addClass('ee-promo-combo-input').css({
                     'width':  (PROMO.container.outerWidth() - submit_width),
-                    'top':    form_label.top,
                     'height': PROMO.form_submit.outerHeight(),
                 });
-                PROMO.form_submit.addClass('ee-promo-combo-submit').css({'top': form_label.top});
+                PROMO.form_submit.addClass('ee-promo-combo-submit').css({'top': form_label.top + PROMO.form_label.height()});
             }
         },
 
@@ -109,6 +108,11 @@ jQuery(document).ready(function($) {
                 console.log();
                 console.log(JSON.stringify('@PROMO.set_listener_for_form_input()', null, 4));
             }
+            PROMO.container.on('keypress', '#ee-promotion-code-input', function(event) {
+                if (event.key === "Enter") {
+                    $('#ee-promotion-code-submit').trigger('click');
+                }
+            });
             PROMO.container.on('click', '#ee-promotion-code-submit', function(event) {
                 if (PROMO.display_debug) {
                     console.log(JSON.stringify('>> CLICK << on #ee-promotion-code-submit', null, 4));

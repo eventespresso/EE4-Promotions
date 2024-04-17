@@ -1,4 +1,5 @@
 <?php
+
 /**
  * espresso_events_Registration_Form_Hooks
  * Hooks various messages logic so that it runs on indicated Events Admin Pages.
@@ -13,7 +14,6 @@
  */
 class espresso_events_Promotions_Hooks extends EE_Admin_Hooks
 {
-
     protected function _set_hooks_properties()
     {
         $this->_name = 'promotions';

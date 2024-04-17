@@ -1,37 +1,35 @@
 <?php
 
-// define the plugin directory path and URL
-define('EE_PROMOTIONS_BASENAME', plugin_basename(EE_PROMOTIONS_PLUGIN_FILE));
-define('EE_PROMOTIONS_PATH', plugin_dir_path(__FILE__));
-define('EE_PROMOTIONS_URL', plugin_dir_url(__FILE__));
-define('EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS);
-define('EE_PROMOTIONS_CORE', EE_PROMOTIONS_PATH . 'core' . DS);
 
 /**
- * ------------------------------------------------------------------------
  * Class  EE_Promotions
  *
- * @package               Event Espresso
- * @subpackage            espresso-promotions
- * @author                Brent Christensen
- * @ version            1.0.0
- * ------------------------------------------------------------------------
+ * @package     Event Espresso
+ * @subpackage  espresso-promotions
+ * @author      Brent Christensen
+ * @version     1.0.0
  */
 class EE_Promotions extends EE_Addon
 {
-
-
     /**
      * register_addon
      *
-     * @throws \EE_Error
+     * @throws EE_Error
      */
     public static function register_addon()
     {
+        if (! defined('EE_PROMOTIONS_BASENAME')) {
+            // define the plugin directory path and URL
+            define('EE_PROMOTIONS_BASENAME', plugin_basename(EE_PROMOTIONS_PLUGIN_FILE));
+            define('EE_PROMOTIONS_PATH', plugin_dir_path(__FILE__));
+            define('EE_PROMOTIONS_URL', plugin_dir_url(__FILE__));
+            define('EE_PROMOTIONS_ADMIN', EE_PROMOTIONS_PATH . 'admin' . DS . 'promotions' . DS);
+            define('EE_PROMOTIONS_CORE', EE_PROMOTIONS_PATH . 'core' . DS);
+        }
         // register addon via Plugin API
         EE_Register_Addon::register(
             'Promotions',
-            array(
+            [
                 'version'               => EE_PROMOTIONS_VERSION,
                 'min_core_version'      => EE_PROMOTIONS_CORE_VERSION_REQUIRED,
                 'main_file_path'        => EE_PROMOTIONS_PLUGIN_FILE,
@@ -39,36 +37,40 @@ class EE_Promotions extends EE_Addon
                 'plugin_slug'           => 'espresso_promotions',
                 'config_class'          => 'EE_Promotions_Config',
                 'config_name'           => 'promotions',
+                'namespace'        => [
+                    'FQNS' => 'EventEspresso\Promotions',
+                    'DIR'  => __DIR__,
+                ],
                 // 'plugins_page_row'    => EE_Promotions::plugins_page_row(),
-                'dms_paths'             => array(EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS),
-                'module_paths'          => array(EE_PROMOTIONS_PATH . 'EED_Promotions.module.php'),
-                'shortcode_paths'       => array(EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php'),
-                'widget_paths'          => array(EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php'),
+                'dms_paths'             => [EE_PROMOTIONS_CORE . 'data_migration_scripts' . DS],
+                'module_paths'          => [EE_PROMOTIONS_PATH . 'EED_Promotions.module.php'],
+                'shortcode_paths'       => [EE_PROMOTIONS_PATH . 'EES_Espresso_Promotions.shortcode.php'],
+                'widget_paths'          => [EE_PROMOTIONS_PATH . 'EEW_Promotions.widget.php'],
                 // register autoloaders
-                'autoloader_paths'      => array(
+                'autoloader_paths'      => [
                     'EE_Promotions_Config'        => EE_PROMOTIONS_PATH . 'EE_Promotions_Config.php',
                     'Promotions_Admin_Page_Init'  => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page_Init.core.php',
                     'Promotions_Admin_Page'       => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_Page.core.php',
                     'Promotions_Admin_List_Table' => EE_PROMOTIONS_ADMIN . 'Promotions_Admin_List_Table.class.php',
                     'EE_Promotion_Scope'
-                        => EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes' . DS . 'EE_Promotion_Scope.lib.php',
-                ),
-                'autoloader_folders'    => array(
+                                                  => EE_PROMOTIONS_PATH . 'lib' . DS . 'scopes' . DS . 'EE_Promotion_Scope.lib.php',
+                ],
+                'autoloader_folders'    => [
                     'Promotions_Plugin_API' => EE_PROMOTIONS_PATH . 'lib' . DS . 'plugin_api',
-                ),
-                'pue_options'           => array(
+                ],
+                'pue_options'           => [
                     'pue_plugin_slug' => 'eea-promotions',
                     'checkPeriod'     => '24',
                     'use_wp_update'   => false,
-                ),
+                ],
                 // EE_Register_Model
-                'model_paths'           => array(EE_PROMOTIONS_CORE . 'db_models'),
-                'class_paths'           => array(EE_PROMOTIONS_CORE . 'db_classes'),
+                'model_paths'           => [EE_PROMOTIONS_CORE . 'db_models'],
+                'class_paths'           => [EE_PROMOTIONS_CORE . 'db_classes'],
                 // EE_Register_Model_Extensions
-                'model_extension_paths' => array(EE_PROMOTIONS_CORE . 'db_model_extensions' . DS),
-                'class_extension_paths' => array(EE_PROMOTIONS_CORE . 'db_class_extensions' . DS),
-                'capabilities'          => array(
-                    'administrator' => array(
+                'model_extension_paths' => [EE_PROMOTIONS_CORE . 'db_model_extensions' . DS],
+                'class_extension_paths' => [EE_PROMOTIONS_CORE . 'db_class_extensions' . DS],
+                'capabilities'          => [
+                    'administrator' => [
                         'ee_read_promotion',
                         'ee_read_promotions',
                         'ee_read_others_promotions',
@@ -78,29 +80,29 @@ class EE_Promotions extends EE_Addon
                         'ee_delete_promotion',
                         'ee_delete_promotions',
                         'ee_delete_others_promotions',
-                    ),
-                ),
-                'capability_maps'       => array(
-                    0 => array(
-                        'EE_Meta_Capability_Map_Read' => array(
+                    ],
+                ],
+                'capability_maps'       => [
+                    0 => [
+                        'EE_Meta_Capability_Map_Read' => [
                             'ee_read_promotion',
-                            array('Promotion', '', 'ee_read_others_promotions', ''),
-                        ),
-                    ),
-                    1 => array(
-                        'EE_Meta_Capability_Map_Edit' => array(
+                            ['Promotion', '', 'ee_read_others_promotions', ''],
+                        ],
+                    ],
+                    1 => [
+                        'EE_Meta_Capability_Map_Edit' => [
                             'ee_edit_promotion',
-                            array('Promotion', '', 'ee_edit_others_promotions', ''),
-                        ),
-                    ),
-                    2 => array(
-                        'EE_Meta_Capability_Map_Delete' => array(
+                            ['Promotion', '', 'ee_edit_others_promotions', ''],
+                        ],
+                    ],
+                    2 => [
+                        'EE_Meta_Capability_Map_Delete' => [
                             'ee_delete_promotion',
-                            array('Promotion', '', 'ee_delete_others_promotions', ''),
-                        ),
-                    ),
-                ),
-            )
+                            ['Promotion', '', 'ee_delete_others_promotions', ''],
+                        ],
+                    ],
+                ],
+            ]
         );
     }
 
@@ -115,14 +117,14 @@ class EE_Promotions extends EE_Addon
         // register promotion specific statuses
         add_filter(
             'FHEE__EEM_Status__localized_status__translation_array',
-            array('EE_Promotions', 'promotion_stati'),
-            10
+            ['EE_Promotions', 'promotion_stati']
         );
 
         // add promotion codes shortcode to messages
-        add_filter('FHEE__EE_Shortcodes__shortcodes', array('EE_Promotions', 'register_new_shortcodes'), 10, 2);
-        add_filter('FHEE__EE_Shortcodes__parser_after', array('EE_Promotions', 'register_new_shortcode_parser'), 10, 5);
+        add_filter('FHEE__EE_Shortcodes__shortcodes', ['EE_Promotions', 'register_new_shortcodes'], 10, 2);
+        add_filter('FHEE__EE_Shortcodes__parser_after', ['EE_Promotions', 'register_new_shortcode_parser'], 10, 5);
     }
+
 
     /**
      * plugins_page_row
@@ -132,11 +134,11 @@ class EE_Promotions extends EE_Addon
      */
     public static function plugins_page_row()
     {
-        return array(
+        return [
             'link_text'   => 'Promotions Addon Upsell Info',
             'link_url'    => '#',
             'description' => 'To edit me, open up ' . __FILE__ . ' and find the ' . __METHOD__ . '() method',
-        );
+        ];
     }
 
 
@@ -147,38 +149,39 @@ class EE_Promotions extends EE_Addon
      * @param array $stati_translation Current localized stati
      * @return array  Current stati with promotion stati appended.
      */
-    public static function promotion_stati($stati_translation)
+    public static function promotion_stati(array $stati_translation): array
     {
-        $promotion_stati = array(
-            EE_Promotion::upcoming    => array(
-                __('upcoming', 'event_espresso'),
-                __('upcoming', 'event_espresso'),
-            ),
-            EE_Promotion::active      => array(
-                __('active', 'event_espresso'),
-                __('active', 'event_espresso'),
-            ),
-            EE_Promotion::expired     => array(
-                __('expired', 'event_espresso'),
-                __('expired', 'event_espresso'),
-            ),
-            EE_Promotion::unavailable => array(
-                __('unavailable', 'event_espresso'),
-                __('unavailable', 'event_espresso'),
-            ),
-        );
+        $promotion_stati = [
+            EE_Promotion::upcoming    => [
+                esc_html__('upcoming', 'event_espresso'),
+                esc_html__('upcoming', 'event_espresso'),
+            ],
+            EE_Promotion::active      => [
+                esc_html__('active', 'event_espresso'),
+                esc_html__('active', 'event_espresso'),
+            ],
+            EE_Promotion::expired     => [
+                esc_html__('expired', 'event_espresso'),
+                esc_html__('expired', 'event_espresso'),
+            ],
+            EE_Promotion::unavailable => [
+                esc_html__('unavailable', 'event_espresso'),
+                esc_html__('unavailable', 'event_espresso'),
+            ],
+        ];
         return array_merge($stati_translation, $promotion_stati);
     }
+
 
     /**
      * Callback for FHEE__EE_Shortcodes__shortcodes
      *
-     * @since 1.0.0
      * @param array         $shortcodes The existing shortcodes in this library
      * @param EE_Shortcodes $lib
      * @return array          new array of shortcodes
+     * @since 1.0.0
      */
-    public static function register_new_shortcodes($shortcodes, EE_Shortcodes $lib)
+    public static function register_new_shortcodes(array $shortcodes, EE_Shortcodes $lib): array
     {
         // Check we have the EE_Transaction_Shortcodes library
         if ($lib instanceof EE_Transaction_Shortcodes) {
@@ -192,11 +195,11 @@ class EE_Promotions extends EE_Addon
         return $shortcodes;
     }
 
+
     /**
      * Call back for the FHEE__EE_Shortcodes__parser_after filter.
      * This contains the logic for parsing the new shortcodes introduced by this addon.
      *
-     * @since 1.0.0
      * @param string        $parsed     The current parsed template string.
      * @param string        $shortcode  The incoming shortcode being setup for parsing.
      * @param array|object  $data       Depending on the shortcode parser the filter is called in, this will represent
@@ -206,9 +209,17 @@ class EE_Promotions extends EE_Addon
      *                                  EE_Addressee_Data object OR just an EE_Addresee_Data object.
      * @param EE_Shortcodes $lib
      * @return string        The parsed string
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    public static function register_new_shortcode_parser($parsed, $shortcode, $data, $extra_data, EE_Shortcodes $lib)
-    {
+    public static function register_new_shortcode_parser(
+        string $parsed,
+        string $shortcode,
+        $data,
+        $extra_data,
+        EE_Shortcodes $lib
+    ): string {
         // Check we have the EE_Transaction_Shortcodes and our the shortcode matches
         if ($lib instanceof EE_Transaction_Shortcodes && $shortcode == '[PROMOTIONS_USED]') {
             // Pull the transaction from the EE_Messages_Addressee object passed to parser.
@@ -217,14 +228,14 @@ class EE_Promotions extends EE_Addon
             if ($transaction instanceof EE_Transaction) {
                 // Pull in the promotion line items for this transaction
                 $promo_rows = EEM_Price::instance()->get_all_wpdb_results(
-                    array(
-                        array(
+                    [
+                        [
                             'Promotion.Line_Item.TXN_ID' => $transaction->ID(),
-                        ),
-                    )
+                        ],
+                    ]
                 );
                 // Setup an arrey to store all promo codes used on the transaction
-                $promo_codes = array();
+                $promo_codes = [];
                 // Loop through promo line items and build the promo_codes array using the Promocode name and code
                 // (if available)
                 foreach ($promo_rows as $promo_row) {
@@ -239,9 +250,8 @@ class EE_Promotions extends EE_Addon
                     }
                 }
                 // Implode the promo_codes array into a comma-delimited string.
-                $promo_codes = implode(', ', $promo_codes);
                 // Return a single string or promo codes used.
-                return $promo_codes;
+                return implode(', ', $promo_codes);
             }
         }
         // If not within the correct section, or parsing the correct shortcode,

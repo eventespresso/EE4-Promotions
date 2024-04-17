@@ -4,18 +4,17 @@
  *
  * EEM_Promotions_Event
  *
- * @package         Event Espresso
+ * @package     Event Espresso
  * @subpackage
- * @author              Mike Nelson
- *
+ * @author      Mike Nelson
  */
 class EEME_Promotions_Event extends EEME_Base
 {
     public function __construct()
     {
-        $this->_model_name_extended = 'Event';
+        $this->_model_name_extended = EE_Promotion_Scope::SCOPE_EVENT;
         $this->_extra_relations = array(
-            'Promotion_Object'=>new EE_Has_Many_Any_Relation(false)
+            'Promotion_Object' => new EE_Has_Many_Any_Relation(false)
         );
         parent::__construct();
     }

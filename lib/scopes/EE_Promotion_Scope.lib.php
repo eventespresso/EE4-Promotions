@@ -1,5 +1,10 @@
 <?php
 
+use EventEspresso\core\services\loaders\LoaderFactory;
+use EventEspresso\core\services\loaders\LoaderInterface;
+use EventEspresso\core\services\request\DataType;
+use EventEspresso\core\services\request\RequestInterface;
+
 /**
  * Abstract class for EE_Promotion scopes
  *
@@ -10,6 +15,11 @@
  */
 abstract class EE_Promotion_Scope
 {
+    public const SCOPE_EVENT = 'Event';
+
+    protected ?LoaderInterface $loader;
+
+    protected ?RequestInterface $request;
 
     /**
      * Localized Labels for this scope.
@@ -17,9 +27,9 @@ abstract class EE_Promotion_Scope
      * method.
      *
      * @since 1.0.0
-     * @var stdClass
+     * @var stdClass|null
      */
-    public $label;
+    public ?stdClass $label;
 
     /**
      * Slug used to identify the scope in the system.
@@ -28,51 +38,51 @@ abstract class EE_Promotion_Scope
      * the related model.
      *
      * @since 1.0.0
-     * @var string
+     * @var string|null
      */
-    public $slug;
+    public ?string $slug;
 
     /**
      * The primary key name for this scope's model
      *
      * @since 1.0.0
-     * @var string
+     * @var string|null
      */
-    protected $_model_pk_name;
+    protected ?string $_model_pk_name;
 
     /**
      * This is a cache of all the EE_Base_Class model objects related to this scope that have
-     * been retrieved from the db and are in use.  The are indexed by the model object ID().
+     * been retrieved from the db and are in use.  They are indexed by the model object ID().
      *
      * @since 1.0.0
-     * @var EE_Base_Class[]
+     * @var EE_Base_Class[]|null
      */
-    protected $_model_objects;
+    protected ?array $_model_objects = [];
 
     /**
      * This is the default per page amount when no perpage value is set.
      *
      * @since 1.0.0
-     * @var int
+     * @var int|null
      */
-    protected $_per_page;
+    protected ?int $_per_page;
 
     /**
      * used for setting LIN_order
      *
      * @since 1.0.0
-     * @var int
+     * @var int|null
      */
-    protected static $_counter;
-
+    protected static ?int $_counter;
 
 
     /**
-     * Setup the basic structure of the scope class.
+     * Set up the basic structure of the scope class.
      *
+     * @return void
+     * @throws ReflectionException
+     * @throws EE_Error
      * @since 1.0.0
-     * @return \EE_Promotion_Scope
-     * @throws \EE_Error
      */
     public function __construct()
     {
@@ -80,13 +90,13 @@ abstract class EE_Promotion_Scope
     }
 
 
-
     /**
      * init
-     * Setup the basic structure of the scope class.
+     * Set up the basic structure of the scope class.
      *
+     * @throws EE_Error
+     * @throws ReflectionException
      * @since 1.0.0
-     * @throws \EE_Error
      */
     public function init()
     {
@@ -94,8 +104,11 @@ abstract class EE_Promotion_Scope
         if ($initialized) {
             return;
         }
-        EE_Promotion_Scope::$_counter = 1000;
-        $this->label = new stdClass();
+        $this->loader  = LoaderFactory::getLoader();
+        $this->request = $this->loader->getShared(RequestInterface::class);
+        $this->label   = new stdClass();
+
+        EE_Promotion_Scope::$_counter = 100;
         $this->_set_main_properties_and_hooks();
         $this->_verify_properties_set();
         $this->set_model_pk_name($this->_model()->get_primary_key_field()->get_name());
@@ -106,17 +119,16 @@ abstract class EE_Promotion_Scope
             $this->slug
         );
         // common ajax for admin
-        add_action('wp_ajax_promotion_scope_items', array( $this, 'ajax_get_applies_to_items_to_select' ), 10);
+        add_action('wp_ajax_promotion_scope_items', [$this, 'ajax_get_applies_to_items_to_select']);
         // hook into promotion details insert/update method
         add_action(
             'AHEE__Promotions_Admin_Page___insert_update_promotion__after',
-            array( $this, 'handle_promotion_update' ),
+            [$this, 'handle_promotion_update'],
             10,
             2
         );
         $initialized = true;
     }
-
 
 
     /**
@@ -125,17 +137,15 @@ abstract class EE_Promotion_Scope
      * called when scopes are instantiated and added to the EE_Registry::instance()->CFG->
      * addons->promotions->scopes property.
      *
-     * @since 1.0.0
      * @return void
+     * @since 1.0.0
      */
     abstract protected function _set_main_properties_and_hooks();
-
 
 
     /**
      * Child scope classes indicate what gets returned when a "name" is requested.
      *
-     * @since 1.0.0
      * @param int|EE_Base_Class $OBJ_ID         ID or model object for the EE_Base_Class object being utilized
      * @param bool|string       $link           If false just return name, if 'admin' return name
      *                                          wrapped in link to admin details.  If 'front' return
@@ -143,45 +153,42 @@ abstract class EE_Promotion_Scope
      * @param int               $PRO_ID         Optional. Include the promo ID for potential
      *                                          downstream code use.
      * @return string
+     * @since 1.0.0
      */
-    abstract public function name($OBJ_ID, $link = false, $PRO_ID = 0);
-
+    abstract public function name($OBJ_ID, $link = false, int $PRO_ID = 0): string;
 
 
     /**
      * Child scope classes indicate what gets returned when a "description" is requested.
      *
-     * @since 1.0.0
-     * @param  int|EE_Base_Class $OBJ_ID              ID or model object for the EE_Base_Class object being
+     * @param int|EE_Base_Class $OBJ_ID               ID or model object for the EE_Base_Class object being
      *                                                utilized
      * @return string
+     * @since 1.0.0
      */
-    abstract public function description($OBJ_ID);
-
+    abstract public function description($OBJ_ID): string;
 
 
     /**
      * Child scope classes indicate what gets returned when the admin_url is requested.
      * Admin url usually points to the details page for the given id.
      *
-     * @since 1.0.0
-     * @param  int $OBJ_ID ID for the EE_Base_Class object being utilized
+     * @param int $OBJ_ID ID for the EE_Base_Class object being utilized
      * @return string
+     * @since 1.0.0
      */
-    abstract public function get_admin_url($OBJ_ID);
-
+    abstract public function get_admin_url(int $OBJ_ID): string;
 
 
     /**
      * Child scope classes indicate what gets returned when the frontend_url is requested.
      * Frontend url usually points to the single page view for the given id.
      *
-     * @since 1.0.0
-     * @param  int $OBJ_ID ID for the EE_Base_Class object being utilized
+     * @param int $OBJ_ID ID for the EE_Base_Class object being utilized
      * @return string
+     * @since 1.0.0
      */
-    abstract public function get_frontend_url($OBJ_ID);
-
+    abstract public function get_frontend_url(int $OBJ_ID): string;
 
 
     /**
@@ -189,119 +196,132 @@ abstract class EE_Promotion_Scope
      * EEM model related to scope.  Note this also should
      * consider any filters present.
      *
-     * @since  1.0.0
+     * @return array of query args
      * @see    EEM_Base::get_all() for documentation related to
      *         what $query_args can be used.
-     * @return array of query args
+     * @since  1.0.0
      */
-    abstract public function get_query_args();
-
+    abstract public function get_query_args(): array;
 
 
     /**
      * This returns the selector for this scope that is used in the promotions details page.
      *
-     * @since 1.0.0
-     * @param integer $PRO_ID The promotion ID for the applies to selector we are retrieving.
+     * @param int $OBJ_ID The promotion ID for the applies to selector we are retrieving.
      * @return string html content.
+     * @since 1.0.0
      */
-    abstract public function get_admin_applies_to_selector($PRO_ID);
-
+    abstract public function get_admin_applies_to_selector(int $OBJ_ID): string;
 
 
     /**
      * This is the callback for the AHEE__Promotions_Admin_Page___insert_update_promotion__after action which makes
      * sure scope applies to are attached properly to the promotion.
      *
-     * @since   1.0.0
      * @param EE_Promotion $promotion the updated/inserted EE_Promotion object.
      * @param array        $data      the incoming form data.
      * @return void
+     * @since   1.0.0
      */
-    abstract public function handle_promotion_update(EE_Promotion $promotion, $data);
-
+    abstract public function handle_promotion_update(EE_Promotion $promotion, array $data);
 
 
     /**
      * returns one of the EEM_Line_Item line type constants that should be used when generating a promotion line item
      * for this scope
      *
-     * @since   1.0.0
+     * @param bool $apply_promos_before_tax
      * @return string
+     * @since   1.0.0
      */
-    abstract public function get_promotion_line_item_type();
+    abstract public function get_promotion_line_item_type(bool $apply_promos_before_tax = false): string;
 
+
+    /**
+     * returns array of EE_Line_Item objects that are the direct children of the supplied $applicable_item
+     *
+     * @param callable     $add_promotion_line_item
+     * @param EE_Line_Item $applicable_item
+     * @param EE_Promotion $promotion
+     * @param bool         $apply_promos_before_tax
+     * @return bool
+     * @since $VID:$
+     */
+    abstract public function calculateAndApplyPromotion(
+        callable $add_promotion_line_item,
+        EE_Line_Item $applicable_item,
+        EE_Promotion $promotion,
+        bool $apply_promos_before_tax
+    ): bool;
 
 
     /**
      * @return string
      */
-    public function model_pk_name()
+    public function model_pk_name(): string
     {
         return $this->_model_pk_name;
     }
 
 
-
     /**
      * @param string $model_pk_name
      */
-    public function set_model_pk_name($model_pk_name)
+    public function set_model_pk_name(string $model_pk_name)
     {
         $this->_model_pk_name = $model_pk_name;
     }
 
 
-
     /**
      * This returns a html span string for the default scope icon.  Child classes can override.
      *
-     * @since 1.0.0
      * @param bool $class_only used to indicate if we only want to return the icon class or the
      *                         entire html string.
      * @return string
+     * @since 1.0.0
      */
-    public function get_scope_icon($class_only = false)
+    public function get_scope_icon(bool $class_only = false): string
     {
         return $class_only
             ? 'dashicons dashicons-megaphone'
-            : '<span class="dashicons dashicons-megaphone" title="'
-              . __('Promotion', 'event_espresso')
+            : '<span class="dashicons dashicons-megaphone ee-aria-tooltip" aria-label="'
+              . esc_html__('Promotion', 'event_espresso')
               . '"></span>';
     }
-
 
 
     /**
      * this returns a styled span for the promo count.
      *
-     * @since 1.0.0
      * @param int $count the count to display.
      * @return string
+     * @since 1.0.0
      */
-    protected function get_promo_count_display($count = 0)
+    protected function get_promo_count_display(int $count = 0): string
     {
         return empty($count) ? '' : '<span class="promotion-count-bubble">' . $count . '</span>';
     }
 
 
-
     /**
      * This just returns the related model instance as set via the $_slug property.
      *
-     * @since 1.0.0
-     * @throws EE_Error
      * @return  EEM_Base
+     * @throws ReflectionException
+     * @throws EE_Error
+     * @since 1.0.0
      */
-    protected function _model()
+    protected function _model(): EEM_Base
     {
+        /** @var EEM_Base $model */
         $model = EE_Registry::instance()->load_model($this->slug);
         // let's verify the model is an instance of the correct model for the slug.
         $expected_model_class = 'EEM_' . $this->slug;
         if (! $model instanceof $expected_model_class) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'The loading of a corresponding model for %s failed because there is not a %s instance available.',
                         'event_espresso'
                     ),
@@ -310,18 +330,19 @@ abstract class EE_Promotion_Scope
                 )
             );
         }
+
         return $model;
     }
-
 
 
     /**
      * This is used to set the model object on the $_model_objects property
      *
-     * @since 1.0.0
-     * @param  EE_Base_Class $obj
+     * @param EE_Base_Class $obj
      * @return  void
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
     protected function _set_model_object(EE_Base_Class $obj)
     {
@@ -329,33 +350,34 @@ abstract class EE_Promotion_Scope
     }
 
 
-
     /**
      * Gets the model object for the given ID for the scope.
      * If it isn't cached in $_model_objects then will use the model() method to retrieve the
      * model object for the given id and then cache it to the $_model_objects property.
      *
-     * @since 1.0.0
-     * @throws EE_Error If $OBJ_ID does not correspond to a valid model object.
-     * @param  int  $OBJ_ID      ID    for the object to be retrieved.
-     * @param  bool $reset_cache Optional. If client wants to reset cache then set to true.
+     * @param int  $OBJ_ID       ID    for the object to be retrieved.
+     * @param bool $reset_cache  Optional. If client wants to reset cache then set to true.
      *                           Default false.
      * @return  EE_Base_Class
+     * @throws EE_Error If $OBJ_ID does not correspond to a valid model object.
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    protected function _get_model_object($OBJ_ID, $reset_cache = false)
+    protected function _get_model_object(int $OBJ_ID, bool $reset_cache = false): EE_Base_Class
     {
         // first check if in cache (and if cache reset not requested.)
         if (! $reset_cache && ! empty($this->_model_objects[ $OBJ_ID ])) {
             return $this->_model_objects[ $OBJ_ID ];
         }
         // attempt to retrieve model object!
+        /** @var $obj EE_Base_Class */
         $obj = $this->_model()->get_one_by_ID($OBJ_ID);
         // verification that EE_Base_Class is of the expected instance.
         $expected_class = 'EE_' . $this->slug;
         if (! $obj instanceof $expected_class) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'Unable to retrieve the model object related to the %s class with this id: %s.  Maybe it was deleted from the db and the promotion got orphaned.',
                         'event_espresso'
                     ),
@@ -365,79 +387,77 @@ abstract class EE_Promotion_Scope
             );
         }
         // set to cache
-        /** @var $obj EE_Base_Class */
         $this->_set_model_object($obj);
+
         // return
         return $obj;
     }
-
 
 
     /**
      * Returns a total count of items matching the
      * query_args.
      *
-     * @since    1.0.0
      * @return int  count of items.
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since    1.0.0
      */
-    protected function _get_total_items()
+    protected function _get_total_items(): int
     {
         $query_args = $this->get_query_args();
         // make sure for counts we ONLY include the $where_query.
-        $_where = array_key_exists(0, $query_args) ? array( $query_args[0] ) : array();
+        $_where = array_key_exists(0, $query_args) ? [$query_args[0]] : [];
+
         return $this->_model()->count($_where, null, true);
     }
-
 
 
     /**
      * This returns an array of EE_Base_Class items for the
      * scope.
      *
-     * @since  1.0.0
-     * @param  boolean $paging whether to include any paging parameters that might be in the _REQUEST or not.
+     * @param boolean $paging whether to include any paging parameters that might be in the _REQUEST or not.
      * @return  EE_Base_Class[]
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
      * @access protected
+     * @since  1.0.0
      */
-    public function get_scope_items($paging = true)
+    public function get_scope_items(bool $paging = true): array
     {
         $query_args = $this->get_query_args();
         if ($paging) {
-            $current_page = ! empty($_REQUEST['paged']) ? $_REQUEST['paged'] : 1;
-            $per_page = ! empty($_REQUEST['perpage']) ? $_REQUEST['perpage'] : $this->_per_page;
-            $offset = ( $current_page - 1 ) * $per_page;
-            $query_args['limit'] = array( $offset, $per_page );
+            $current_page        = $this->request->getRequestParam('paged', 1, DataType::INT);
+            $per_page            = $this->request->getRequestParam('perpage', $this->_per_page, DataType::INT);
+            $offset              = ($current_page - 1) * $per_page;
+            $query_args['limit'] = [$offset, $per_page];
         }
         // only display selected items toggle set?
-        if (! empty($_REQUEST['PRO_display_only_selected'])) {
-            $selected_items = ! empty($_REQUEST['selected_items'])
-                ? explode(',', $_REQUEST['selected_items'])
-                : array();
-            if (! empty($selected_items)) {
-                $query_args[0][ $this->_model()->primary_key_name() ] = array( 'IN', $selected_items );
-            }
+        $display_only_selected = $this->request->getRequestParam('PRO_display_only_selected', false, DataType::BOOL);
+        if ($display_only_selected) {
+            $selected_items                                       = $this->request->getRequestParam('selected_items');
+            $query_args[0][ $this->_model()->primary_key_name() ] = ['IN', explode(',', $selected_items)];
         }
+
         return $this->_model()->get_all($query_args);
     }
-
 
 
     /**
      * This returns an array of EE_Base_Class items for the scope.
      *
-     * @since  1.0.0
-     * @param  array $query_args
+     * @param array $query_args
      * @return  EE_Base_Class[]
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
      * @access protected
+     * @since  1.0.0
      */
-    public function get_items($query_args = array())
+    public function get_items(array $query_args = []): array
     {
         return $this->_model()->get_all($query_args);
     }
-
 
 
     /**
@@ -446,13 +466,13 @@ abstract class EE_Promotion_Scope
      *
      * @param $PRO_ID
      * @return array  array of IDs
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function get_applied_to_item_ids($PRO_ID)
+    public function get_applied_to_item_ids($PRO_ID): array
     {
         return $this->_get_applied_to_item_ids($PRO_ID);
     }
-
 
 
     /**
@@ -461,47 +481,49 @@ abstract class EE_Promotion_Scope
      *
      * @param $PRO_ID
      * @return int
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function count_applied_to_items($PRO_ID)
+    public function count_applied_to_items($PRO_ID): int
     {
         return $this->_count_applied_to_items($PRO_ID);
     }
-
 
 
     /**
      * Generates an array of obj_ids for the EE_Base_Class objects related to this scope that the promotion matching
      * the given ID is applied to (or a count of the objects)
      *
-     * @since 1.0.0
-     * @param  int $PRO_ID Promotion that is applied.
+     * @param int $PRO_ID Promotion that is applied.
      * @return  array    array of ids matching the items related to the scope.
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    protected function _get_applied_to_item_ids($PRO_ID)
+    protected function _get_applied_to_item_ids(int $PRO_ID): array
     {
-        $query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
+        $query_args = [['PRO_ID' => $PRO_ID, 'POB_type' => $this->slug]];
+
         // with the PRO_ID we can get the PRO_OBJ items related to this scope.
         return EEM_Promotion_Object::instance()->get_col($query_args, 'OBJ_ID');
     }
 
 
-
     /**
      * Returns a count of the objects that the promotion applies to for this scope.
      *
-     * @since 1.0.0
-     * @param  int $PRO_ID Promotion that is applied.
+     * @param int $PRO_ID Promotion that is applied.
      * @return  int
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    protected function _count_applied_to_items($PRO_ID)
+    protected function _count_applied_to_items(int $PRO_ID): int
     {
-        $query_args = array( array( 'PRO_ID' => $PRO_ID, 'POB_type' => $this->slug ) );
+        $query_args = [['PRO_ID' => $PRO_ID, 'POB_type' => $this->slug]];
+
         return EEM_Promotion_Object::instance()->count($query_args);
     }
-
 
 
     /**
@@ -509,17 +531,19 @@ abstract class EE_Promotion_Scope
      * in the dom.
      * It may be called when new filters are requested for results or when paging is used.
      *
-     * @since  1.0.0
      * @return string json object with results.
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since  1.0.0
      */
-    public function ajax_get_applies_to_items_to_select()
+    public function ajax_get_applies_to_items_to_select(): string
     {
-        $selected_items = ! empty($_REQUEST['selected_items'])
-            ? explode(',', $_REQUEST['selected_items'])
-            : array();
+        $selected_items = $this->request->requestParamIsSet('selected_items')
+            ? explode(',', $this->request->getRequestParam('selected_items'))
+            : [];
+
         $requested_items = $this->get_scope_items();
-        $PRO_ID = ! empty($_REQUEST['PRO_ID']) ? $_REQUEST['PRO_ID'] : 0;
+        $PRO_ID          = $this->request->getRequestParam('PRO_ID', 0, DataType::INT);
         // scope items list
         $response['items_content'] = ! empty($requested_items)
             ? $this->_get_applies_to_items_to_select(
@@ -528,14 +552,14 @@ abstract class EE_Promotion_Scope
                 $PRO_ID
             )
             : sprintf(
-                __('%sNo results for the given query%s', 'event_espresso'),
-                '<ul class="promotion-applies-to-items-ul"><li>',
-                '</li></ul>'
+                esc_html__('%sNo results for the given query%s', 'event_espresso'),
+                '<div class="promotion-applies-to-items-ul">',
+                '</div>'
             );
         // paging list
-        $total_items = $this->_get_total_items();
+        $total_items              = $this->_get_total_items();
         $response['items_paging'] = $this->_get_applies_to_items_paging($total_items);
-        $response['success'] = true;
+        $response['success']      = true;
         // make sure there are no php errors or headers_sent.  Then we can set correct json header.
         if (null === error_get_last() || ! headers_sent()) {
             header('Content-Type: application/json; charset=UTF-8');
@@ -545,99 +569,102 @@ abstract class EE_Promotion_Scope
     }
 
 
-
     /**
-     * By default promotion scopes can use this method to return a list of checkboxes for
+     * By default, promotion scopes can use this method to return a list of checkboxes for
      * selecting what scope items are applied to the promotion.  Scopes can override this
      * however they want tho.
      *
-     * @since 1.0.0
-     * @throws EE_Error
-     * @param  EE_Base_Class[] $items_to_select
-     * @param  array           $selected_items    Should be an array of existing applied to items IDs (
-     *                                            EE_Base_Class ids)
-     * @param int              $PRO_ID            EE_Promotion object id. Optional. Default 0.
+     * @param EE_Base_Class[]|null $items_to_select
+     * @param array                $selected_items Should be an array of existing applied to items IDs (
+     *                                             EE_Base_Class ids)
+     * @param int                  $PRO_ID         EE_Promotion object id. Optional. Default 0.
      * @return string                            unordered list of checkboxes.
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    protected function _get_applies_to_items_to_select($items_to_select, $selected_items, $PRO_ID = 0)
-    {
-        $selected_items = (array) $selected_items;
+    protected function _get_applies_to_items_to_select(
+        ?array $items_to_select,
+        array $selected_items,
+        int $PRO_ID = 0
+    ): string {
         $disabled = '';
         // verification
-        if (empty($items_to_select) || ! is_array($items_to_select)
-             || ! $items_to_select[ key(
-                 $items_to_select
-             ) ] instanceof EE_Base_Class
+        if (
+            empty($items_to_select) || ! is_array($items_to_select)
+            || ! $items_to_select[ key($items_to_select) ] instanceof EE_Base_Class
         ) {
             return sprintf(
-                __(
+                esc_html__(
                     'There are no active %s to assign to this scope.  You will need to create some first.',
                     'event_espresso'
                 ),
                 $this->label->plural
             );
         }
-        $checkboxes = '<ul class="promotion-applies-to-items-ul">';
+        $checkboxes = '<div class="promotion-applies-to-items-ul">';
         foreach ($items_to_select as $id => $obj) {
             $checked = in_array($id, $selected_items) ? ' checked=checked' : '';
             // disabled check
             if (! empty($PRO_ID)) {
                 $promo_obj = EEM_Promotion_Object::instance()->get_one(
-                    array( array( 'PRO_ID' => $PRO_ID, 'OBJ_ID' => $id ) )
+                    [['PRO_ID' => $PRO_ID, 'OBJ_ID' => $id]]
                 );
-                $disabled = $promo_obj instanceof EE_Promotion_Object && $promo_obj->used() > 0 ? ' disabled="disabled"'
-                    : '';
+                $disabled  =
+                    $promo_obj instanceof EE_Promotion_Object && $promo_obj->used() > 0 ? ' disabled="disabled"'
+                        : '';
             }
-            $checkboxes .= '<li><input type="checkbox" id="PRO_applied_to_selected['
-                           . $id
-                           . ']" name="PRO_applied_to_selected['
-                           . $id
-                           . ']" value="'
-                           . $id
-                           . '" '
-                           . $checked
-                           . $disabled
-                           . '>';
-            $checkboxes .= '<label class="pro-applied-to-selector-checkbox-label" for="PRO_applied_to_selected['
-                           . $id
-                           . ']">'
-                           . apply_filters('FHEE__EE_Promotion_Scope___get_applies_to_items_to_select__obj_name', $this->name($obj), $obj)
-                           . '</label>';
+            $checkboxes .= "
+                <label class='pro-applied-to-selector-checkbox-label'
+                       for='PRO_applied_to_selected[$id]'
+                >
+                    <input type='checkbox'
+                           class='ee-input-size--small'
+                           id='PRO_applied_to_selected[$id]'
+                           name='PRO_applied_to_selected[$id]'
+                           value='$id' $checked $disabled
+                    >
+                    " . apply_filters(
+                    'FHEE__EE_Promotion_Scope___get_applies_to_items_to_select__obj_name',
+                    $this->name($obj),
+                    $obj
+                ) . '
+                </label>';
         }
-        $checkboxes .= '</ul>';
+        $checkboxes .= '</div>';
+
         return $checkboxes;
     }
-
 
 
     /**
      * Get paging for the selector
      *
-     * @since 1.0.0
      * @param int $total_items count of total items retrieved in the query.
      * @return string Paging html
+     * @since 1.0.0
      */
-    protected function _get_applies_to_items_paging($total_items)
+    protected function _get_applies_to_items_paging(int $total_items): string
     {
-        EE_Registry::instance()->load_helper('Template');
-        $current_page = isset($_REQUEST['paged']) ? $_REQUEST['paged'] : 1;
-        $perpage = isset($_REQUEST['perpage']) ? $_REQUEST['perpage'] : $this->_per_page;
-        $url = isset($_REQUEST['redirect_url']) ? $_REQUEST['redirect_url'] : $_SERVER['REQUEST_URI'];
-        return '<span class="spinner"></span>&nbsp;' . EEH_Template::get_paging_html(
-            $total_items,
-            $current_page,
-            $perpage,
-            $url
-        );
+        return EEH_Template::get_paging_html(
+                $total_items,
+                $this->request->getRequestParam('paged', 1, DataType::INT),
+                $this->request->getRequestParam('perpage', $this->_per_page, DataType::INT),
+                $this->request->getRequestParam(
+                    'redirect_url',
+                    $this->request->getServerParam('REQUEST_URI'),
+                    DataType::URL
+                )
+            )
+               . '<span class="spinner"></span> ';
     }
-
 
 
     /**
      * This verifies that the necessary properties for this class have been set.
      *
-     * @since 1.0.0
      * @throws EE_Error
+     * @since 1.0.0
      */
     private function _verify_properties_set()
     {
@@ -651,7 +678,7 @@ abstract class EE_Promotion_Scope
         if (empty($this->slug)) {
             throw new EE_Error(
                 sprintf(
-                    __(
+                    esc_html__(
                         'The %s class has not set the $slug property.  This is used as a identifier for this scope and is necessary.',
                         'event_espresso'
                     ),
@@ -662,63 +689,67 @@ abstract class EE_Promotion_Scope
     }
 
 
-
     /**
      *    add_promotion_objects_for_global_promotions
      *    if a promotion is global but doesn't already have a corresponding EE_Promotion_Object record,
      *    then this method will create one and add it to the supplied list of $promotion_objects
      *
+     * @param EE_Promotion_Object[] $promotion_objects
+     * @param EE_Promotion          $promotion
+     * @param EE_Base_Class[]       $objects
+     * @return EE_Promotion_Object[]
+     * @throws EE_Error
+     * @throws ReflectionException
      * @since   1.0.4
-     * @param \EE_Promotion_Object[] $promotion_objects
-     * @param \EE_Promotion          $promotion
-     * @param \EE_Base_Class[]       $objects
-     * @return \EE_Promotion_Object[]
-     * @throws \EE_Error
      */
     public function add_promotion_objects_for_global_promotions(
-        $promotion_objects,
+        array $promotion_objects,
         EE_Promotion $promotion,
-        $objects = array()
-    ) {
-        $objects = is_array($objects) ? $objects : array( $objects );
-        if (! empty($objects)) {
-            foreach ($objects as $object) {
-                if ($object instanceof EE_Base_Class
-                    && $promotion instanceof EE_Promotion
-                    && $promotion->is_global()
-                ) {
-                    $has_promotion_object = false;
-                    if (! empty($promotion_objects)) {
-                        foreach ($promotion_objects as $promotion_object) {
-                            if ($promotion_object instanceof EE_Promotion_Object
-                                && $promotion_object->type() === $this->slug
-                                && $promotion_object->OBJ_ID() === $object->ID()
-                            ) {
-                                $has_promotion_object = true;
-                                break;
-                            }
+        array $objects = []
+    ): array {
+        $objects = is_array($objects) ? $objects : [$objects];
+        if (empty($objects)) {
+            return $promotion_objects;
+        }
+
+        foreach ($objects as $object) {
+            if (
+                $object instanceof EE_Base_Class
+                && $promotion instanceof EE_Promotion
+                && $promotion->is_global()
+            ) {
+                $has_promotion_object = false;
+                if (! empty($promotion_objects)) {
+                    foreach ($promotion_objects as $promotion_object) {
+                        if (
+                            $promotion_object instanceof EE_Promotion_Object
+                            && $promotion_object->type() === $this->slug
+                            && $promotion_object->OBJ_ID() === $object->ID()
+                        ) {
+                            $has_promotion_object = true;
+                            break;
                         }
                     }
-                    // Object has a promotion object already.
-                    if (!$has_promotion_object) {
-                        $promotion_obj = EE_Promotion_Object::new_instance(
-                            array(
-                                'PRO_ID'   => $promotion->ID(),
-                                'OBJ_ID'   => $object->ID(),
-                                'POB_type' => $this->slug,
-                                'POB_used' => 0,
-                            )
-                        );
-                        if ($promotion_obj->save()) {
-                            $promotion_objects[ $promotion_obj->ID() ] = $promotion_obj;
-                        }
+                }
+                // Object has a promotion object already.
+                if (! $has_promotion_object) {
+                    $promotion_obj = EE_Promotion_Object::new_instance(
+                        [
+                            'PRO_ID'   => $promotion->ID(),
+                            'OBJ_ID'   => $object->ID(),
+                            'POB_type' => $this->slug,
+                            'POB_used' => 0,
+                        ]
+                    );
+                    if ($promotion_obj->save()) {
+                        $promotion_objects[ $promotion_obj->ID() ] = $promotion_obj;
                     }
                 }
             }
         }
+
         return $promotion_objects;
     }
-
 
 
     /**
@@ -726,17 +757,21 @@ abstract class EE_Promotion_Scope
      * searches the cart for any items that the supplied promotion applies to.
      * can be overridden by specific promotion scope classes for greater performance or specificity
      *
-     * @since   1.0.0
-     * @param EE_Promotion     $promotion
-     * @param bool             $IDs_only - whether to return array of EE_Promotion_Object IDs or the actual
+     * @param EE_Promotion    $promotion
+     * @param bool            $IDs_only  - whether to return array of EE_Promotion_Object IDs or the actual
      *                                   EE_Promotion_Object objects
-     * @param \EE_Base_Class[] $objects
+     * @param EE_Base_Class[] $objects
      * @return array
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since   1.0.0
      */
-    public function get_redeemable_scope_promos(EE_Promotion $promotion, $IDs_only = true, $objects = array())
-    {
-        $redeemable_scope_promos = array();
+    public function get_redeemable_scope_promos(
+        EE_Promotion $promotion,
+        bool $IDs_only = true,
+        array $objects = []
+    ): array {
+        $redeemable_scope_promos = [];
         // exceeded global use limit ?
         if (! $promotion->global_uses_left()) {
             return $redeemable_scope_promos;
@@ -744,13 +779,14 @@ abstract class EE_Promotion_Scope
         $promotion_objects = $this->get_promotion_objects($promotion, $objects);
         if (! empty($promotion_objects)) {
             foreach ($promotion_objects as $promotion_object) {
-                // can the promotion still be be redeemed fro this scope object?
-                if ($promotion_object instanceof EE_Promotion_Object
+                // can the promotion still be redeemed for this scope object?
+                if (
+                    $promotion_object instanceof EE_Promotion_Object
                     && $promotion->uses_left_for_scope_object($promotion_object) > 0
                 ) {
                     // make sure array exists for holding redeemable scope promos
                     if (! isset($redeemable_scope_promos[ $this->slug ])) {
-                        $redeemable_scope_promos[ $this->slug ] = array();
+                        $redeemable_scope_promos[ $this->slug ] = [];
                     }
                     $redeemable_scope_promos[ $this->slug ][] = $IDs_only
                         ? $promotion_object->OBJ_ID()
@@ -758,9 +794,9 @@ abstract class EE_Promotion_Scope
                 }
             }
         }
+
         return $redeemable_scope_promos;
     }
-
 
 
     /**
@@ -768,39 +804,42 @@ abstract class EE_Promotion_Scope
      * returns an array of EE_Promotion_Object's for the current scope type,
      * and adds any new ones required for the passed array of objects
      *
+     * @param EE_Promotion    $promotion
+     * @param EE_Base_Class[] $objects
+     * @return EE_Promotion_Object[]
+     * @throws EE_Error
+     * @throws ReflectionException
      * @since   1.0.4
-     * @param \EE_Promotion    $promotion
-     * @param \EE_Base_Class[] $objects
-     * @return \EE_Promotion_Object[]
-     * @throws \EE_Error
      */
-    protected function get_promotion_objects(EE_Promotion $promotion, $objects = array())
+    protected function get_promotion_objects(EE_Promotion $promotion, array $objects = []): array
     {
         // retrieve promotion objects for this promotion type scope
-        $promotion_objects = $promotion->promotion_objects(array( array( 'POB_type' => $this->slug ) ));
+        $promotion_objects = $promotion->promotion_objects([['POB_type' => $this->slug]]);
         // check that global promotions cover all events
         return $this->add_promotion_objects_for_global_promotions($promotion_objects, $promotion, $objects);
     }
-
 
 
     /**
      * get_redeemable_scope_promos
      * searches the database for any line items that this promotion applies to
      *
-     * @since   1.0.0
      * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
-     * @param string       $OBJ_type
      * @param array        $OBJ_IDs
-     * @return EE_Line_Item[]
+     * @param string       $OBJ_type
+     * @return array
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since   1.0.0
      */
     protected function get_object_line_items_for_transaction(
         EE_Line_Item $total_line_item,
-        $OBJ_IDs = array(),
-        $OBJ_type = ''
-    ) {
+        array $OBJ_IDs = [],
+        string $OBJ_type = ''
+    ): array {
         /** @type EEM_Line_Item $EEM_Line_Item */
         $EEM_Line_Item = EE_Registry::instance()->load_model('Line_Item');
+
         // $EEM_Line_Item->show_next_x_db_queries();
         return $EEM_Line_Item->get_object_line_items_for_transaction(
             $total_line_item->TXN_ID(),
@@ -810,63 +849,65 @@ abstract class EE_Promotion_Scope
     }
 
 
-
     /**
      * This determines if there are any saved filters for the given Promotion ID and if needed will overload the
-     * $_REQUEST global for those filter values for use elsewhere in the promotion ui.
+     * request parameters for those filter values for use elsewhere in the promotion ui.
      *
-     * @since 1.0.0
      * @param int $PRO_ID
      * @return bool true when there were saved filters, false when not.
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since 1.0.0
      */
-    protected function _maybe_overload_request_with_saved_filters($PRO_ID = 0)
+    protected function _maybe_overload_request_with_saved_filters(int $PRO_ID = 0): bool
     {
         // any saved filters (only on non-ajax requests)?
         if (! empty($PRO_ID) && ! defined('DOING_AJAX')) {
             $set_filters = EEM_Extra_Meta::instance()->get_one(
-                array(
-                    0 => array(
+                [
+                    0 => [
                         'OBJ_ID'   => $PRO_ID,
                         'EXM_type' => 'Promotion',
                         'EXM_key'  => 'promo_saved_filters',
-                    ),
-                )
+                    ],
+                ]
             );
-            $set_filters = $set_filters instanceof EE_Extra_Meta ? $set_filters->get('EXM_value') : array();
-            // overload $_REQUEST global
+            $set_filters = $set_filters instanceof EE_Extra_Meta ? $set_filters->get('EXM_value') : [];
+            // overload request parameters
             foreach ($set_filters as $filter_key => $filter_value) {
                 if ($filter_value) {
-                    $_REQUEST[ $filter_key ] = $filter_value;
+                    $this->request->setRequestParam($filter_key, $filter_value);
                 }
             }
             if (! empty($set_filters)) {
                 return true;
             }
         }
+
         return false;
     }
-
 
 
     /**
      * get_object_line_items_from_cart
      * searches the line items for any objects that this promotion applies to
      *
-     * @since   1.0.0
      * @param EE_Line_Item $total_line_item the EE_Cart grand total line item to be searched
      * @param array        $redeemable_scope_promos
      * @param string       $OBJ_type
-     * @return \EE_Line_Item[]
+     * @return array
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since   1.0.0
      */
     public function get_object_line_items_from_cart(
         EE_Line_Item $total_line_item,
-        $redeemable_scope_promos = array(),
-        $OBJ_type = ''
-    ) {
+        array $redeemable_scope_promos = [],
+        string $OBJ_type = ''
+    ): array {
         EE_Registry::instance()->load_helper('Line_Item');
-        $applicable_items = array();
-        $OBJ_type = empty($OBJ_type) ? $this->slug : $OBJ_type;
+        $applicable_items = [];
+        $OBJ_type         = empty($OBJ_type) ? $this->slug : $OBJ_type;
         // check that redeemable scope promos for the requested type exist
         if (isset($redeemable_scope_promos[ $OBJ_type ])) {
             $object_type_line_items = EEH_Line_Item::get_line_items_by_object_type_and_IDs(
@@ -874,103 +915,132 @@ abstract class EE_Promotion_Scope
                 $OBJ_type,
                 $redeemable_scope_promos[ $OBJ_type ]
             );
-            if (is_array($object_type_line_items)) {
+            if (! empty($object_type_line_items)) {
                 foreach ($object_type_line_items as $object_type_line_item) {
-                    if (apply_filters(
-                        'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item',
-                        true,
-                        $object_type_line_item
-                    )
+                    if (
+                        apply_filters(
+                            'FHEE__EE_Promotion_Scope__get_object_line_items_from_cart__is_applicable_item',
+                            true,
+                            $object_type_line_item
+                        )
                     ) {
                         $applicable_items[] = $object_type_line_item;
                     }
                 }
             }
         }
+
         return $applicable_items;
     }
-
 
 
     /**
      * get_redeemable_scope_promos
      * searches the cart for any items that this promotion applies to
      *
+     * @param EE_Line_Item|null $parent_line_item the line item to create the new promotion line item under
+     * @param EE_Promotion|null $promotion        the promotion object that the line item is being created for
+     * @param string            $promo_name
+     * @param bool              $apply_promos_before_tax
+     * @return EE_Line_Item
+     * @throws EE_Error
+     * @throws ReflectionException
      * @since   1.0.0
-     * @param EE_Line_Item $parent_line_item the line item to create the new promotion line item under
-     * @param EE_Promotion $promotion        the promotion object that the line item is being created for
-     * @param string       $promo_name
-     * @param bool         $affects_tax
-     * @return \EE_Line_Item
-     * @throws \EE_Error
      */
     public function generate_promotion_line_item(
-        EE_Line_Item $parent_line_item,
-        EE_Promotion $promotion,
-        $promo_name = '',
-        $affects_tax = false
-    ) {
+        ?EE_Line_Item $parent_line_item,
+        ?EE_Promotion $promotion,
+        string $promo_name = '',
+        bool $apply_promos_before_tax = false
+    ): EE_Line_Item {
         // verify EE_Line_Item
         if (! $parent_line_item instanceof EE_Line_Item) {
             throw new EE_Error(
-                __('A valid EE_Line_Item object is required to generate a promotion line item.', 'event_espresso')
+                esc_html__(
+                    'A valid EE_Line_Item object is required to generate a promotion line item.',
+                    'event_espresso'
+                )
             );
         }
         // verify EE_Promotion
         if (! $promotion instanceof EE_Promotion) {
             throw new EE_Error(
-                __('A valid EE_Promotion object is required to generate a promotion line item.', 'event_espresso')
+                esc_html__(
+                    'A valid EE_Promotion object is required to generate a promotion line item.',
+                    'event_espresso'
+                )
             );
         }
         $promo_name = ! empty($promo_name) ? $promo_name : $promotion->name();
-        $promo_desc = $promotion->price()->desc();
-        $promo_desc .= $promotion->code() !== '' ? ' ( ' . $promotion->code() . ' )' : '';
-        // generate promotion line_item
-        $line_item = EE_Line_Item::new_instance(
-            /**
-             * Filters the initial properties of the discount line items.
-             * @param array new line item properties. Keys are field names, values are their new values.
-             * @param EE_Line_Item $parent_line_item
-             * @param EE_Promotion $promotion
-             * @param string $promo_name
-             * @param boolean $affects_tax
-             */
-            apply_filters(
-                'FHEE__EE_Promotion_Scope__generate_promotion_line_item',
-                array(
-                    'LIN_code'       => 'promotion-' . $promotion->ID(),
-                    'TXN_ID'         => $parent_line_item->TXN_ID(),
-                    'LIN_name'       => apply_filters(
-                        'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
-                        $promo_name,
-                        $promotion
-                    ),
-                    'LIN_desc'       => $promo_desc,
-                    'LIN_unit_price' => $promotion->is_percent() ? 0 : $promotion->amount(),
-                    'LIN_percent'    => $promotion->is_percent() ? $promotion->amount() : 0,
-                    'LIN_is_taxable' => $affects_tax,
-                    'LIN_order'      => $promotion->price()->order() + EE_Promotion_Scope::$_counter,
-                    // we want promotions to be applied AFTER other line items
-                    'LIN_total'      => $promotion->calculated_amount_on_value($parent_line_item->total()),
-                    'LIN_quantity'   => 1,
-                    'LIN_parent'     => $parent_line_item->ID(),
-                    // Parent ID (this item goes towards that Line Item's total)
-                    'LIN_type'       => $this->get_promotion_line_item_type(),
-                    'OBJ_ID'         => $promotion->ID(),
-                    // ID of Item purchased
-                    'OBJ_type'       => 'Promotion'
-                    // Model Name this Line Item is for
+
+        /**
+         * Filters the initial properties of the discount line items.
+         *
+         * @param array        $props_n_values new line item properties. Keys are field names, values are their new values.
+         * @param EE_Line_Item $parent_line_item
+         * @param EE_Promotion $promotion
+         * @param string       $promo_name
+         * @param boolean      $apply_promos_before_tax
+         */
+        $promo_line_item_args = apply_filters(
+            'FHEE__EE_Promotion_Scope__generate_promotion_line_item',
+            [
+                'LIN_code'       => 'promotion-' . $promotion->ID(),
+                'TXN_ID'         => $parent_line_item->TXN_ID(),
+                'LIN_name'       => apply_filters(
+                    'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
+                    $promo_name,
+                    $promotion
                 ),
-                $parent_line_item,
-                $promotion,
-                $promo_name,
-                $affects_tax
-            )
+                'LIN_desc'       => $this->generatePromoLineItemDescription($promotion, $promo_name, $apply_promos_before_tax),
+                'LIN_unit_price' => $promotion->is_percent() ? 0 : $promotion->amount(),
+                'LIN_percent'    => $promotion->is_percent() ? $promotion->amount() : 0,
+                'LIN_is_taxable' => $apply_promos_before_tax,
+                'LIN_order'      => null,
+                // we want promotions to be applied AFTER other line items
+                'LIN_total'      => $promotion->calculated_amount_on_value($parent_line_item->pretaxTotal()),
+                'LIN_quantity'   => 1,
+                'LIN_parent'     => $parent_line_item->ID(),
+                // Parent ID (this item goes towards that Line Item's total)
+                'LIN_type'       => $this->get_promotion_line_item_type($apply_promos_before_tax),
+                'OBJ_ID'         => $promotion->ID(),
+                // ID of Item purchased
+                'OBJ_type'       => EEM_Promotion::LINE_ITEM_OBJ_TYPE,
+                // Model Name this Line Item is for
+            ],
+            $parent_line_item,
+            $promotion,
+            $promo_name,
+            $apply_promos_before_tax
         );
         EE_Promotion_Scope::$_counter++;
-        return $line_item;
+        // generate promotion line_item
+        return EE_Line_Item::new_instance($promo_line_item_args);
     }
 
+
+    /**
+     * @param EE_Promotion $promotion
+     * @param string       $promo_name
+     * @param bool $apply_promos_before_tax
+     * @return string
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since $VID:$
+     */
+    private function generatePromoLineItemDescription(EE_Promotion $promotion, string $promo_name,  bool $apply_promos_before_tax): string
+    {
+        $promo_code = $promotion->code();
+        $promo_desc = $promotion->price()->desc();
+        $promo_desc = $promo_desc ?: sprintf(
+            esc_html__('%1$s off %2$s', 'event_espresso'),
+            $promotion->pretty_amount(),
+            $this->label->singular
+        );
+        $promo_desc .= $promo_code !== '' && $promo_code !== $promo_name ? " ($promo_code)" : '';
+        $promo_desc .= ! $apply_promos_before_tax ? ' ' . esc_html__('(applied after taxes)', 'event_espresso') : '';
+        return $promo_desc;
+    }
 
 
     /**
@@ -978,33 +1048,118 @@ abstract class EE_Promotion_Scope
      *
      * @param EE_Promotion $promotion
      * @param int          $OBJ_ID
-     * @throws \EE_Error
      * @return bool
+     * @throws EE_Error
+     * @throws ReflectionException
      */
-    public function increment_promotion_scope_uses(EE_Promotion $promotion, $OBJ_ID = 0)
+    public function increment_promotion_scope_uses(EE_Promotion $promotion, int $OBJ_ID = 0): bool
     {
         $EEM_Promotion_Object = EE_Registry::instance()->load_model('Promotion_Object');
         // retrieve promotion object having the given ID and type scope
         $promotion_object = $EEM_Promotion_Object->get_one(
-            array( array( 'PRO_ID' => $promotion->ID(), 'OBJ_ID' => $OBJ_ID ) )
+            [['PRO_ID' => $promotion->ID(), 'OBJ_ID' => $OBJ_ID]]
         );
         if ($promotion_object instanceof EE_Promotion_Object) {
             $promotion_object->increment_used();
             $promotion_object->save();
+
             return true;
         }
-        throw new EE_Error(__('A valid EE_Promotion_Object object could not be found.', 'event_espresso'));
+        throw new EE_Error(esc_html__('A valid EE_Promotion_Object object could not be found.', 'event_espresso'));
     }
-
 
 
     /**
      * __wakeup
      *
-     * @throws \EE_Error
+     * @throws EE_Error
+     * @throws ReflectionException
      */
     public function __wakeup()
     {
         $this->init();
     }
+
+
+    /**
+     * returns array of EE_Line_Item objects that are the direct children of the supplied $applicable_item
+     * can be overridden in child classes to be more specific
+     *
+     * @param EE_Line_Item $applicable_item
+     * @return EE_Line_Item[]
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since $VID:$
+     */
+    protected function getApplicableItemChildren(EE_Line_Item $applicable_item): array
+    {
+        return EEH_Line_Item::get_line_item_descendants($applicable_item);
+    }
+
+
+    /**
+     * @param EE_Line_Item $parent_line_item the line item to create the new promotion line item under
+     * @param EE_Promotion $promotion        the promotion object that the line item is being created for
+     * @param float        $promo_amount
+     * @param bool         $apply_promos_before_tax
+     * @return EE_Line_Item
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @since   1.0.0
+     */
+    public function generatePromotionLineItem(
+        EE_Line_Item $parent_line_item,
+        EE_Promotion $promotion,
+        float $promo_amount,
+        bool $apply_promos_before_tax = false
+    ): EE_Line_Item {
+        $promo_name = $promotion->name();
+        /**
+         * Filters the initial properties of the discount line items.
+         *
+         * @param array        $props_n_values new line item properties. Keys are field names, values are their new values.
+         * @param EE_Line_Item $parent_line_item
+         * @param EE_Promotion $promotion
+         * @param string       $promo_name
+         * @param boolean      $apply_promos_before_tax
+         * @param float        $promo_amount
+         */
+        $promo_line_item_args = apply_filters(
+            'FHEE__EE_Promotion_Scope__generate_promotion_line_item',
+            [
+                'LIN_code'       => 'promotion-' . $promotion->ID(),
+                'TXN_ID'         => $parent_line_item->TXN_ID(),
+                'LIN_name'       => apply_filters(
+                    'FHEE__EE_Promotion_Scope__generate_promotion_line_item__LIN_name',
+                    $promo_name,
+                    $promotion
+                ),
+                'LIN_desc'       => $this->generatePromoLineItemDescription($promotion, $promo_name, $apply_promos_before_tax),
+                'LIN_unit_price' => $promotion->is_percent() ? 0 : $promo_amount,
+                'LIN_percent'    => $promotion->is_percent() ? $promotion->amount() : 0,
+                'LIN_is_taxable' => $apply_promos_before_tax,
+                'LIN_order'      => null,
+                // we want promotions to be applied AFTER other line items
+                'LIN_total'      => $promo_amount,
+                'LIN_quantity'   => $parent_line_item->quantity(),
+                // 'LIN_quantity'   => 1,
+                'LIN_parent'     => $parent_line_item->ID(),
+                // Parent ID (this item goes towards that Line Item's total)
+                'LIN_type'       => $this->get_promotion_line_item_type($apply_promos_before_tax),
+                'OBJ_ID'         => $promotion->ID(),
+                // ID of Item purchased
+                'OBJ_type'       => EEM_Promotion::LINE_ITEM_OBJ_TYPE,
+                // Model Name this Line Item is for
+            ],
+            $parent_line_item,
+            $promotion,
+            $promo_name,
+            $apply_promos_before_tax,
+            $promo_amount
+        );
+        EE_Promotion_Scope::$_counter++;
+        // generate promotion line_item
+        return EE_Line_Item::new_instance($promo_line_item_args);
+    }
+
 }

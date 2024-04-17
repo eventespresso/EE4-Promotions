@@ -1,59 +1,47 @@
 <?php
 
+use EventEspresso\core\services\loaders\LoaderFactory;
+
 /**
  * EE_Promotions_Config
- *
  * Class defining the Promotions Config object stored on EE_Registry::instance->CFG
  *
  * @since      1.0.0
- *
  * @package    EE4 Promotions
  * @subpackage config
  * @author     Darren Ethier
  */
 class EE_Promotions_Config extends EE_Config_Base
 {
-
     /**
      * Holds all the EE_Promotion_Scope objects that are registered for promotions.
      *
      * @since 1.0.0
-     * @type EE_Promotion_Scope[] $scopes
+     * @type EE_Promotion_Scope[]|null $scopes
      */
-    public $scopes = array();
+    public ?array $scopes = [];
 
     /**
      * what to call promo codes on the frontend. ie: Promo codes, coupon codes, etc
      *
      * @since 1.0.0
-     * @type stdClass $label
+     * @type stdClass|null $label
      */
-    public $label;
+    public ?stdClass $label = null;
 
-    /**
-     * @type string $banner_template
-     */
-    public $banner_template = 'promo-banner-ribbon.template.php';
+    public ?string $banner_template = 'promo-banner-ribbon.template.php';
 
-    /**
-     * @type string $ribbon_banner_color
-     */
-    public $ribbon_banner_color = 'lite-blue';
+    public ?string $ribbon_banner_color = 'lite-blue';
 
-    /**
-     * @type boolean $_affects_tax
-     */
-    protected $_affects_tax = false;
+    protected ?bool $_affects_tax = false;
 
 
-    /**
-     *    constructor
-     *
-     * @return EE_Promotions_Config
-     */
     public function __construct()
     {
-        add_action('AHEE__EE_Config___load_core_config__end', array($this, 'init'));
+        $this->label           = new stdClass();
+        $this->label->singular = esc_html__('Promotion Code', 'event_espresso');
+        $this->label->plural   = esc_html__('Promotion Codes', 'event_espresso');
+        add_action('AHEE__EE_Config___load_core_config__end', [$this, 'init'], 99);
     }
 
 
@@ -68,27 +56,26 @@ class EE_Promotions_Config extends EE_Config_Base
         if ($initialized) {
             return;
         }
-        $this->scopes = $this->_get_scopes();
-        $this->label = new stdClass();
+        $initialized           = true;
+        $this->scopes          = $this->_get_scopes();
+        $this->label           = new stdClass();
         $this->label->singular = apply_filters(
             'FHEE__EE_Promotions_Config____construct__label_singular',
-            __('Promotion Code', 'event_espresso')
+            esc_html__('Promotion Code', 'event_espresso')
         );
-        $this->label->plural = apply_filters(
+        $this->label->plural   = apply_filters(
             'FHEE__EE_Promotions_Config____construct__label_plural',
-            __('Promotion Codes', 'event_espresso')
+            esc_html__('Promotion Codes', 'event_espresso')
         );
     }
 
 
     /**
-     *    _get_scopes
-     *
      * @return array
      */
-    private function _get_scopes()
+    private function _get_scopes(): array
     {
-        static $scopes = array();
+        static $scopes = [];
         $scopes_to_register = apply_filters(
             'FHEE__EE_Promotions_Config___get_scopes__scopes_to_register',
             glob(EE_PROMOTIONS_PATH . 'lib/scopes/*.lib.php')
@@ -104,9 +91,16 @@ class EE_Promotions_Config extends EE_Config_Base
             // ( first load returns (int)1, subsequent loads return (bool)true )
             if ($loaded === 1) {
                 if (class_exists($class_name)) {
-                    $reflector = new ReflectionClass($class_name);
-                    $sp = $reflector->newInstance();
-                    $scopes[ $sp->slug ] = $sp;
+                    $promotion_scope = LoaderFactory::getShared($class_name);
+                    if (! $promotion_scope instanceof EE_Promotion_Scope) {
+                        throw new DomainException(
+                            sprintf(
+                                esc_html__('Invalid or missing promotion_scope class: %1$s', 'event_espresso'),
+                                $class_name
+                            )
+                        );
+                    }
+                    $scopes[ $promotion_scope->slug ] = $promotion_scope;
                 }
             }
         }
@@ -114,19 +108,28 @@ class EE_Promotions_Config extends EE_Config_Base
     }
 
 
-    /**
-     * __wakeup
-     */
+    public function __sleep(): array
+    {
+        // remove 'scopes' from array of class properties via array_filter()
+        return array_filter(
+            array_keys((array) $this),
+            function ($prop) {
+                return $prop !== 'scopes';
+            }
+        );
+    }
+
+
     public function __wakeup()
     {
-        $this->init();
+        $this->scopes = $this->_get_scopes();
     }
 
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function affects_tax()
+    public function affects_tax(): bool
     {
         return apply_filters(
             'FHEE__EE_Promotions_Config__affects_tax',
@@ -136,7 +139,7 @@ class EE_Promotions_Config extends EE_Config_Base
 
 
     /**
-     * @param boolean $affects_tax
+     * @param bool|int|string|null $affects_tax
      */
     public function set_affects_tax($affects_tax)
     {

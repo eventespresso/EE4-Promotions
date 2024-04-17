@@ -4,10 +4,9 @@
  *
  * EEM_Promotions_Event
  *
- * @package         Event Espresso
+ * @package     Event Espresso
  * @subpackage
- * @author              Mike Nelson
- *
+ * @author      Mike Nelson
  */
 class EEME_Promotions_Price extends EEME_Base
 {
@@ -15,7 +14,7 @@ class EEME_Promotions_Price extends EEME_Base
     {
         $this->_model_name_extended = 'Price';
         $this->_extra_relations = array(
-            'Promotion'=>new EE_Has_Many_Relation()
+            'Promotion' => new EE_Has_Many_Relation()
         );
         parent::__construct();
     }

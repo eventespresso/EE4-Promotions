@@ -1,19 +1,17 @@
 <?php
-/* ------------------------------------------------------------------------
- *
+
+/*
  * EEW_Promotions
  * Displays a List of Promotions in the Sidebar
  *
- * @package			Event Espresso
+ * @package     Event Espresso
  * @subpackage 	espresso-promotions
- * @author				Brent Christensen
- * @since 				4.3
- *
- * ------------------------------------------------------------------------
+ * @author      Brent Christensen
+ * @since       4.3
  */
+
 class EEW_Promotions extends WP_Widget
 {
-
     /**
      * Register widget with WordPress.
      */
@@ -21,83 +19,60 @@ class EEW_Promotions extends WP_Widget
     {
         parent::__construct(
             'ee-promotions-widget',
-            __('Event Espresso Promotions Widget', 'event_espresso'),
-            array(
-                'description' => __('Displays Espresso Promotions in a widget.', 'event_espresso')
-             ),
-            array(
-                'width' => 300,
-                'height' => 350,
-                'id_base' => 'ee-promotions-widget'
-            )
+            esc_html__('Event Espresso Promotions Widget', 'event_espresso'),
+            ['description' => esc_html__('Displays Espresso Promotions in a widget.', 'event_espresso')],
+            [
+                'width'   => 300,
+                'height'  => 350,
+                'id_base' => 'ee-promotions-widget',
+            ]
         );
     }
-
 
 
     /**
      * Back-end widget form.
      *
-     * @see WP_Widget::form()
-     *
      * @param array $instance Previously saved values from database.
-     * @return string|void
+     * @return void
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @see WP_Widget::form()
      */
     public function form($instance)
     {
-
         EE_Registry::instance()->load_helper('Form_Fields');
-        EE_Registry::instance()->load_class('Question_Option', array(), false, false, true);
-
-        // Set up some default widget settings.
-        $defaults = array(
-            'title' => __('Current Promotions', 'event_espresso')
+        EE_Registry::instance()->load_class('Question_Option', [], false, false, true);
+        $instance = wp_parse_args(
+            (array) $instance,
+            ['title' => esc_html__('Current Promotions', 'event_espresso')]
         );
-
-        $instance = wp_parse_args((array) $instance, $defaults);
-
-//      add_filter( 'FHEE__EEH_Form_Fields__label_html', '__return_empty_string' );
-//      $yes_no_values = array(
-//          EE_Question_Option::new_instance( array( 'QSO_value' => 0, 'QSO_desc' => __('No', 'event_espresso'))),
-//          EE_Question_Option::new_instance( array( 'QSO_value' => 1, 'QSO_desc' => __('Yes', 'event_espresso')))
-//      );
-
         ?>
 
         <p>
-            <label for="<?php echo $this->get_field_id('title'); ?>">
-                <?php _e('Title:', 'event_espresso'); ?>
+            <label for="<?php
+            echo $this->get_field_id('title'); ?>"
+            >
+                <?php
+                esc_html_e('Title:', 'event_espresso'); ?>
             </label>
-            <input type="text" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" width="20" value="<?php echo $instance['title']; ?>" />
+            <input type="text" id="<?php
+            echo $this->get_field_id('title'); ?>" name="<?php
+            echo $this->get_field_name('title'); ?>" width="20" value="<?php
+            echo $instance['title']; ?>"
+            />
         </p>
-<!--        <p>-->
-<!--            <label for="--><?php // echo $this->get_field_id('yes_or_no_question'); ?><!--">-->
-<!--                --><?php // _e('Yes or No?', 'event_espresso'); ?>
-<!--            </label>-->
-<!--            --><?php
-//              echo EEH_Form_Fields::select(
-//                   __('Yes or No?', 'event_espresso'),
-//                  $instance['yes_or_no_question'],
-//                  $yes_no_values,
-//                  $this->get_field_name('yes_or_no_question'),
-//                  $this->get_field_id('yes_or_no_question')
-//              );
-//          ?>
-<!--        </p>-->
         <?php
     }
-
 
 
     /**
      * Sanitize widget form values as they are saved.
      *
-     * @see WP_Widget::update()
-     *
      * @param array $new_instance Values just sent to be saved.
-     * @param array $instance Previously saved values from database.
-     *
+     * @param array $instance     Previously saved values from database.
      * @return array Updated safe values to be saved.
+     * @see WP_Widget::update()
      */
     public function update($new_instance, $instance)
     {
@@ -107,21 +82,21 @@ class EEW_Promotions extends WP_Widget
     }
 
 
-
     /**
      * Front-end display of widget.
      *
-     * @see WP_Widget::widget()
-     *
      * @param array $args     Widget arguments.
      * @param array $instance Saved values from database.
+     * @throws EE_Error
+     * @throws ReflectionException
+     * @see WP_Widget::widget()
      */
     public function widget($args, $instance)
     {
         // get the current post
         global $post;
         if (isset($post->post_content)) {
-             // check the post content for the short code
+            // check the post content for the short code
             if (strpos($post->post_content, '[ESPRESSO_PROMOTIONS') === false) {
                 EED_Promotions::$shortcode_active = true;
                 // Before widget (defined by themes).
@@ -131,11 +106,8 @@ class EEW_Promotions extends WP_Widget
                 if (! empty($title)) {
                     echo $args['before_title'] . $title . $args['after_title'];
                 }
-                // load scripts
                 EED_Promotions::instance()->enqueue_scripts();
-                // settings
-                $attributes = array();
-                echo EED_Promotions::instance()->display_promotions($attributes);
+                echo EED_Promotions::instance()->display_promotions([]);
                 // After widget (defined by themes).
                 echo $args['after_widget'];
             }
