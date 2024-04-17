@@ -4,7 +4,7 @@
  * Class PromotionsDatepicker
  *
  * @author  Brent Christensen
- * @since   $VID:$
+ * @since   1.0.17.p
  */
 class PromotionsDatepicker
 {

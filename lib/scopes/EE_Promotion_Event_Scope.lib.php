@@ -546,7 +546,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      * @return array|EE_Line_Item[]
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     protected function getApplicableItemChildren(EE_Line_Item $applicable_item): array
     {
@@ -562,7 +562,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      * @return bool
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     public function calculateAndApplyPromotion(
         callable $add_promotion_line_item,
@@ -593,7 +593,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      * @return bool
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     private function calculateAndApplyPromotionAfterTaxes(
         callable $add_promotion_line_item,
@@ -623,7 +623,7 @@ class EE_Promotion_Event_Scope extends EE_Promotion_Scope
      * @return bool
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     private function calculateAndApplyPromotionBeforeTaxes(
         callable $add_promotion_line_item,

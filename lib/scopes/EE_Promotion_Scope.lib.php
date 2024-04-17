@@ -245,7 +245,7 @@ abstract class EE_Promotion_Scope
      * @param EE_Promotion $promotion
      * @param bool         $apply_promos_before_tax
      * @return bool
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     abstract public function calculateAndApplyPromotion(
         callable $add_promotion_line_item,
@@ -1026,7 +1026,7 @@ abstract class EE_Promotion_Scope
      * @return string
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     private function generatePromoLineItemDescription(EE_Promotion $promotion, string $promo_name,  bool $apply_promos_before_tax): string
     {
@@ -1089,7 +1089,7 @@ abstract class EE_Promotion_Scope
      * @return EE_Line_Item[]
      * @throws EE_Error
      * @throws ReflectionException
-     * @since $VID:$
+     * @since 1.0.17.p
      */
     protected function getApplicableItemChildren(EE_Line_Item $applicable_item): array
     {
